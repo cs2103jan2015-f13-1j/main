@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
+   <children>
+      <TableView fx:id="taskTable" layoutY="46.0" prefHeight="400.0" prefWidth="590.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="5.0">
+        <columns>
+          <TableColumn fx:id="taskDescColumn" prefWidth="350.0" resizable="false" text="Task Description" />
+          <TableColumn fx:id="dateColumn" minWidth="0.0" resizable="false" text="Date" />
+            <TableColumn fx:id="startTimeColumn" minWidth="0.0" resizable="false" text="Start Time" />
+            <TableColumn fx:id="endTimeColumn" minWidth="0.0" resizable="false" text="End Time" />
+        </columns>
+      </TableView>
+      <TextArea layoutX="5.0" layoutY="403.0" prefHeight="90.0" prefWidth="590.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="403.0" />
+   </children>
+</AnchorPane>
