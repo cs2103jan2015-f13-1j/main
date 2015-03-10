@@ -100,7 +100,7 @@ public class Parser {
 		}
 	}
 	
-	public void main(){
+	/*public void main(){
 		Parser pr = new Parser();
 		Scanner sc = new Scanner(System.in);
 		String str;
@@ -110,6 +110,6 @@ public class Parser {
 			pr.parseInputString(str);
 			str = sc.next();
 		}
-	}
+	}*/
 
 }

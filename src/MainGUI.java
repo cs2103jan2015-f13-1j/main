@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import storage.Task;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;

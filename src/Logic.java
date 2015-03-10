@@ -1,18 +1,34 @@
 import java.util.*;
 
+import parser.createCommand.Command;
+import storage.Task;
+import storage.Storage;
+
 public class Logic {
-	private Vector<Task> TaskList;
+	//private Vector<Task> TaskList;
 	private Vector<Task> BackUpList;
 
+	public void initList() {
+		Storage.readList();
+	}
+	
 	private void backup() {
-		BackUpList = TaskList;
+		BackUpList = Storage.taskList;
+	}
+	
+	public void executeCommand(Command c) {
+		if (c.getCommandType().equals("add")) {
+			Task t = new Task(c.getTask(), "dummy date");
+			addTask(t);
+		}
 	}
 
 	public void addTask(Task t) {
 		backup();
-		TaskList.add(t);
+		Storage.taskList.add(t);
+		//storage.updateList();
 	}
-
+/*
 	void editTask(int index) {
 		Task editTask = TaskList.get(index);
 
@@ -49,5 +65,5 @@ public class Logic {
 		}
 		return true;
 	}
-
+*/
 }
