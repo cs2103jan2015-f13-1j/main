@@ -2,6 +2,7 @@ package FileStream;
 
 import java.io.File;
 import java.util.Vector;
+import util.Task;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,7 +14,7 @@ public class FileStream {
 	
 	public static void main(String[] args) {
 
-		
+		/*
 		//---------- Create a dummy list of Task --------
 		Vector<Task> dummyList = new Vector<Task>();
 		dummyList.add(new Task("taskDesc", "30-08-1991", "09-03-2015"));
@@ -25,8 +26,10 @@ public class FileStream {
 		dummyList.add(new Task("taskDesc7", "30-08-1991", "09-03-2015"));
 		//-----------------------------------------------
 		
-		//writeTasksToXML(dummyList);
-		//System.out.println("Saved");	
+		
+		writeTasksToXML(dummyList);
+		System.out.println("Saved");	
+		
 		
 		Vector<Task> newList = new Vector<Task>();
 		newList = loadTasksFromXML();		
@@ -37,7 +40,7 @@ public class FileStream {
 			System.out.println(t);
 		}
 		//-----------------------------------------------
-		
+		*/
 	}
 	
 	/**

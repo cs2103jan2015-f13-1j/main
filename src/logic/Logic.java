@@ -2,6 +2,7 @@ package logic;
 
 import java.util.*;
 
+import FileStream.FileStream;
 import parser.*;
 import util.*;
 import util.operator.COMMAND_TYPE;
@@ -86,6 +87,8 @@ public class Logic {
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
 		executeCommand(cmd);
+		
+		FileStream.writeTasksToXML(TaskList);
 	}
 
 	private void executeCommand(Command cmd) {

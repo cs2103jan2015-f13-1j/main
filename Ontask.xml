@@ -1,38 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Tasks>
     <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc</taskDesc>
+        <taskDesc>meeting</taskDesc>
     </Task>
     <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc2</taskDesc>
-    </Task>
-    <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc3</taskDesc>
-    </Task>
-    <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc4</taskDesc>
-    </Task>
-    <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc5</taskDesc>
-    </Task>
-    <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc6</taskDesc>
-    </Task>
-    <Task>
-        <endTime>09-03-2015</endTime>
-        <startTime>30-08-1991</startTime>
-        <taskDesc>taskDesc7</taskDesc>
+        <endTime>2015-03-04T00:00:00</endTime>
+        <startTime>2015-03-02T00:00:00</startTime>
+        <taskDesc>meeting2</taskDesc>
     </Task>
 </Tasks>

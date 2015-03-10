@@ -1,14 +1,14 @@
 package util;
 import java.time.LocalDateTime;
-import java.util.Date;
+
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class Task {
 
 	private String taskDesc;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
-
-	// private String _taskType
 
 	public void setTaskDesc(String desc) {
 		taskDesc = desc;
@@ -26,10 +26,15 @@ public class Task {
 		return taskDesc;
 	}
 
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	@XmlSchemaType(name="startTime")
 	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
+
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	@XmlSchemaType(name="endTime")
 	public LocalDateTime getEndTime() {
 		return endTime;
 	}

@@ -1,6 +1,7 @@
 package FileStream;
 
 import java.util.Vector;
+import util.Task;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,4 +22,5 @@ public class TaskListWrapper {
 	public void setTasks(Vector<Task> tasks) {
 		this.tasks = tasks;
 	}
+
 }
