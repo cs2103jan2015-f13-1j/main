@@ -3,17 +3,15 @@ package parser;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import parser.createCommand.Command;
+import util.*;
+import util.operator.COMMAND_TYPE;
+
 
 public class Parser {
 
-	enum COMMAND_TYPE {
-		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO
-	};
-
 	public Command parseInputString(String input) {
 		String commandTypeString = input.trim().split("\\s+")[0];
-		COMMAND_TYPE commandType = determineCommandType(commandTypeString);
+		COMMAND_TYPE commandType = operator.determineCommandType(commandTypeString);
 
 		switch (commandType) {
 		case ADD_TASK:
@@ -77,30 +75,14 @@ public class Parser {
 
 	private Command addTask(String input) {
 		input = input.replaceFirst("add", "").trim();
+		addCommandExtractor extractor = new addCommandExtractor(input);
+		Task t = extractor.extractAddCommand();
 		createCommand createCmd = new createCommand();
-		return createCmd.createAddCommand(input);
+		return createCmd.createAddCommand(t);
 	}
 
-	private static COMMAND_TYPE determineCommandType(String commandTypeString) {
-		if (commandTypeString == null)
-			throw new Error("command type string cannot be null!");
-
-		if (commandTypeString.equalsIgnoreCase("add")) {
-			return COMMAND_TYPE.ADD_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("delete")) {
-			return COMMAND_TYPE.DELETE_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("edit")) {
-			return COMMAND_TYPE.EDIT_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("search")) {
-			return COMMAND_TYPE.SEARCH_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("undo")) {
-			return COMMAND_TYPE.UNDO;
-		} else {
-			return COMMAND_TYPE.INVALID;
-		}
-	}
 	
-	/*public void main(){
+	public void main(){
 		Parser pr = new Parser();
 		Scanner sc = new Scanner(System.in);
 		String str;
@@ -110,6 +92,6 @@ public class Parser {
 			pr.parseInputString(str);
 			str = sc.next();
 		}
-	}*/
+	}
 
 }

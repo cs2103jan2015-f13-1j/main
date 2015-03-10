@@ -26,7 +26,7 @@ public class FileStream {
 		//-----------------------------------------------
 		
 		//writeTasksToXML(dummyList);
-		//System.out.println("Saved");
+		//System.out.println("Saved");	
 		
 		Vector<Task> newList = new Vector<Task>();
 		newList = loadTasksFromXML();		
