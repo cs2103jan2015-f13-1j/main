@@ -1,4 +1,4 @@
-package FileStream;
+package filestream;
 
 import java.util.Vector;
 import util.Task;

@@ -2,7 +2,7 @@ package logic;
 
 import java.util.*;
 
-import FileStream.FileStream;
+import filestream.FileStream;
 import parser.*;
 import util.*;
 import util.operator.COMMAND_TYPE;
