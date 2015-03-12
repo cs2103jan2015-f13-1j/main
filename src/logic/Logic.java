@@ -36,7 +36,7 @@ public class Logic {
 	void editTask(int index, String editType, String modifiedContent) {
 		if (index > 0 && index <= TaskList.size()) {
 			boolean isSuccessful = false;
-			switch (editType) {
+			switch (editType.toLowerCase()) {
 			case "task":
 				isSuccessful = editTaskDesc(index, modifiedContent);
 				break;
@@ -70,7 +70,7 @@ public class Logic {
 
 			if (endtTime != null) {
 				LocalDate t = timeOperator.extractDate(modifiedContent);
-				editTask.setStartTime(endtTime.withYear(t.getYear())
+				editTask.setEndTime(endtTime.withYear(t.getYear())
 						.withDayOfYear(t.getDayOfYear()));
 				return true;
 			} else {
