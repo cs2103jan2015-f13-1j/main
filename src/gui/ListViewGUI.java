@@ -1,67 +1,64 @@
 package gui;
 
+import java.io.IOException;
 import java.util.Vector;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import fileIO.FileStream;
 import util.Task;
 
 public class ListViewGUI extends Application {
+	private Stage primaryStage;
+	private BorderPane root;
+	// private ObservableList<Task> list;
+	private Vector<Task> vectorTasks;
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
-		primaryStage.setTitle("ListView");
+	public void start(Stage primaryStage) throws IOException {
+		this.primaryStage = primaryStage;
+		this.primaryStage.setTitle("ListView");
 
-		/*
-		 * Takes in a Vector<Task> and converts it into ObservableList<Task>
-		 */
-		Vector<Task> vectorTasks = FileStream.loadTasksFromXML();
-		ListView<Task> listView = new ListView<Task>();
-		ObservableList<Task> list = FXCollections.observableArrayList(vectorTasks);
+		vectorTasks = FileStream.loadTasksFromXML();
 
-		/*
-		 * Allows custom object <Task> to be displayed in Listview
-		 */
-		listView.setItems(list);
-		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
-			
-			@Override
-			public ListCell<Task> call(ListView<Task> ListViewTask) {
-				ListCell<Task> cell = new ListCell<Task>() {
-					
-					@Override
-					protected void updateItem(Task t, boolean b) {
-						super.updateItem(t, b);
-						if(t != null) {
-							setText(t.getTaskDesc() + "\nFrom: " + t.getStartTime() + " To: "+ t.getEndTime());
-						}
-					}
-				};
-				return cell;
-			}
-		});
-		
-		
+		initRootLayout();
+
+		showTaskOverview();
+
 		/*
 		 * Initialize a simple display
+		 * 
+		 * StackPane root = new StackPane(); root.getChildren().add(listView);
+		 * primaryStage.setScene(new Scene(root, 300, 450));
+		 * primaryStage.setResizable(false); primaryStage.show();
 		 */
-		StackPane root = new StackPane();
-		root.getChildren().add(listView);
-		primaryStage.setScene(new Scene(root, 300, 450));
+	}
+
+	private void initRootLayout() {
+		root = new BorderPane();
+		Scene scene = new Scene(root, 300, 450);
+		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
+	}
+
+	private void showTaskOverview() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(ListViewGUI.class
+				.getResource("TaskDisplayPage.fxml"));
+		AnchorPane TaskDisplayPage = (AnchorPane) loader.load();
+		root.setCenter(TaskDisplayPage);
+
+		TaskDisplayController controller = loader.getController();
+
+		controller.setTaskList(vectorTasks);
 	}
 
 }
