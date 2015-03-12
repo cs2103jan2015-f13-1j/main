@@ -27,9 +27,9 @@ import java.time.LocalDateTime;
 
 public class MainGUI extends Application {
 
-	static Vector<Task> vectorTasks = new Vector<Task>();
+	Vector<Task> vectorTasks = new Vector<Task>();
 	ListView<Task> listView = new ListView<Task>();
-	static ObservableList<Task> observeList;
+	ObservableList<Task> observeList;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -110,10 +110,17 @@ public class MainGUI extends Application {
 		        	
 		        	String text = textArea.getText();
 
-		            // execute command
-
+		            // execute commanand
+		        	Logic l = new Logic();
+		        	l.run(text);
+		        	
+		        	// refresh list
+		        	vectorTasks = FileStream.loadTasksFromXML();
+		        	observeList = FXCollections.observableArrayList(vectorTasks);
+		        	listView.setItems(observeList);
+		        	
 		            // clear text
-		            textArea.setText("Valid/Invalid input!");
+		            textArea.setText("");
 
 		        }
 		    }

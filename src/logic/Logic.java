@@ -202,6 +202,9 @@ public class Logic {
 	}
 
 	public void run(String input) {
+		
+		TaskList = FileStream.loadTasksFromXML();
+		
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
 		executeCommand(cmd);
