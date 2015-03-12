@@ -58,6 +58,7 @@ public class FileStream {
 			//Read XML from file and unmarshal.
 			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);
 			
+			if(wrapper.getTasks() != null)
 			tasks.addAll(wrapper.getTasks());
 			
 		} catch (JAXBException e) {

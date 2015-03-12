@@ -88,7 +88,7 @@ public class Logic {
 			Task editTask = TaskList.get(index - 1);
 			LocalDateTime startTime = editTask.getStartTime();
 
-			if (editTask.getEndTime() != null) {
+			if (startTime != null) {
 				LocalDate t = timeOperator.extractDate(modifiedContent);
 				editTask.setStartTime(startTime.withYear(t.getYear())
 						.withDayOfYear(t.getDayOfYear()));
