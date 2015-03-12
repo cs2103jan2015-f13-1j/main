@@ -1,5 +1,6 @@
 package logic;
 
+import java.time.*;
 import java.util.*;
 
 import filestream.FileStream;
@@ -13,7 +14,8 @@ public class Logic {
 
 	private static final String MESSAGE_ADD = "task %s added ";
 	private static final String MESSAGE_DELETE = "task %s deleted\n";
-	private static final String MESSAGE_FAILURE = "%s does not exist\n";
+	private static final String MESSAGE_TASK_FAILURE = "%s does not exist\n";
+	private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
 
 	private void backup() {
 		BackUpList = TaskList;
@@ -29,14 +31,124 @@ public class Logic {
 			operator.showToUser("to " + t.getEndTime().toString());
 	}
 
-	void editTask(int index, String originalContent, String modifiedContent) {
+	void editTask(int index, String editType, String modifiedContent) {
+		if (index > 0 && index <= TaskList.size()) {
+			boolean isSuccessful = false;
+			switch (editType) {
+			case "task":
+				isSuccessful = editTaskDesc(index, modifiedContent);
+				break;
+			case "starttime":
+				editTaskStartTime(index, modifiedContent);
+				break;
+			case "endtime":
+				editTaskEndTime(index, modifiedContent);
+				break;
+			case "startdate":
+				editTaskStartDate(index, modifiedContent);
+				break;
+			case "enddate":
+				editTaskEndDate(index, modifiedContent);
+				break;
+			}
+			if (isSuccessful) {
+				operator.showToUser("task " + index + editType + " edited: "
+						+ modifiedContent);
+				backup();
+			}
+		} else {
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+		}
+	}
+
+	private boolean editTaskEndDate(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
-			String desc = editTask.getTaskDesc();
-			desc.replace(originalContent, modifiedContent);
-			operator.showToUser("task " + index + " edited");
+			LocalDateTime endtTime = editTask.getEndTime();
+
+			if (endtTime != null) {
+				LocalDate t = timeOperator.extractDate(modifiedContent);
+				editTask.setStartTime(endtTime.withYear(t.getYear())
+						.withDayOfYear(t.getDayOfYear()));
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
+					"enddate for " + index));
+			return false;
+		}
+	}
+
+	private boolean editTaskStartDate(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime startTime = editTask.getStartTime();
+
+			if (editTask.getEndTime() != null) {
+				LocalDate t = timeOperator.extractDate(modifiedContent);
+				editTask.setStartTime(startTime.withYear(t.getYear())
+						.withDayOfYear(t.getDayOfYear()));
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
+					"starttime for " + index));
+			return false;
+		}
+	}
+
+	private boolean editTaskEndTime(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime endtTime = editTask.getEndTime();
+
+			if (endtTime != null) {
+				LocalTime t = timeOperator.extractTime(modifiedContent);
+				editTask.setEndTime(endtTime.withHour(t.getHour()).withMinute(
+						t.getMinute()));
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
+					"endtime for " + index));
+			return false;
+		}
+	}
+
+	private boolean editTaskStartTime(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime startTime = editTask.getStartTime();
+
+			if (startTime != null) {
+				LocalTime t = timeOperator.extractTime(modifiedContent);
+				editTask.setStartTime(startTime.withHour(t.getHour())
+						.withMinute(t.getMinute()));
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
+					"startdate for " + index));
+			return false;
+		}
+	}
+
+	private boolean editTaskDesc(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			editTask.setTaskDesc(modifiedContent);
+			return true;
 		} catch (IndexOutOfBoundsException e) {
-			operator.showToUser(String.format(MESSAGE_FAILURE, index));
+			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+			return false;
 		}
 	}
 
@@ -45,18 +157,24 @@ public class Logic {
 			if (index > 0 && index <= TaskList.size()) {
 				TaskList.remove(index - 1);
 				operator.showToUser(String.format(MESSAGE_DELETE, index));
-			}
-			else{
-				operator.showToUser(String.format(MESSAGE_FAILURE, index));
+				backup();
+			} else {
+				operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
 			}
 		} catch (IndexOutOfBoundsException e) {
-
+			operator.showToUser(String
+					.format(MESSAGE_COMMAND_FAILURE, "delete"));
 		}
 	}
 
 	void undo() {
-		TaskList = BackUpList;
-		operator.showToUser("task undo");
+		if (BackUpList != null) {
+			TaskList = BackUpList;
+			BackUpList = null;
+			operator.showToUser("undo completed");
+		} else {
+			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
+		}
 	}
 
 	Vector<Task> searchTask(String str) {
@@ -87,36 +205,36 @@ public class Logic {
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
 		executeCommand(cmd);
-		
+
 		FileStream.writeTasksToXML(TaskList);
 	}
 
-	private void executeCommand(Command cmd) {
+	private Vector<Task> executeCommand(Command cmd) {
 		String cmdDesc = cmd.getCommandType();
 		COMMAND_TYPE commandType = operator.determineCommandType(cmdDesc);
 
 		switch (commandType) {
 		case ADD_TASK:
 			addTask(cmd.getTask());
-			return;
+			break;
 		case DELETE_TASK:
 			deleteTask(cmd.getIndex());
-			return;
+			break;
 		case EDIT_TASK:
 			editTask(cmd.getIndex(), cmd.getContent(), cmd.getModifiedString());
-			return;
+			break;
 		case UNDO:
 			undo();
-			return;
+			break;
 		case SEARCH_TASK:
-			searchTask(cmd.getContent());
-			return;
-
+			return searchTask(cmd.getContent());
+		case BACK:
+			break;
 		default:
 			// throw an error if the command is not recognized
 			throw new Error("Unrecognized command type");
 		}
-
+		return TaskList;
 	}
 
 	public static void main(String[] args) {
