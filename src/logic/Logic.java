@@ -3,7 +3,7 @@ package logic;
 import java.time.*;
 import java.util.*;
 
-import filestream.FileStream;
+import fileIO.FileStream;
 import parser.*;
 import util.*;
 import util.operator.COMMAND_TYPE;

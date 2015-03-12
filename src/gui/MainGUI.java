@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import logic.Logic;
-import filestream.FileStream;
+import fileIO.FileStream;
 import util.Task;
 
 import java.time.LocalDateTime;

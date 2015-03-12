@@ -11,7 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import filestream.FileStream;
+import fileIO.FileStream;
 import util.Task;
 
 public class ListViewGUI extends Application {
