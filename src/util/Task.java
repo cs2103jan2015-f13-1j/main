@@ -32,7 +32,6 @@ public class Task {
 		return startTime;
 	}
 
-
 	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
 	@XmlSchemaType(name="endTime")
 	public LocalDateTime getEndTime() {

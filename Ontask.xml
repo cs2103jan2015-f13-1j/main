@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Tasks>
     <Task>
+        <endTime>2015-03-04T00:00:00</endTime>
+        <startTime>2015-03-02T00:00:00</startTime>
+        <taskDesc>meeting with team</taskDesc>
+    </Task>
+    <Task>
         <taskDesc>meeting</taskDesc>
     </Task>
     <Task>
         <endTime>2015-03-04T00:00:00</endTime>
         <startTime>2015-03-02T00:00:00</startTime>
-        <taskDesc>meeting</taskDesc>
+        <taskDesc>meeting with friend</taskDesc>
     </Task>
 </Tasks>

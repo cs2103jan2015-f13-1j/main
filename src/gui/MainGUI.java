@@ -57,6 +57,8 @@ public class MainGUI extends Application {
 						super.updateItem(t, b);
 						if(t != null) {
 							setText(t.getTaskDesc() + "\nFrom: " + t.getStartTime() + " To: "+ t.getEndTime());
+						} else {
+							setText("");
 						}
 					}
 				};
@@ -118,7 +120,7 @@ public class MainGUI extends Application {
 		        	vectorTasks = FileStream.loadTasksFromXML();
 		        	observeList = FXCollections.observableArrayList(vectorTasks);
 		        	listView.setItems(observeList);
-		        	
+		        		
 		            // clear text
 		            textArea.setText("");
 
@@ -126,7 +128,6 @@ public class MainGUI extends Application {
 		    }
 		});
 		
-
 		
 		/*
 		 * Initialize a simple display
