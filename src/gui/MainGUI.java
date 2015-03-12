@@ -114,10 +114,9 @@ public class MainGUI extends Application {
 
 		            // execute commanand
 		        	Logic l = new Logic();
-		        	l.run(text);
 		        	
 		        	// refresh list
-		        	vectorTasks = FileStream.loadTasksFromXML();
+		        	vectorTasks = l.run(text);
 		        	observeList = FXCollections.observableArrayList(vectorTasks);
 		        	listView.setItems(observeList);
 		        		

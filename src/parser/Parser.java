@@ -24,11 +24,17 @@ public class Parser {
 			return undo();
 		case SEARCH_TASK:
 			return searchTask(input);
-
+		case BACK:
+			return createBackCommand();
 		default:
 			// throw an error if the command is not recognized
 			throw new Error("Unrecognized command type");
 		}
+	}
+
+	private Command createBackCommand() {
+		createCommand backcmd = new createCommand();
+		return backcmd.createBackCommand();
 	}
 
 	private Command undo() {
@@ -52,9 +58,9 @@ public class Parser {
 		int index = Integer.parseInt(st.nextToken());
 		editType = st.nextToken();
 		while(st.hasMoreTokens()){
-			modifiedContent = modifiedContent.concat(st.nextToken());
+			modifiedContent = modifiedContent.concat(" "+st.nextToken());
 		}
-		return createCmd.createEditCommand(editType, modifiedContent, index);
+		return createCmd.createEditCommand(editType, modifiedContent.trim(), index);
 	}
 
 	private Command deleteTask(String input) {

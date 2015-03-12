@@ -13,6 +13,8 @@ public class timeOperator {
 		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 		builder.parseDefaulting(ChronoField.YEAR, 2015);
 		builder.parseCaseInsensitive();
+		builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu HHmm"));
+		builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu HHmm"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 		// builder.optionalStart().parseDefaulting(ChronoField.ALIGNED_WEEK_OF_YEAR,10);
@@ -55,8 +57,8 @@ public class timeOperator {
 				LocalDate.now().getMonthValue());
 		builder.optionalStart().parseDefaulting(
 				ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
-		builder.appendOptional(DateTimeFormatter.ofPattern("E"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
+		builder.appendOptional(DateTimeFormatter.ofPattern("E"));
 		DateTimeFormatter dtf = builder.toFormatter()
 				.withLocale(Locale.ENGLISH);
 		LocalDate date = LocalDate.parse(str, dtf);
@@ -70,7 +72,7 @@ public class timeOperator {
 	}
 
 	public static void main(String[] args) {
-		String str = "440";
-		operator.showToUser(extractTime(str).toString());
+		String str = "monday";
+		operator.showToUser(extractDate(str).toString());
 	}
 }

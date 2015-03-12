@@ -11,6 +11,8 @@ import util.operator.COMMAND_TYPE;
 public class Logic {
 	private Vector<Task> TaskList = new Vector<Task>();
 	private Vector<Task> BackUpList = new Vector<Task>();
+	private Vector<Task> OutputList = new Vector<Task>();
+	private int isFirstTime = 0;
 
 	private static final String MESSAGE_ADD = "task %s added ";
 	private static final String MESSAGE_DELETE = "task %s deleted\n";
@@ -39,16 +41,16 @@ public class Logic {
 				isSuccessful = editTaskDesc(index, modifiedContent);
 				break;
 			case "starttime":
-				editTaskStartTime(index, modifiedContent);
+				isSuccessful = editTaskStartTime(index, modifiedContent);
 				break;
 			case "endtime":
-				editTaskEndTime(index, modifiedContent);
+				isSuccessful = editTaskEndTime(index, modifiedContent);
 				break;
 			case "startdate":
-				editTaskStartDate(index, modifiedContent);
+				isSuccessful = editTaskStartDate(index, modifiedContent);
 				break;
 			case "enddate":
-				editTaskEndDate(index, modifiedContent);
+				isSuccessful = editTaskEndDate(index, modifiedContent);
 				break;
 			}
 			if (isSuccessful) {
@@ -170,8 +172,9 @@ public class Logic {
 	void undo() {
 		if (BackUpList != null) {
 			TaskList = BackUpList;
-			BackUpList = null;
-			operator.showToUser("undo completed");
+			//BackUpList = null;
+			
+			operator.showToUser("undo completed"+TaskList.isEmpty());
 		} else {
 			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
 		}
@@ -201,15 +204,20 @@ public class Logic {
 		return true;
 	}
 
-	public void run(String input) {
-		
-		TaskList = FileStream.loadTasksFromXML();
-		
+	public Vector<Task> run(String input) {
+
+		isFirstTime++;
+		if (isFirstTime == 1) {
+			TaskList = initializeList();
+		}
+
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
-		executeCommand(cmd);
+		OutputList = executeCommand(cmd);
 
 		FileStream.writeTasksToXML(TaskList);
+		return OutputList;
+
 	}
 
 	private Vector<Task> executeCommand(Command cmd) {
@@ -242,7 +250,7 @@ public class Logic {
 
 	public static void main(String[] args) {
 		Logic lgc = new Logic();
-		initializeList();
+		// initializeList();
 		Scanner sc = new Scanner(System.in);
 		String str;
 		str = sc.nextLine();
@@ -253,8 +261,7 @@ public class Logic {
 		sc.close();
 	}
 
-	private static void initializeList() {
-		// update the list from memory
-
+	private Vector<Task> initializeList() {
+		return FileStream.loadTasksFromXML();
 	}
 }

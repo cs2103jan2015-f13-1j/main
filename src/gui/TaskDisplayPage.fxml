@@ -10,7 +10,7 @@
    <children>
       <SplitPane dividerPositions="0.20982142857142858" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-            <ListView fx:id="taskListDisplay" prefHeight="323.0" prefWidth="280.0" style="-fx-background-color: lightgrey;" />
+            <ListView fx:id="listView" prefHeight="323.0" prefWidth="280.0" style="-fx-background-color: lightgrey;" />
             <TextField fx:id="inputBox" onKeyTyped="#handleInput" prefHeight="91.0" prefWidth="259.0" style="-fx-background-color: antiquewhite;" />
         </items>
       </SplitPane>

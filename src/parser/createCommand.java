@@ -3,7 +3,10 @@ package parser;
 import util.Task;
 
 public class createCommand {
-	
+	public Command createBackCommand(){
+		Command backCommand = new Command("");
+		return backCommand;
+	}
 
 	public Command createAddCommand(Task t) {
 		Command addCommand = new Command("add");
