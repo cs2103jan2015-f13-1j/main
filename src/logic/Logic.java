@@ -257,5 +257,4 @@ public class Logic {
 		// update the list from memory
 
 	}
-
 }
