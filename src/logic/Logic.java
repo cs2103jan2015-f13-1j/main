@@ -13,6 +13,7 @@ public class Logic {
 	private Vector<Task> BackUpList = new Vector<Task>();
 	private Vector<Task> OutputList = new Vector<Task>();
 	private int isFirstTime = 0;
+	private boolean isSuccessful = false;
 
 	private static final String MESSAGE_ADD = "task %s added ";
 	private static final String MESSAGE_DELETE = "task %s deleted\n";
@@ -20,22 +21,23 @@ public class Logic {
 	private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
 
 	private void backup() {
-		BackUpList = TaskList;
+		BackUpList = initializeList();
+		operator.showToUser(BackUpList.isEmpty()+" "+BackUpList.size());
 	}
 
 	public void addTask(Task t) {
-		backup();
+		isSuccessful = true;
 		TaskList.add(t);
 		operator.showToUser(String.format(MESSAGE_ADD, t.getTaskDesc()));
 		if (t.getStartTime() != null)
 			operator.showToUser("from " + t.getStartTime().toString());
 		if (t.getEndTime() != null)
 			operator.showToUser("to " + t.getEndTime().toString());
+
 	}
 
 	void editTask(int index, String editType, String modifiedContent) {
 		if (index > 0 && index <= TaskList.size()) {
-			boolean isSuccessful = false;
 			switch (editType.toLowerCase()) {
 			case "task":
 				isSuccessful = editTaskDesc(index, modifiedContent);
@@ -56,7 +58,6 @@ public class Logic {
 			if (isSuccessful) {
 				operator.showToUser("task " + index + editType + " edited: "
 						+ modifiedContent);
-				backup();
 			}
 		} else {
 			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
@@ -159,7 +160,7 @@ public class Logic {
 			if (index > 0 && index <= TaskList.size()) {
 				TaskList.remove(index - 1);
 				operator.showToUser(String.format(MESSAGE_DELETE, index));
-				backup();
+				isSuccessful = true;
 			} else {
 				operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
 			}
@@ -171,10 +172,10 @@ public class Logic {
 
 	void undo() {
 		if (BackUpList != null) {
-			TaskList = BackUpList;
+			TaskList = (Vector<Task>) BackUpList.clone();
 			//BackUpList = null;
-			
-			operator.showToUser("undo completed"+TaskList.isEmpty());
+
+			operator.showToUser("undo completed" + TaskList.isEmpty());
 		} else {
 			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
 		}
@@ -191,6 +192,7 @@ public class Logic {
 			}
 		}
 		operator.showToUser("keyword" + str + "searched");
+		isSuccessful = true;
 		return resultTaskList;
 	}
 
@@ -215,14 +217,17 @@ public class Logic {
 		Command cmd = pr.parseInputString(input);
 		OutputList = executeCommand(cmd);
 
-		FileStream.writeTasksToXML(TaskList);
+		if (isSuccessful) {
+			backup();
+			FileStream.writeTasksToXML(TaskList);
+		}
 		return OutputList;
-
 	}
 
 	private Vector<Task> executeCommand(Command cmd) {
 		String cmdDesc = cmd.getCommandType();
 		COMMAND_TYPE commandType = operator.determineCommandType(cmdDesc);
+		isSuccessful = false;
 
 		switch (commandType) {
 		case ADD_TASK:
@@ -250,7 +255,7 @@ public class Logic {
 
 	public static void main(String[] args) {
 		Logic lgc = new Logic();
-		// initializeList();
+		
 		Scanner sc = new Scanner(System.in);
 		String str;
 		str = sc.nextLine();
