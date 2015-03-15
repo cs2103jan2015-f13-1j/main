@@ -7,5 +7,11 @@ Basically, we have came up with a rough guideline of our ONTASK app. and hope to
 Week 7.
 Things to do: CRUD commands, Parser class, Simple GUI, Persistent Storage.
 
-Currently at Week8.
+Week 8.
 Things to do: Refine CRUD commands, Improve to get a stable display GUI, Submit V0.1 -Prototype -User Guide
+
+Currently at Week 9.
+Add assertions, exceptions, logging. 
+Add showToUser in GUI. 
+Refine CRUD commands. (Mainly sort and undo)
+Bug fixes.
