@@ -46,33 +46,81 @@ public class timeOperator {
 	}
 
 	public static LocalDate extractDate(String str) {
-		int d;
-		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
-		builder.parseCaseInsensitive();
-		builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-		builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
-		builder.optionalStart().parseDefaulting(ChronoField.MONTH_OF_YEAR,
-				LocalDate.now().getMonthValue());
-		builder.optionalStart().parseDefaulting(
-				ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
-		builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("E"));
-		DateTimeFormatter dtf = builder.toFormatter()
-				.withLocale(Locale.ENGLISH);
-		LocalDate date = LocalDate.parse(str, dtf);
-		d = date.getDayOfYear() - LocalDate.now().getDayOfYear();
-		if (d < 0) {
-			date = date.withDayOfYear(((-d) / 7 + 1) * 7 + date.getDayOfYear());
-		} else if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
-			date = date.withYear(2016);
-		}// if(){}
+		LocalDate date = null;
+			date = DateFormatter1(str);
+			if (date == null) {
+				date = DateFormatter2(str);
+			}
+			if (date == null) {
+				date = DateFormatter3(str);
+			}
 		return date;
+	}
+
+	private static LocalDate DateFormatter1(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalDate date = LocalDate.parse(str, dtf);
+			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
+				date = date.withYear(2016);
+			}
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter2(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalDate date = LocalDate.parse(str, dtf);
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter3(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+			builder.optionalStart().parseDefaulting(ChronoField.MONTH_OF_YEAR,
+					LocalDate.now().getMonthValue());
+			builder.optionalStart().parseDefaulting(
+					ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
+			builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("E"));
+
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalDate date = LocalDate.parse(str, dtf);
+			int d = date.getDayOfYear() - LocalDate.now().getDayOfYear();
+			if (d < 0) {
+				date = date.withDayOfYear(((-d) / 7 + 1) * 7
+						+ date.getDayOfYear());
+			}
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static void main(String[] args) {
 		String str = "monday";
 		operator.showToUser(extractDate(str).toString());
+
 	}
 }
