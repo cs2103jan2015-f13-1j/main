@@ -49,19 +49,18 @@ public class FileStream {
 	 */
 	public static Vector<Task> loadTasksFromXML() {
 		Vector<Task> tasks = new Vector<Task>();
-		
+				
 		try {
 			File file = new File("Ontask.xml");
 			JAXBContext context = JAXBContext.newInstance(TaskListWrapper.class);
 			Unmarshaller um = context.createUnmarshaller();
 			
 			//Read XML from file and unmarshal.
-			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);
-			
-			tasks.addAll(wrapper.getTasks());
-			
+			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);		
+			if(!wrapper.isEmpty()) {
+				tasks.addAll(wrapper.getTasks());
+			}
 		} catch (JAXBException e) {
-			//System.out.println("Unable to load, file does not exist");
 			e.printStackTrace();
 		}
 		
