@@ -22,6 +22,8 @@ public class TaskDisplayController {
 	private ListView<Task> listView = new ListView<Task>();
 	
 	private ObservableList<Task> list;
+	
+	private ListViewGUI gui;
 
 	// private Vector<Task> VectorTaskList;
 
@@ -43,9 +45,22 @@ public class TaskDisplayController {
 					protected void updateItem(Task t, boolean b) {
 						super.updateItem(t, b);
 						if (t != null) {
-							setText(t.getTaskDesc() + "\nFrom: "
-									+ t.getStartTime() + " To: "
-									+ t.getEndTime());
+							if (t.getStartTime() != null) {
+								setText(super.getIndex() + 1 + "."
+										+ t.getTaskDesc() + "\nFrom: "
+										+ t.getStartTime() + " To: "
+										+ t.getEndTime());
+							} else if (t.getEndTime() != null) {
+								setText(super.getIndex() + 1 + "."
+										+ t.getTaskDesc() + "\nBy: "
+										+ t.getEndTime());
+							} else {
+								setText(super.getIndex() + 1 + "."
+										+ t.getTaskDesc() + "\n");
+							}
+
+						} else {
+							setText("");
 						}
 					}
 				};
@@ -56,20 +71,49 @@ public class TaskDisplayController {
 
 	@FXML
 	private void initialize() {
-		
+		inputBox.setPromptText("Enter Command:");
 		
 	}
 
 	@FXML
 	private void handleInput() {
+		
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
-					operator.showToUser("haha" + inputBox.getText());
+					// Prevents the enter key from doing a newline
+					ke.consume();
+
+					String text = inputBox.getText();
+
+					// execute command
+					// refresh list
+					if (!text.toLowerCase().equals("exit")) {
+						gui.processUserInput(text);
+
+						// clear text
+						inputBox.setText("");
+					}
+					else{
+						System.exit(0);
+					}
 				}
 			}
 		});
+	}
+
+	public void setGUI(ListViewGUI listViewGUI) {
+		this.gui = listViewGUI;
+		
+	}
+
+	public void updateTaskList(Vector<Task> vectorTasks) {
+		list = FXCollections
+				.observableArrayList(vectorTasks);
+		listView.setItems(list);
+		inputBox.setPromptText("Enter Command:");
+		
 	}
 
 }

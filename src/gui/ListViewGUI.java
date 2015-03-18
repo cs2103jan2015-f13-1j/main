@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import logic.Logic;
 import fileIO.FileStream;
 import util.Task;
 
@@ -16,6 +18,8 @@ public class ListViewGUI extends Application {
 	private BorderPane root;
 	// private ObservableList<Task> list;
 	private Vector<Task> vectorTasks;
+	private TaskDisplayController controller;
+	private Logic l = new Logic();
 
 	public static void main(String[] args) {
 		launch(args);
@@ -56,9 +60,17 @@ public class ListViewGUI extends Application {
 		AnchorPane TaskDisplayPage = (AnchorPane) loader.load();
 		root.setCenter(TaskDisplayPage);
 
-		TaskDisplayController controller = loader.getController();
+		controller = loader.getController();
+		
+		controller.setGUI(this);
 
 		controller.setTaskList(vectorTasks);
+	}
+	
+	public void processUserInput(String str){
+		vectorTasks = l.run(str);
+		
+		controller.updateTaskList(vectorTasks);
 	}
 
 }

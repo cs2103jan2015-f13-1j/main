@@ -1,0 +1,42 @@
+@CHARSET "UTF-8";
+
+.list-view .virtual-flow .clipped-container .list-cell:filled {
+	-fx-border-color: lightgrey;
+	-fx-border-width: 5;
+	-fx-background-radius: 0;
+	-fx-background-color: white;
+	-fx-font: 12pt "Cambria";
+	-fx-effect: dropshadow(one-pass-box, black, 8, 0.0, 2, 0);
+}
+
+.list-view .virtual-flow .clipped-container .list-cell:empty {
+	-fx-background-color: transparent;
+}
+
+.list-view .virtual-flow {
+	-fx-background-color: transparent;
+	-fx-border-insets: 30;
+}
+
+.list-view {
+	-fx-background-color: transparent;
+}
+
+.root {
+	-fx-background-color: lightgrey
+}
+
+.text-field {
+	-fx-alignment: TOP-LEFT;
+	-fx-padding: 20 20 20 20;
+	-fx-display-caret: true;
+	-fx-font: 12pt "Cambria";
+}
+
+.split-pane .split-pane-divider {
+	-fx-pref-height: 20
+}
+
+.TextInputControl {
+	
+}
