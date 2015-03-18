@@ -49,8 +49,7 @@ public class addCommandExtractor {
 		String[] info = _input.split("by");
 		t = new Task();
 		t.setTaskDesc(info[0].trim());
-		LocalDateTime endTime = timeOperator.getTime(info[1].trim());
-		t.setEndTime(endTime);
+		t.setEndTime(extractTime(info[1].trim()));
 	}
 
 	private void buildTimedTask() {
@@ -58,11 +57,18 @@ public class addCommandExtractor {
 		String[] info = _input.split("from |to ");
 		t = new Task();
 		t.setTaskDesc(info[0].trim());
-		LocalDateTime startTime = timeOperator.getTime(info[1].trim());
-		t.setStartTime(startTime);
-		LocalDateTime endTime = timeOperator.getTime(info[2].trim());
-		t.setEndTime(endTime);
+		t.setStartTime(extractTime(info[1].trim()));
+		t.setEndTime(extractTime(info[2].trim()));
 	}catch(Exception e){
+		}
+	}
+
+	private LocalDateTime extractTime(String str) {
+		try{
+			return timeOperator.getTime(str);
+		}catch(Exception e){
+			//return timeOperator.extractDate(str);
+			return null;
 		}
 	}
 
