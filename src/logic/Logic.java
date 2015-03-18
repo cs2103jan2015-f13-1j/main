@@ -252,7 +252,7 @@ public class Logic {
 				TaskList.add((u.getIndex() - 1), add);
 				break;
 			case "delete":
-				deleteTask(u.getIndex()+1);
+				TaskList.remove(u.getIndex());
 				break;
 			case "editTaskDesc":
 				Task editTaskDesc = TaskList.get(u.getIndex() - 1);
