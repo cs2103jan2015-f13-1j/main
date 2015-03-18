@@ -47,7 +47,7 @@ public class ListViewGUI extends Application {
 
 	private void initRootLayout() {
 		root = new BorderPane();
-		Scene scene = new Scene(root, 300, 450);
+		Scene scene = new Scene(root, 400, 600);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
