@@ -14,17 +14,29 @@ public class Logic {
 	private Vector<Task> OutputList = new Vector<Task>();
 	private int isFirstTime = 0;
 	private boolean isSuccessful = false;
+	private String resultToUser = "";
+	
+	//private static final String MESSAGE_ADD = "task %s added ";
+	//private static final String MESSAGE_DELETE = "task %s deleted\n";
+	//private static final String MESSAGE_TASK_FAILURE = "%s does not exist\n";
+	//private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
 
-	private static final String MESSAGE_ADD = "task %s added ";
-	private static final String MESSAGE_DELETE = "task %s deleted\n";
-	private static final String MESSAGE_TASK_FAILURE = "%s does not exist\n";
-	private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
-
+	private static final String MSG_ADD = "Task added successfully!";
+	private static final String MSG_DELETE = "Task deleted successfully!";
+	private static final String MSG_EDIT = "Task edited successfully";
+	private static final String MSG_TASK_FAILURE = "Edit %s does not exist!\n";
+	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
+	private static final String MSG_UNDO = "Undo successful!";
+	
+	public String getText() {
+		return resultToUser;
+	}
+	
 	public void addTask(Task t) {
 		isSuccessful = true;
 		undoAdd();
 		TaskList.add(t);
-		operator.showToUser(String.format(MESSAGE_ADD, t.getTaskDesc()));
+		resultToUser = MSG_ADD;
 		if (t.getStartTime() != null)
 			operator.showToUser("from " + t.getStartTime().toString());
 		if (t.getEndTime() != null)
@@ -59,11 +71,10 @@ public class Logic {
 				break;
 			}
 			if (isSuccessful) {
-				operator.showToUser("task " + index + editType + " edited: "
-						+ modifiedContent);
+				resultToUser = MSG_EDIT;
 			}
 		} else {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+			resultToUser = String.format(MSG_TASK_FAILURE, index);
 		}
 	}
 
@@ -84,8 +95,7 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"enddate for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "enddate for " + index);
 			return false;
 		}
 	}
@@ -115,8 +125,7 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"starttime for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "startdate for " + index);
 			return false;
 		}
 	}
@@ -146,8 +155,7 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"endtime for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "endtime for " + index);
 			return false;
 		}
 	}
@@ -177,8 +185,7 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"startdate for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "startdate for " + index);
 			return false;
 		}
 	}
@@ -200,7 +207,7 @@ public class Logic {
 			editTask.setTaskDesc(modifiedContent);
 			return true;
 		} catch (IndexOutOfBoundsException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+			resultToUser = String.format(MSG_TASK_FAILURE, index);
 			return false;
 		}
 	}
@@ -218,14 +225,13 @@ public class Logic {
 			if (index > 0 && index <= TaskList.size()) {
 				undoDelete(index);
 				TaskList.remove(index - 1);
-				operator.showToUser(String.format(MESSAGE_DELETE, index));
+				resultToUser = MSG_DELETE;
 				isSuccessful = true;
 			} else {
-				operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+				resultToUser = String.format(MSG_TASK_FAILURE, index);
 			}
 		} catch (IndexOutOfBoundsException e) {
-			operator.showToUser(String
-					.format(MESSAGE_COMMAND_FAILURE, "delete"));
+			resultToUser = String.format(MSG_COMMAND_FAILURE, "delete");
 		}
 	}
 
@@ -275,10 +281,10 @@ public class Logic {
 				editTaskEndDate.setEndTime(u.getEndTime());
 				break;
 			}
-			operator.showToUser("undo completed");
+			resultToUser = MSG_UNDO;
 			} 
 		else {
-			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
+			resultToUser = String.format(MSG_COMMAND_FAILURE, "undo");
 		}
 	}
 
@@ -348,6 +354,7 @@ public class Logic {
 			break;
 		default:
 			// throw an error if the command is not recognized
+			resultToUser = "Unrecognized command type";
 			throw new Error("Unrecognized command type");
 		}
 		return TaskList;

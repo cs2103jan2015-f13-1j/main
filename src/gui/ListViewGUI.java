@@ -71,6 +71,9 @@ public class ListViewGUI extends Application {
 		vectorTasks = l.run(str);
 		
 		controller.updateTaskList(vectorTasks);
+		
+		String resultToUser = l.getText();
+		controller.updateLabel(resultToUser);
 	}
 
 }
