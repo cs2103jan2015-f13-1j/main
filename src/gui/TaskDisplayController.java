@@ -1,5 +1,8 @@
 package gui;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
@@ -14,15 +17,16 @@ import javafx.scene.input.*;
 import javafx.util.Callback;
 
 public class TaskDisplayController {
-	
-	
+
 	@FXML
 	private TextField inputBox;
 	@FXML
 	private ListView<Task> listView = new ListView<Task>();
-	
+	@FXML
+	private Label message = new Label();
+
 	private ObservableList<Task> list;
-	
+
 	private ListViewGUI gui;
 
 	// private Vector<Task> VectorTaskList;
@@ -72,12 +76,13 @@ public class TaskDisplayController {
 	@FXML
 	private void initialize() {
 		inputBox.setPromptText("Enter Command:");
-		
+		message.setText("");
+		updateTextArea();
 	}
 
 	@FXML
 	private void handleInput() {
-		
+
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
@@ -94,8 +99,7 @@ public class TaskDisplayController {
 
 						// clear text
 						inputBox.setText("");
-					}
-					else{
+					} else {
 						System.exit(0);
 					}
 				}
@@ -105,15 +109,35 @@ public class TaskDisplayController {
 
 	public void setGUI(ListViewGUI listViewGUI) {
 		this.gui = listViewGUI;
-		
+
 	}
 
 	public void updateTaskList(Vector<Task> vectorTasks) {
-		list = FXCollections
-				.observableArrayList(vectorTasks);
+		list = FXCollections.observableArrayList(vectorTasks);
 		listView.setItems(list);
 		inputBox.setPromptText("Enter Command:");
-		
+
+	}
+
+	private void updateTextArea() {
+		OutputStream out = new OutputStream() {
+
+			@Override
+			public void write(byte[] b) throws IOException {
+				write(b, 0, b.length);
+			}
+
+			@Override
+			public void write(int b) throws IOException {
+				message.setText((String.valueOf(b)));
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException {
+				message.setText(new String(b, off, len));
+			}
+		};
+		System.setOut(new PrintStream(out, true));
 	}
 
 }

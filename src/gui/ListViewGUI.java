@@ -72,5 +72,6 @@ public class ListViewGUI extends Application {
 		
 		controller.updateTaskList(vectorTasks);
 	}
+	
 
 }

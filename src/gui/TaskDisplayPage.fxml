@@ -9,10 +9,11 @@
 
 <AnchorPane prefHeight="450.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
-      <SplitPane dividerPositions="0.20982142857142858" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.20982142857142858, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-            <ListView fx:id="listView" prefHeight="323.0" prefWidth="280.0" stylesheets="@style.css" />
-            <TextField fx:id="inputBox" alignment="TOP_RIGHT" onKeyTyped="#handleInput" prefHeight="91.0" prefWidth="259.0" stylesheets="@style.css" />
+            <ListView fx:id="listView" prefHeight="330.0" prefWidth="290.0" stylesheets="@style.css" />
+            <TextField fx:id="inputBox" alignment="TOP_RIGHT" onKeyTyped="#handleInput" prefHeight="91.0" prefWidth="298.0" stylesheets="@style.css" />
+            <Label fx:id="message" text="Label" />
         </items>
       </SplitPane>
    </children>
