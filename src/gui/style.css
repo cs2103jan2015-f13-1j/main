@@ -6,10 +6,13 @@
     -fx-border-width: 7.5;
     -fx-background-radius: 0;
     -fx-background-color: white;
-    -fx-font: 12pt "Cambria";
+    -fx-font: 12pt "Consolas";
 /*    -fx-effect: dropshadow(one-pass-box, black, 8, 0.0, 2, 0); */
 }
 
+.list-view .virtual-flow .clipped-container .list-cell:selected {
+	-fx-text-fill: teal;
+}
 .list-view .virtual-flow .clipped-container .list-cell:empty {
     -fx-background-color: transparent;
 }
@@ -34,11 +37,11 @@
     -fx-background-color: lightgrey;
 }
 
-.text-field {
+.text-area {
     -fx-alignment: TOP-LEFT;
-    -fx-padding: 20 20 20 20;
+    -fx-padding: 10 10 10 10;
     -fx-display-caret: true;
-    -fx-font: 12pt "Cambria";
+    -fx-font: 12pt "Consolas";
 }
 
 .split-pane .split-pane-divider {
