@@ -90,11 +90,11 @@ public class Logic {
 		}
 	}
 
-	private void undoEditEndDate(int index, LocalDateTime endtTime) {
+	private void undoEditEndDate(int index, LocalDateTime endTime) {
 		Undo u = new Undo();
 		u.setCommand("editEndDate");
 		u.setIndex(index);
-		u.setEndTime(endtTime);
+		u.setEndTime(endTime);
 		UndoList.push(u);
 	}
 	
@@ -152,11 +152,11 @@ public class Logic {
 		}
 	}
 	
-	private void undoEditEndTime(int index, LocalDateTime endtTime) {
+	private void undoEditEndTime(int index, LocalDateTime endTime) {
 		Undo u = new Undo();
 		u.setCommand("editEndTime");
 		u.setIndex(index);
-		u.setEndTime(endtTime);
+		u.setEndTime(endTime);
 		UndoList.push(u);
 	}
 
@@ -233,6 +233,7 @@ public class Logic {
 		Undo u = new Undo();
 		Task t = TaskList.get(index - 1);
 		u.setCommand("add");
+		u.setIndex(index);
 		u.setTaskDesc(t.getTaskDesc());
 		u.setStartTime(t.getStartTime());
 		u.setEndTime(t.getEndTime());
@@ -248,11 +249,10 @@ public class Logic {
 				add.setTaskDesc(u.getTaskDesc());
 				add.setStartTime(u.getStartTime());
 				add.setEndTime(u.getEndTime());
-				addTask(add);
 				TaskList.add((u.getIndex() - 1), add);
 				break;
 			case "delete":
-				deleteTask(u.getIndex());
+				deleteTask(u.getIndex()+1);
 				break;
 			case "editTaskDesc":
 				Task editTaskDesc = TaskList.get(u.getIndex() - 1);
@@ -276,7 +276,8 @@ public class Logic {
 				break;
 			}
 			operator.showToUser("undo completed");
-			} else {
+			} 
+		else {
 			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
 		}
 	}
