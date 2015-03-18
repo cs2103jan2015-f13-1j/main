@@ -249,6 +249,7 @@ public class Logic {
 				add.setStartTime(u.getStartTime());
 				add.setEndTime(u.getEndTime());
 				addTask(add);
+				TaskList.add((u.getIndex() - 1), add);
 				break;
 			case "delete":
 				deleteTask(u.getIndex());
