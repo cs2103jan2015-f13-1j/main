@@ -22,5 +22,15 @@ public class TaskListWrapper {
 	public void setTasks(Vector<Task> tasks) {
 		this.tasks = tasks;
 	}
+	
+	public boolean isEmpty() {
+		boolean b = false;
+		if(tasks.isEmpty()) {
+			b = true;
+		}
+		
+		return b;
+	}
+	
 
 }
