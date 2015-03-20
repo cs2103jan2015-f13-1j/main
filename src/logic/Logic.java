@@ -256,6 +256,7 @@ public class Logic {
 	
 	void undo() {
 		if (UndoList != null) {
+			assert(UndoList.size()!=0);
 			Undo u = UndoList.pop();
 			switch (u.getCommand()) {
 			case "add":
@@ -266,26 +267,39 @@ public class Logic {
 				TaskList.add((u.getIndex() - 1), add);
 				break;
 			case "delete":
+				assert(u.getTaskDesc()== null);
+				assert(u.getStartTime()== null);
+				assert(u.getEndTime()== null);
 				TaskList.remove(u.getIndex());
 				break;
 			case "editTaskDesc":
 				Task editTaskDesc = TaskList.get(u.getIndex() - 1);
+				assert(u.getStartTime()== null);
+				assert(u.getEndTime()== null);
 				editTaskDesc.setTaskDesc(u.getTaskDesc());
 				break;
 			case "editStartTime":
 				Task editTaskStartTime = TaskList.get(u.getIndex() - 1);
+				assert(u.getTaskDesc()== null);
+				assert(u.getEndTime()== null);
 				editTaskStartTime.setStartTime(u.getStartTime());
 				break;
 			case "editEndTime":
 				Task editTaskEndTime = TaskList.get(u.getIndex() - 1);
+				assert(u.getTaskDesc()== null);
+				assert(u.getStartTime()== null);
 				editTaskEndTime.setEndTime(u.getEndTime());
 				break;
 			case "editStartDate":
 				Task editTaskStartDate = TaskList.get(u.getIndex() - 1);
+				assert(u.getTaskDesc()== null);
+				assert(u.getEndTime()== null);
 				editTaskStartDate.setStartTime(u.getStartTime());
 				break;
 			case "editEndDate":
 				Task editTaskEndDate = TaskList.get(u.getIndex() - 1);
+				assert(u.getTaskDesc()== null);
+				assert(u.getStartTime()== null);
 				editTaskEndDate.setEndTime(u.getEndTime());
 				break;
 			}
