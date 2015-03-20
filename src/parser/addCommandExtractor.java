@@ -10,21 +10,19 @@ public class addCommandExtractor {
 	private String _input;
 	private Task t;
 
-	public static enum TASK_TYPE {
-		TIMED_TASK, FLOATING_TASK, DEADLINE;
-	}
+	
 
 	public addCommandExtractor(String s) {
 		_input = s;
 	}
 
 	public Task extractAddCommand() {
-		TASK_TYPE type = checkTaskType();
+		Task.TASK_TYPE type = checkTaskType();
 		extractTaskInfo(type);
 		return t;
 	}
 
-	private void extractTaskInfo(TASK_TYPE type) {
+	private void extractTaskInfo(Task.TASK_TYPE type) {
 		switch (type) {
 		case TIMED_TASK:
 			buildTimedTask();
@@ -41,24 +39,24 @@ public class addCommandExtractor {
 	}
 
 	private void buildFloatingTask() {
-		t = new Task();
-		t.setTaskDesc(_input.trim());
+		t = new Task(_input.trim());
 	}
 
 	private void buildDeadline() {
 		String[] info = _input.split("by");
-		t = new Task();
-		t.setTaskDesc(info[0].trim());
-		t.setEndTime(extractTime(info[1].trim()));
+		String desc = info[0].trim();
+		LocalDateTime EndTime = extractTime(info[1].trim());
+		t = new Task(desc, EndTime);
+		
 	}
 
 	private void buildTimedTask() {
 		try{
-		String[] info = _input.split("from |to ");
-		t = new Task();
-		t.setTaskDesc(info[0].trim());
-		t.setStartTime(extractTime(info[1].trim()));
-		t.setEndTime(extractTime(info[2].trim()));
+		String[] info = _input.split("from |to ");	
+		String desc = info[0].trim();
+		LocalDateTime StartTime = extractTime(info[1].trim());
+		LocalDateTime EndTime =extractTime(info[2].trim());
+		t = new Task(desc, StartTime, EndTime);
 	}catch(Exception e){
 		}
 	}
@@ -72,13 +70,13 @@ public class addCommandExtractor {
 		}
 	}
 
-	private TASK_TYPE checkTaskType() {
+	private Task.TASK_TYPE checkTaskType() {
 		if (_input.toLowerCase().contains(new String("by"))) {
-			return TASK_TYPE.DEADLINE;
+			return Task.TASK_TYPE.DEADLINE;
 		} else if (_input.toLowerCase().contains(new String("from"))) {
-			return TASK_TYPE.TIMED_TASK;
+			return Task.TASK_TYPE.TIMED_TASK;
 		} else {
-			return TASK_TYPE.FLOATING_TASK;
+			return Task.TASK_TYPE.FLOATING_TASK;
 		}
 
 	}

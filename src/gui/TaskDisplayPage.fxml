@@ -7,13 +7,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="450.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
+<AnchorPane prefHeight="450.0" prefWidth="300.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
-      <SplitPane dividerPositions="0.20982142857142858, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+      <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-            <ListView fx:id="listView" prefHeight="330.0" prefWidth="290.0" stylesheets="@style.css" />
-            <TextField fx:id="inputBox" alignment="TOP_RIGHT" onKeyTyped="#handleInput" prefHeight="91.0" prefWidth="298.0" stylesheets="@style.css" />
-            <Label fx:id="message" text="Label" />
+            <ListView fx:id="listView" prefHeight="350.0" prefWidth="290.0" stylesheets="@style.css" SplitPane.resizableWithParent="false" />
+            <TextArea fx:id="inputBox" maxHeight="200.0" minHeight="20.0" onKeyPressed="#handleInput" prefHeight="50.0" prefWidth="400.0" SplitPane.resizableWithParent="false" />
+            <Label fx:id="label" alignment="CENTER" prefHeight="10.0" prefWidth="300.0" text="Label" SplitPane.resizableWithParent="false" />
+
         </items>
       </SplitPane>
    </children>

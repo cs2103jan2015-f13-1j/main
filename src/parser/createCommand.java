@@ -3,9 +3,21 @@ package parser;
 import util.Task;
 
 public class createCommand {
+	public Command createNewCommand(String str){
+		assert str.equals(new String("clear")) || str.equals(new String(""));
+		Command backCommand = new Command(str);
+		return backCommand;
+	}
+	
 	public Command createBackCommand(){
 		Command backCommand = new Command("");
 		return backCommand;
+	}
+	
+	public Command createDirCommand(String str){
+		Command dirCommand = new Command("changedir");
+		dirCommand.setContent(str);
+		return dirCommand;
 	}
 
 	public Command createAddCommand(Task t) {

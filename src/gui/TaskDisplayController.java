@@ -8,22 +8,27 @@ import java.util.Vector;
 
 import util.Task;
 import util.operator;
+import util.timeOperator;
+import util.Task.TASK_TYPE;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 public class TaskDisplayController {
 
 	@FXML
-	private TextField inputBox;
+	private TextArea inputBox;
+
 	@FXML
 	private ListView<Task> listView = new ListView<Task>();
+
 	@FXML
-	private Label message = new Label();
+	private Label label = new Label();
 
 	private ObservableList<Task> list;
 
@@ -38,33 +43,52 @@ public class TaskDisplayController {
 	public void setTaskList(Vector<Task> TaskList) {
 
 		list = FXCollections.observableArrayList(TaskList);
+
 		listView.setItems(list);
 		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
 
 			@Override
 			public ListCell<Task> call(ListView<Task> ListViewTask) {
 				ListCell<Task> cell = new ListCell<Task>() {
+					private Text text;
 
 					@Override
 					protected void updateItem(Task t, boolean b) {
 						super.updateItem(t, b);
 						if (t != null) {
-							if (t.getStartTime() != null) {
-								setText(super.getIndex() + 1 + "."
-										+ t.getTaskDesc() + "\nFrom: "
-										+ t.getStartTime() + " To: "
-										+ t.getEndTime());
-							} else if (t.getEndTime() != null) {
-								setText(super.getIndex() + 1 + "."
-										+ t.getTaskDesc() + "\nBy: "
-										+ t.getEndTime());
+
+							if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+								text = new Text(super.getIndex()
+										+ 1
+										+ "."
+										+ t.getTaskDesc()
+										+ "\nFrom: "
+										+ timeOperator.formatDateTime(t
+												.getStartTime())
+										+ " To: "
+										+ timeOperator.formatDateTime(t
+												.getEndTime()));
+								text.setWrappingWidth(listView.getPrefWidth());
+								setGraphic(text);
+							} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+								text = new Text(super.getIndex()
+										+ 1
+										+ "."
+										+ t.getTaskDesc()
+										+ "\nBy: "
+										+ timeOperator.formatDateTime(t
+												.getEndTime()));
+								text.setWrappingWidth(listView.getPrefWidth());
+								setGraphic(text);
 							} else {
-								setText(super.getIndex() + 1 + "."
+								text = new Text(super.getIndex() + 1 + "."
 										+ t.getTaskDesc() + "\n");
+								text.setWrappingWidth(listView.getPrefWidth());
+								setGraphic(text);
 							}
 
 						} else {
-							setText("");
+							setGraphic(new Text(""));
 						}
 					}
 				};
@@ -76,8 +100,9 @@ public class TaskDisplayController {
 	@FXML
 	private void initialize() {
 		inputBox.setPromptText("Enter Command:");
-		message.setText("");
-		updateTextArea();
+
+		inputBox.setWrapText(true);
+		label.setText("");
 	}
 
 	@FXML
@@ -85,15 +110,14 @@ public class TaskDisplayController {
 
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) {
+			public void handle(KeyEvent key) {
+				if (key.getCode().equals(KeyCode.ENTER)) {
 					// Prevents the enter key from doing a newline
-					ke.consume();
+					key.consume();
 
 					String text = inputBox.getText();
 
-					// execute command
-					// refresh list
+					// Terminates program if exit, else refresh list
 					if (!text.toLowerCase().equals("exit")) {
 						gui.processUserInput(text);
 
@@ -102,6 +126,7 @@ public class TaskDisplayController {
 					} else {
 						System.exit(0);
 					}
+
 				}
 			}
 		});
@@ -119,25 +144,8 @@ public class TaskDisplayController {
 
 	}
 
-	private void updateTextArea() {
-		OutputStream out = new OutputStream() {
-
-			@Override
-			public void write(byte[] b) throws IOException {
-				write(b, 0, b.length);
-			}
-
-			@Override
-			public void write(int b) throws IOException {
-				message.setText((String.valueOf(b)));
-			}
-
-			@Override
-			public void write(byte[] b, int off, int len) throws IOException {
-				message.setText(new String(b, off, len));
-			}
-		};
-		System.setOut(new PrintStream(out, true));
+	public void updateLabel(String s) {
+		label.setText(s);
 	}
 
 }

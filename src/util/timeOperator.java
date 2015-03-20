@@ -6,8 +6,20 @@ import java.time.temporal.*;
 import java.util.Locale;
 
 public class timeOperator {
-	static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d")
-			.withLocale(Locale.ENGLISH);
+
+	public static String formatDateTime(LocalDateTime t) {
+		DateTimeFormatter formatter;
+		
+		if (t.getMinute() == 0) {
+			formatter = DateTimeFormatter.ofPattern("MMM d ha").withLocale(
+					Locale.ENGLISH);
+		}
+		else{
+			formatter = DateTimeFormatter.ofPattern("MMM d h.ma").withLocale(
+					Locale.ENGLISH);
+		}
+		return t.format(formatter);
+	}
 
 	public static LocalDateTime getTime(String str) {
 		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
@@ -47,13 +59,13 @@ public class timeOperator {
 
 	public static LocalDate extractDate(String str) {
 		LocalDate date = null;
-			date = DateFormatter1(str);
-			if (date == null) {
-				date = DateFormatter2(str);
-			}
-			if (date == null) {
-				date = DateFormatter3(str);
-			}
+		date = DateFormatter1(str);
+		if (date == null) {
+			date = DateFormatter2(str);
+		}
+		if (date == null) {
+			date = DateFormatter3(str);
+		}
 		return date;
 	}
 

@@ -3,7 +3,7 @@ package util;
 public class operator {
 
 	public static enum COMMAND_TYPE {
-		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK
+		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR
 	};
 
 	public static COMMAND_TYPE determineCommandType(String commandTypeString) {
@@ -20,6 +20,10 @@ public class operator {
 			return COMMAND_TYPE.SEARCH_TASK;
 		} else if (commandTypeString.equalsIgnoreCase("undo")) {
 			return COMMAND_TYPE.UNDO;
+		} else if (commandTypeString.equalsIgnoreCase("clear")) {
+			return COMMAND_TYPE.CLEAR;
+		} else if (commandTypeString.equalsIgnoreCase("changedir")) {
+			return COMMAND_TYPE.CHANGEDIR;
 		} else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {

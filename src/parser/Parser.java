@@ -12,6 +12,7 @@ public class Parser {
 		String commandTypeString = input.trim().split("\\s+")[0];
 		COMMAND_TYPE commandType = operator
 				.determineCommandType(commandTypeString);
+		input = input.toLowerCase();
 
 		switch (commandType) {
 		case ADD_TASK:
@@ -24,12 +25,27 @@ public class Parser {
 			return undo();
 		case SEARCH_TASK:
 			return searchTask(input);
+		case CHANGEDIR:
+			return changeDir(input);
+		case CLEAR:
+			return clearTask();
 		case BACK:
 			return createBackCommand();
 		default:
 			// throw an error if the command is not recognized
 			throw new Error("Unrecognized command type");
 		}
+	}
+
+	private Command changeDir(String input) {
+		createCommand clearcmd = new createCommand();
+		input = input.replaceFirst("changedir", "").trim();
+		return clearcmd.createDirCommand(input);
+	}
+
+	private Command clearTask() {
+		createCommand clearcmd = new createCommand();
+		return clearcmd.createNewCommand("clear");
 	}
 
 	private Command createBackCommand() {

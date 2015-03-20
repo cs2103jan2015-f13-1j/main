@@ -14,17 +14,30 @@ public class Logic {
 	private Vector<Task> OutputList = new Vector<Task>();
 	private int isFirstTime = 0;
 	private boolean isSuccessful = false;
+	private String resultToUser = "";
+	private taskIndexPair pair = new taskIndexPair();
+	
+	//private static final String MESSAGE_ADD = "task %s added ";
+	//private static final String MESSAGE_DELETE = "task %s deleted\n";
+	//private static final String MESSAGE_TASK_FAILURE = "%s does not exist\n";
+	//private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
 
-	private static final String MESSAGE_ADD = "task %s added ";
-	private static final String MESSAGE_DELETE = "task %s deleted\n";
-	private static final String MESSAGE_TASK_FAILURE = "%s does not exist\n";
-	private static final String MESSAGE_COMMAND_FAILURE = "Operation %s failed\n";
-
+	private static final String MSG_ADD = "Task added successfully!";
+	private static final String MSG_DELETE = "Task deleted successfully!";
+	private static final String MSG_EDIT = "Task edited successfully";
+	private static final String MSG_TASK_FAILURE = "Edit %s does not exist!\n";
+	static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
+	static final String MSG_UNDO = "Undo successful!";
+	
+	public String getText() {
+		return resultToUser;
+	}
+	
 	public void addTask(Task t) {
 		isSuccessful = true;
-		undoAdd();
+		//undoAdd();
 		TaskList.add(t);
-		operator.showToUser(String.format(MESSAGE_ADD, t.getTaskDesc()));
+		resultToUser = MSG_ADD;
 		if (t.getStartTime() != null)
 			operator.showToUser("from " + t.getStartTime().toString());
 		if (t.getEndTime() != null)
@@ -32,12 +45,6 @@ public class Logic {
 
 	}
 	
-	private void undoAdd() {
-		Undo u = new Undo();
-		u.setCommand("delete");
-		u.setIndex(TaskList.size());
-		UndoList.push(u);
-	}
 
 	void editTask(int index, String editType, String modifiedContent) {
 		if (index > 0 && index <= TaskList.size()) {
@@ -59,11 +66,10 @@ public class Logic {
 				break;
 			}
 			if (isSuccessful) {
-				operator.showToUser("task " + index + editType + " edited: "
-						+ modifiedContent);
+				resultToUser = MSG_EDIT;
 			}
 		} else {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+			resultToUser = String.format(MSG_TASK_FAILURE, index);
 		}
 	}
 
@@ -74,7 +80,7 @@ public class Logic {
 
 			if (endTime != null) {
 				
-				undoEditEndDate(index, endTime);
+				//undoEditEndDate(index, endTime);
 				
 				LocalDate t = timeOperator.extractDate(modifiedContent);
 				editTask.setEndTime(endTime.withYear(t.getYear())
@@ -84,19 +90,12 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"enddate for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "enddate for " + index);
 			return false;
 		}
 	}
 
-	private void undoEditEndDate(int index, LocalDateTime endtTime) {
-		Undo u = new Undo();
-		u.setCommand("editEndDate");
-		u.setIndex(index);
-		u.setEndTime(endtTime);
-		UndoList.push(u);
-	}
+	
 	
 	private boolean editTaskStartDate(int index, String modifiedContent) {
 		try {
@@ -106,7 +105,7 @@ public class Logic {
 			if (startTime != null) {
 				LocalDate t = timeOperator.extractDate(modifiedContent);
 				
-				undoEditStartDate(index, startTime);
+				//undoEditStartDate(index, startTime);
 				
 				editTask.setStartTime(startTime.withYear(t.getYear())
 						.withDayOfYear(t.getDayOfYear()));
@@ -115,19 +114,11 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"starttime for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "startdate for " + index);
 			return false;
 		}
 	}
 	
-	private void undoEditStartDate(int index, LocalDateTime startTime) {
-		Undo u = new Undo();
-		u.setCommand("editStartDate");
-		u.setIndex(index);
-		u.setStartTime(startTime);
-		UndoList.push(u);
-	}
 
 	private boolean editTaskEndTime(int index, String modifiedContent) {
 		try {
@@ -137,7 +128,7 @@ public class Logic {
 			if (endTime != null) {
 				LocalTime t = timeOperator.extractTime(modifiedContent);
 				
-				undoEditEndTime(index, endTime);
+				//undoEditEndTime(index, endTime);
 				
 				editTask.setEndTime(endTime.withHour(t.getHour()).withMinute(
 						t.getMinute()));
@@ -146,19 +137,11 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"endtime for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "endtime for " + index);
 			return false;
 		}
 	}
 	
-	private void undoEditEndTime(int index, LocalDateTime endtTime) {
-		Undo u = new Undo();
-		u.setCommand("editEndTime");
-		u.setIndex(index);
-		u.setEndTime(endtTime);
-		UndoList.push(u);
-	}
 
 	private boolean editTaskStartTime(int index, String modifiedContent) {
 		try {
@@ -168,7 +151,7 @@ public class Logic {
 			if (startTime != null) {
 				LocalTime t = timeOperator.extractTime(modifiedContent);
 				
-				undoEditStartTime(index, startTime);
+				//undoEditStartTime(index, startTime);
 				
 				editTask.setStartTime(startTime.withHour(t.getHour())
 						.withMinute(t.getMinute()));
@@ -177,109 +160,41 @@ public class Logic {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE,
-					"startdate for " + index));
+			resultToUser = String.format(MSG_TASK_FAILURE, "startdate for " + index);
 			return false;
 		}
 	}
 	
-	private void undoEditStartTime(int index, LocalDateTime startTime) {
-		Undo u = new Undo();
-		u.setCommand("editStartTime");
-		u.setIndex(index);
-		u.setStartTime(startTime);
-		UndoList.push(u);
-	}
 
 	private boolean editTaskDesc(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
 			
-			undoEditTaskDesc(index, editTask);
+			//undoEditTaskDesc(index, editTask);
 			
 			editTask.setTaskDesc(modifiedContent);
 			return true;
 		} catch (IndexOutOfBoundsException e) {
-			operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+			resultToUser = String.format(MSG_TASK_FAILURE, index);
 			return false;
 		}
 	}
 	
-	private void undoEditTaskDesc(int index, Task editTask) {
-		Undo u = new Undo();
-		u.setCommand("editTaskDesc");
-		u.setIndex(index);
-		u.setTaskDesc(editTask.getTaskDesc());
-		UndoList.push(u);
-	}
-
 	void deleteTask(int index) {
 		try {
 			if (index > 0 && index <= TaskList.size()) {
-				undoDelete(index);
+				//undoDelete(index);
 				TaskList.remove(index - 1);
-				operator.showToUser(String.format(MESSAGE_DELETE, index));
+				resultToUser = MSG_DELETE;
 				isSuccessful = true;
 			} else {
-				operator.showToUser(String.format(MESSAGE_TASK_FAILURE, index));
+				resultToUser = String.format(MSG_TASK_FAILURE, index);
 			}
 		} catch (IndexOutOfBoundsException e) {
-			operator.showToUser(String
-					.format(MESSAGE_COMMAND_FAILURE, "delete"));
+			resultToUser = String.format(MSG_COMMAND_FAILURE, "delete");
 		}
 	}
 
-	private void undoDelete(int index) {
-		Undo u = new Undo();
-		Task t = TaskList.get(index - 1);
-		u.setCommand("add");
-		u.setTaskDesc(t.getTaskDesc());
-		u.setStartTime(t.getStartTime());
-		u.setEndTime(t.getEndTime());
-		UndoList.push(u);
-	}
-	
-	void undo() {
-		if (UndoList != null) {
-			Undo u = UndoList.pop();
-			switch (u.getCommand()) {
-			case "add":
-				Task add = new Task();
-				add.setTaskDesc(u.getTaskDesc());
-				add.setStartTime(u.getStartTime());
-				add.setEndTime(u.getEndTime());
-				addTask(add);
-				TaskList.add((u.getIndex() - 1), add);
-				break;
-			case "delete":
-				deleteTask(u.getIndex());
-				break;
-			case "editTaskDesc":
-				Task editTaskDesc = TaskList.get(u.getIndex() - 1);
-				editTaskDesc.setTaskDesc(u.getTaskDesc());
-				break;
-			case "editStartTime":
-				Task editTaskStartTime = TaskList.get(u.getIndex() - 1);
-				editTaskStartTime.setStartTime(u.getStartTime());
-				break;
-			case "editEndTime":
-				Task editTaskEndTime = TaskList.get(u.getIndex() - 1);
-				editTaskEndTime.setEndTime(u.getEndTime());
-				break;
-			case "editStartDate":
-				Task editTaskStartDate = TaskList.get(u.getIndex() - 1);
-				editTaskStartDate.setStartTime(u.getStartTime());
-				break;
-			case "editEndDate":
-				Task editTaskEndDate = TaskList.get(u.getIndex() - 1);
-				editTaskEndDate.setEndTime(u.getEndTime());
-				break;
-			}
-			operator.showToUser("undo completed");
-			} else {
-			operator.showToUser(String.format(MESSAGE_COMMAND_FAILURE, "undo"));
-		}
-	}
 
 	Vector<Task> searchTask(String str) {
 		Vector<Task> resultTaskList = new Vector<Task>();
@@ -322,6 +237,15 @@ public class Logic {
 		}
 		return OutputList;
 	}
+	
+	private void changeDir(String str) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void clearTask() {
+		TaskList.clear();		
+	}
 
 	private Vector<Task> executeCommand(Command cmd) {
 		String cmdDesc = cmd.getCommandType();
@@ -339,18 +263,28 @@ public class Logic {
 			editTask(cmd.getIndex(), cmd.getContent(), cmd.getModifiedString());
 			break;
 		case UNDO:
-			undo();
+			undo undoOperation = new undo(UndoList, TaskList);
 			break;
 		case SEARCH_TASK:
+			pair.getTaskIndexPair(searchTask(cmd.getContent()));
 			return searchTask(cmd.getContent());
 		case BACK:
 			break;
+		case CHANGEDIR:
+			changeDir(cmd.getContent());
+			break;
+		case CLEAR:
+			clearTask();
+			break;
 		default:
 			// throw an error if the command is not recognized
+			resultToUser = "Unrecognized command type";
 			throw new Error("Unrecognized command type");
 		}
+		pair.getTaskIndexPair(TaskList);
 		return TaskList;
 	}
+
 
 	public static void main(String[] args) {
 		Logic lgc = new Logic();
@@ -368,4 +302,6 @@ public class Logic {
 	private Vector<Task> initializeList() {
 		return FileStream.loadTasksFromXML();
 	}
+	
+
 }
