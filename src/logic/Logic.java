@@ -1,6 +1,11 @@
 package logic;
 
+import java.io.IOException;
 import java.time.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.*;
 
 import fileIO.FileStream;
@@ -10,11 +15,13 @@ import util.operator.COMMAND_TYPE;
 
 public class Logic {
 	private Vector<Task> TaskList = new Vector<Task>();
-	public Stack<Undo> UndoList = new Stack<Undo>();
+	private Stack<Undo> UndoList = new Stack<Undo>();
 	private Vector<Task> OutputList = new Vector<Task>();
 	private int isFirstTime = 0;
 	private boolean isSuccessful = false;
 	private String resultToUser = "";
+	
+	private final static Logger log = Logger.getLogger(Logic.class.getName());
 	
 	//private static final String MESSAGE_ADD = "task %s added ";
 	//private static final String MESSAGE_DELETE = "task %s deleted\n";
@@ -37,6 +44,7 @@ public class Logic {
 		undoAdd();
 		TaskList.add(t);
 		resultToUser = MSG_ADD;
+		//log(LEVEL_INFO, MSG_ADD);
 		if (t.getStartTime() != null)
 			operator.showToUser("from " + t.getStartTime().toString());
 		if (t.getEndTime() != null)
@@ -314,15 +322,17 @@ public class Logic {
 	}
 
 	public Vector<Task> run(String input) {
-
+		log.setLevel(Level.INFO);
+		
 		isFirstTime++;
 		if (isFirstTime == 1) {
 			TaskList = initializeList();
 		}
-
+		
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
 		OutputList = executeCommand(cmd);
+		log.info(resultToUser);
 
 		if (isSuccessful) {
 			FileStream.writeTasksToXML(TaskList);

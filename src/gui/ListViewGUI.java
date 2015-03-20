@@ -2,6 +2,8 @@ package gui;
 
 import java.io.IOException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -20,7 +22,7 @@ public class ListViewGUI extends Application {
 	private Vector<Task> vectorTasks;
 	private TaskDisplayController controller;
 	private Logic l = new Logic();
-
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -31,6 +33,9 @@ public class ListViewGUI extends Application {
 		this.primaryStage.setTitle("ListView");
 
 		vectorTasks = FileStream.loadTasksFromXML();
+		
+		//Make sure that a vectorTask is always present
+		assert(vectorTasks.size() >= 0);
 
 		initRootLayout();
 
