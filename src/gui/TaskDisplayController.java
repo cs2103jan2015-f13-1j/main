@@ -3,12 +3,11 @@ package gui;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
+import fileIO.FileStream;
 import util.Task;
-import util.operator;
-import util.timeOperator;
+import util.TimeExtractor;
 import util.Task.TASK_TYPE;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import logic.Logic;
 
 public class TaskDisplayController {
 
@@ -32,9 +32,11 @@ public class TaskDisplayController {
 
 	private ObservableList<Task> list;
 
+	private Logic l = new Logic();
+
 	private ListViewGUI gui;
 
-	// private Vector<Task> VectorTaskList;
+	private Vector<Task> VectorTaskList;
 
 	public TaskDisplayController() {
 
@@ -42,7 +44,7 @@ public class TaskDisplayController {
 
 	public void setTaskList(Vector<Task> TaskList) {
 
-		list = FXCollections.observableArrayList(TaskList);
+		list = FXCollections.observableList(TaskList);
 
 		listView.setItems(list);
 		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
@@ -56,37 +58,9 @@ public class TaskDisplayController {
 					protected void updateItem(Task t, boolean b) {
 						super.updateItem(t, b);
 						if (t != null) {
-
-							if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-								text = new Text(super.getIndex()
-										+ 1
-										+ "."
-										+ t.getTaskDesc()
-										+ "\nFrom: "
-										+ timeOperator.formatDateTime(t
-												.getStartTime())
-										+ " To: "
-										+ timeOperator.formatDateTime(t
-												.getEndTime()));
-								text.setWrappingWidth(listView.getPrefWidth());
-								setGraphic(text);
-							} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-								text = new Text(super.getIndex()
-										+ 1
-										+ "."
-										+ t.getTaskDesc()
-										+ "\nBy: "
-										+ timeOperator.formatDateTime(t
-												.getEndTime()));
-								text.setWrappingWidth(listView.getPrefWidth());
-								setGraphic(text);
-							} else {
-								text = new Text(super.getIndex() + 1 + "."
-										+ t.getTaskDesc() + "\n");
-								text.setWrappingWidth(listView.getPrefWidth());
-								setGraphic(text);
-							}
-
+							text = formatTask(t);
+							text.setWrappingWidth(listView.getPrefWidth());
+							setGraphic(text);
 						} else {
 							setGraphic(new Text(""));
 						}
@@ -95,10 +69,34 @@ public class TaskDisplayController {
 				return cell;
 			}
 		});
+
+	}
+
+	private Text formatTask(Task t) {
+		Text text;
+		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+			text = new Text(t.getIndex() + "." + t.getTaskDesc()
+					+ "\nFrom: "
+					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
+					+ TimeExtractor.formatDateTime(t.getEndTime()));
+
+		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+			text = new Text(t.getIndex() + "." + t.getTaskDesc() + "\nBy: "
+					+ TimeExtractor.formatDateTime(t.getEndTime()));
+		} else {
+			text = new Text(t.getIndex() + "." + t.getTaskDesc() + "\n");
+		}
+		return text;
 	}
 
 	@FXML
 	private void initialize() {
+		VectorTaskList = FileStream.loadTasksFromXML();
+
+		// Make sure that a vectorTask is always present
+		assert (list.size() >= 0);
+		setTaskList(VectorTaskList);
+
 		inputBox.setPromptText("Enter Command:");
 
 		inputBox.setWrapText(true);
@@ -119,7 +117,7 @@ public class TaskDisplayController {
 
 					// Terminates program if exit, else refresh list
 					if (!text.toLowerCase().equals("exit")) {
-						gui.processUserInput(text);
+						processUserInput(text);
 
 						// clear text
 						inputBox.setText("");
@@ -137,15 +135,16 @@ public class TaskDisplayController {
 
 	}
 
-	public void updateTaskList(Vector<Task> vectorTasks) {
-		list = FXCollections.observableArrayList(vectorTasks);
-		listView.setItems(list);
-		inputBox.setPromptText("Enter Command:");
-
-	}
-
 	public void updateLabel(String s) {
 		label.setText(s);
+	}
+
+	public void processUserInput(String str) {
+		VectorTaskList = l.run(str);
+		list = FXCollections.observableList(VectorTaskList);
+		listView.setItems(list);
+		String resultToUser = l.getText();
+		updateLabel(resultToUser);
 	}
 
 }

@@ -4,13 +4,13 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import util.*;
-import util.operator.COMMAND_TYPE;
+import util.OperationType.COMMAND_TYPE;
 
 public class Parser {
 
 	public Command parseInputString(String input) {
 		String commandTypeString = input.trim().split("\\s+")[0];
-		COMMAND_TYPE commandType = operator
+		COMMAND_TYPE commandType = OperationType
 				.determineCommandType(commandTypeString);
 		input = input.toLowerCase();
 
@@ -38,29 +38,29 @@ public class Parser {
 	}
 
 	private Command changeDir(String input) {
-		createCommand clearcmd = new createCommand();
+		CreateCmd clearcmd = new CreateCmd();
 		input = input.replaceFirst("changedir", "").trim();
 		return clearcmd.createDirCommand(input);
 	}
 
 	private Command clearTask() {
-		createCommand clearcmd = new createCommand();
+		CreateCmd clearcmd = new CreateCmd();
 		return clearcmd.createNewCommand("clear");
 	}
 
 	private Command createBackCommand() {
-		createCommand backcmd = new createCommand();
+		CreateCmd backcmd = new CreateCmd();
 		return backcmd.createBackCommand();
 	}
 
 	private Command undo() {
-		createCommand createCmd = new createCommand();
+		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createUndoCommand();
 	}
 
 	private Command searchTask(String input) {
 		input = input.replaceFirst("search", "").trim();
-		createCommand createCmd = new createCommand();
+		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createSearchCommand(input);
 	}
 
@@ -68,7 +68,7 @@ public class Parser {
 		input = input.replaceFirst("edit", "").trim();
 		String editType, modifiedContent = "";
 		
-		createCommand createCmd = new createCommand();
+		CreateCmd createCmd = new CreateCmd();
 
 		StringTokenizer st = new StringTokenizer(input);
 		int index = Integer.parseInt(st.nextToken());
@@ -82,15 +82,15 @@ public class Parser {
 	private Command deleteTask(String input) {
 		input = input.replaceFirst("delete", "").trim();
 		int index = Integer.parseInt(input);
-		createCommand createCmd = new createCommand();
+		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createDeleteCommand(index);
 	}
 
 	private Command addTask(String input) {
 		input = input.replaceFirst("add", "").trim();
-		addCommandExtractor extractor = new addCommandExtractor(input);
+		TaskBuilder extractor = new TaskBuilder(input);
 		Task t = extractor.extractAddCommand();
-		createCommand createCmd = new createCommand();
+		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createAddCommand(t);
 	}
 

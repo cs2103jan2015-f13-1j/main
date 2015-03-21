@@ -13,6 +13,7 @@ public class Task {
 	private LocalDateTime endTime;
 	private TASK_TYPE type;
 	private boolean isDone = false;
+	private int index;
 
 	public static enum TASK_TYPE {
 		TIMED_TASK, FLOATING_TASK, DEADLINE, NULL;
@@ -49,6 +50,18 @@ public class Task {
 		if (st.isAfter(et)) {
 			throw new Exception("Endtime cannot be earlier than Starttime");
 		}
+	}
+	
+	public boolean isDone(){
+		return isDone;
+	}
+	
+	public void markTaskAsDone() {
+		isDone = true;
+	}
+	
+	public void markTaskAsUndone() {
+		isDone = false;
 	}
 
 	public void setTaskDesc(String desc) {
@@ -89,6 +102,14 @@ public class Task {
 	@XmlSchemaType(name = "endTime")
 	public LocalDateTime getEndTime() {
 		return endTime;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;		
 	}
 
 }

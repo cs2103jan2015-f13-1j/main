@@ -2,7 +2,7 @@ package parser;
 
 import util.Task;
 
-public class createCommand {
+public class CreateCmd {
 	public Command createNewCommand(String str){
 		assert str.equals(new String("clear")) || str.equals(new String(""));
 		Command backCommand = new Command(str);

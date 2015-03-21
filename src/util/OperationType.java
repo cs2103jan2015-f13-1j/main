@@ -1,9 +1,9 @@
 package util;
 
-public class operator {
+public class OperationType {
 
 	public static enum COMMAND_TYPE {
-		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR
+		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR, DONE, UNDONE
 	};
 
 	public static COMMAND_TYPE determineCommandType(String commandTypeString) {
@@ -24,15 +24,16 @@ public class operator {
 			return COMMAND_TYPE.CLEAR;
 		} else if (commandTypeString.equalsIgnoreCase("changedir")) {
 			return COMMAND_TYPE.CHANGEDIR;
-		} else if (commandTypeString.isEmpty()) {
+		} else if (commandTypeString.equalsIgnoreCase("done") || commandTypeString.equalsIgnoreCase("mark")) {
+			return COMMAND_TYPE.DONE;
+		} else if (commandTypeString.equalsIgnoreCase("undone") || commandTypeString.equalsIgnoreCase("unmark")) {
+			return COMMAND_TYPE.DONE;
+		}  else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
 	}
 
-	public static void showToUser(String text) {
-		System.out.println(text);
-	}
 
 }

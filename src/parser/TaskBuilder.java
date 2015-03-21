@@ -3,16 +3,15 @@ package parser;
 import java.time.LocalDateTime;
 
 import util.Task;
-import util.operator;
-import util.timeOperator;
+import util.TimeExtractor;
 
-public class addCommandExtractor {
+public class TaskBuilder {
 	private String _input;
 	private Task t;
 
 	
 
-	public addCommandExtractor(String s) {
+	public TaskBuilder(String s) {
 		_input = s;
 	}
 
@@ -63,7 +62,7 @@ public class addCommandExtractor {
 
 	private LocalDateTime extractTime(String str) {
 		try{
-			return timeOperator.getTime(str);
+			return TimeExtractor.getTime(str);
 		}catch(Exception e){
 			//return timeOperator.extractDate(str);
 			return null;

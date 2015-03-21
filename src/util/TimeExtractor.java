@@ -5,7 +5,7 @@ import java.time.format.*;
 import java.time.temporal.*;
 import java.util.Locale;
 
-public class timeOperator {
+public class TimeExtractor {
 
 	public static String formatDateTime(LocalDateTime t) {
 		DateTimeFormatter formatter;
@@ -132,7 +132,7 @@ public class timeOperator {
 
 	public static void main(String[] args) {
 		String str = "monday";
-		operator.showToUser(extractDate(str).toString());
+		Output.showToUser(extractDate(str).toString());
 
 	}
 }

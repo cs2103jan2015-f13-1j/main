@@ -1,28 +1,17 @@
 package gui;
 
 import java.io.IOException;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import logic.Logic;
-import fileIO.FileStream;
-import util.Task;
 
 public class ListViewGUI extends Application {
 	private Stage primaryStage;
 	private BorderPane root;
-	// private ObservableList<Task> list;
-	private Vector<Task> vectorTasks;
 	private TaskDisplayController controller;
-	private Logic l = new Logic();
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -32,21 +21,12 @@ public class ListViewGUI extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("ListView");
 
-		vectorTasks = FileStream.loadTasksFromXML();
-		
-		//Make sure that a vectorTask is always present
-		assert(vectorTasks.size() >= 0);
-
 		initRootLayout();
 
 		showTaskOverview();
 
 		/*
 		 * Initialize a simple display
-		 * 
-		 * StackPane root = new StackPane(); root.getChildren().add(listView);
-		 * primaryStage.setScene(new Scene(root, 300, 450));
-		 * primaryStage.setResizable(false); primaryStage.show();
 		 */
 	}
 
@@ -66,20 +46,8 @@ public class ListViewGUI extends Application {
 		root.setCenter(TaskDisplayPage);
 
 		controller = loader.getController();
-		
+
 		controller.setGUI(this);
 
-		controller.setTaskList(vectorTasks);
 	}
-	
-	public void processUserInput(String str){
-		vectorTasks = l.run(str);
-		
-		controller.updateTaskList(vectorTasks);
-		
-		String resultToUser = l.getText();
-		controller.updateLabel(resultToUser);
-	}
-	
-
 }
