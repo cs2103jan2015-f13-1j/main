@@ -1,53 +1,35 @@
 @CHARSET "UTF-8";
 
-.list-view .virtual-flow .clipped-container .list-cell:filled {
-    -fx-border-color: lightgrey;
-    -fx-padding: 5;
-    -fx-border-width: 7.5;
-    -fx-background-radius: 0;
-    -fx-background-color: white;
-    -fx-font: 12pt "Consolas";
-/*    -fx-effect: dropshadow(one-pass-box, black, 8, 0.0, 2, 0); */
+.list-cell:filled {
+	-fx-border-radius: 5 5 5 5;
+	-fx-border-width: 2;
+	-fx-border-insets: 2 0 2 0;
+	-fx-border-color: rgb(103,103,103);
+	-fx-background-color: rgb(192,192,192, 0.2); 
+	-fx-background-radius: 6 6 6 6;
+	-fx-background-insets: 2 0 2 0;    
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
 
-.list-view .virtual-flow .clipped-container .list-cell:selected {
-	-fx-text-fill: teal;
+.text-area {
+	-fx-background-color: transparent;
+    -fx-padding: 3 3 3 3;
+    -fx-display-caret: true;
+    -fx-font: 12pt "Helvetica";    
 }
-.list-view .virtual-flow .clipped-container .list-cell:empty {
+
+.list-cell:empty {
     -fx-background-color: transparent;
 }
 
-.list-view .virtual-flow .clipped-container .list-cell {
-	-fx-spacing: 0 0 15 0; 
-	-fx-border-size: 0 0 15 0;
-
-}
-
-.list-view .virtual-flow {
-    -fx-background-color: lightgrey;
-    -fx-border-insets: 30;
-}
-
 .list-view {
-    -fx-background-color: lightgrey;
+  	-fx-background-image: url("file:images/bg.jpg");
     -fx-padding: 7.5;
 }
 
 .root {
-    -fx-background-color: lightgrey;
-}
-
-.text-area {
-    -fx-alignment: TOP-LEFT;
-    -fx-padding: 10 10 10 10;
-    -fx-display-caret: true;
-    -fx-font: 12pt "Consolas";
-}
-
-.split-pane .split-pane-divider {
-    -fx-pref-height: 20
-}
-
-.TextInputControl {
-
+    -fx-background-color: red;
 }

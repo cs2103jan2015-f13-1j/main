@@ -1,9 +1,11 @@
 package gui;
 
 import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -20,6 +22,7 @@ public class ListViewGUI extends Application {
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ontask");
+		this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
 
 		initRootLayout();
 
@@ -27,10 +30,13 @@ public class ListViewGUI extends Application {
 	}
 
 	private void initRootLayout() {
+		
+
 		root = new BorderPane();
 		Scene scene = new Scene(root, 400, 600);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
+		
 		primaryStage.show();
 	}
 
