@@ -75,6 +75,7 @@ public class TimeExtractor {
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
@@ -131,7 +132,7 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "monday";
+		String str = "august 1";
 		Output.showToUser(extractDate(str).toString());
 
 	}

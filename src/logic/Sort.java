@@ -34,9 +34,9 @@ public class Sort {
 			if (a.isDone() && b.isDone()) {
 				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
 			} else if (a.isDone()) {
-				return -1;
-			} else if (b.isDone()) {
 				return 1;
+			} else if (b.isDone()) {
+				return -1;
 			} else {
 				return compareType(a, b);
 			}
@@ -51,9 +51,9 @@ public class Sort {
 					&& typeB.equals(Task.TASK_TYPE.FLOATING_TASK)) {
 				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
 			} else if (typeA.equals(Task.TASK_TYPE.FLOATING_TASK)) {
-				return -1;
-			} else if (typeB.equals(Task.TASK_TYPE.FLOATING_TASK)) {
 				return 1;
+			} else if (typeB.equals(Task.TASK_TYPE.FLOATING_TASK)) {
+				return -1;
 			} else {
 				if (a.getEndTime().isBefore(b.getEndTime())) {
 					return -1;

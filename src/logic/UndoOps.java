@@ -3,20 +3,18 @@ package logic;
 import java.time.LocalDateTime;
 import java.util.Stack;
 import java.util.Vector;
+
+import util.Output;
 import util.Task;
 
 public class UndoOps {
 
 	private Stack<Task> UndoList = new Stack<Task>();
-	private Vector<Task> TaskList;
 	private Stack<String> CommandList = new Stack<String>();
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	
-	public UndoOps(Vector<Task> TaskList){
-		this.TaskList = TaskList;		
-	}
 	
-	public String undoOperation() {
+	public String undoOperation(Vector<Task> TaskList) {
 		if (UndoList != null) {
 			Task u = UndoList.pop();
 			String cmd = CommandList.pop();
@@ -25,7 +23,8 @@ public class UndoOps {
 				TaskList.add(u);
 				break;
 			case "delete":
-				TaskList.remove(u.getIndex());
+				Output.showToUser(TaskList.size()+"");
+				TaskList.remove(u.getIndex() - 1);
 				break;
 			case "editTaskDesc":
 				Task editTaskDesc = TaskList.get(u.getIndex() - 1);
@@ -55,11 +54,9 @@ public class UndoOps {
 		}
 	}
 	
-	
-	
-
-	public void undoAdd() {
+	public void undoAdd(int index) {
 		Task u = new Task();
+		u.setIndex(index);
 		CommandList.push(new String("delete"));
 		UndoList.push(u);
 	}

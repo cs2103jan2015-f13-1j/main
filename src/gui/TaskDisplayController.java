@@ -94,7 +94,7 @@ public class TaskDisplayController {
 		VectorTaskList = FileStream.loadTasksFromXML();
 
 		// Make sure that a vectorTask is always present
-		assert (list.size() >= 0);
+		//assert (list.size() >= 0);
 		setTaskList(VectorTaskList);
 
 		inputBox.setPromptText("Enter Command:");
@@ -141,8 +141,13 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
-		list = FXCollections.observableList(VectorTaskList);
-		listView.setItems(list);
+		
+		//Comments on replacing listView.setItems with the following 2 lines:
+		//This theoretically works the same way, but the 2 lines will fix the way listView updates accordingly.
+		//listView.setItems(list);		
+		listView.getItems().clear();
+		listView.getItems().addAll(VectorTaskList);
+		
 		String resultToUser = l.getText();
 		updateLabel(resultToUser);
 	}
