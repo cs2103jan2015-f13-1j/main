@@ -10,8 +10,6 @@ Things to do: CRUD commands, Parser class, Simple GUI, Persistent Storage.
 Week 8.
 Things to do: Refine CRUD commands, Improve to get a stable display GUI, Submit V0.1 -Prototype -User Guide
 
-Currently at Week 9.
-Add assertions, exceptions, logging. 
-Add showToUser in GUI. 
-Refine CRUD commands. (Mainly sort and undo)
-Bug fixes.
+Week 9.Add assertions, exceptions, logging. Add showToUser in GUI. Refine CRUD commands. (Mainly sort and undo) Bug fixes.
+
+Week 10: Add specify folder, logging to file, re-adjust Logic to Fascade pattern. Implement google integration. Bug Fix (Edit doesnt update the second time).
