@@ -13,14 +13,14 @@ import util.*;
 import util.OperationType.COMMAND_TYPE;
 
 public class Logic {
-	private Vector<Task> TaskList = new Vector<Task>();
+	private static Vector<Task> TaskList = new Vector<Task>();
 	private Vector<Task> OutputList = new Vector<Task>();
 	private int isFirstTime = 0;
 	private boolean isSuccessful = false;
 	private boolean inSearchState = false;
 	private String keyword = "";
 	private String resultToUser = "";
-	public UndoOps u = new UndoOps(TaskList);
+	public static UndoOps u = new UndoOps(TaskList);
 
 	private final static Logger log = Logger.getLogger(Logic.class.getName());
 

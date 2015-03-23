@@ -19,15 +19,11 @@ public class ListViewGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("ListView");
+		this.primaryStage.setTitle("Ontask");
 
 		initRootLayout();
 
 		showTaskOverview();
-
-		/*
-		 * Initialize a simple display
-		 */
 	}
 
 	private void initRootLayout() {
