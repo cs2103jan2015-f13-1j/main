@@ -48,7 +48,7 @@ public class Task {
 		this.endTime = et;
 		this.type = TASK_TYPE.TIMED_TASK;
 		if (st.isAfter(et)) {
-			throw new Exception("Endtime cannot be earlier than Starttime");
+			throw new Exception("End time cannot be earlier than Start time");
 		}
 	}
 	

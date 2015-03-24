@@ -46,8 +46,11 @@ public class TimeExtractor {
 	public static LocalTime extractTime(String str) {
 		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 		builder.parseCaseInsensitive();
+		builder.appendOptional(DateTimeFormatter.ofPattern("Hmm"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("HHmm"));
+		builder.appendOptional(DateTimeFormatter.ofPattern("H mm"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("HH mm"));
+		builder.appendOptional(DateTimeFormatter.ofPattern("H:mm"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
 		builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
@@ -132,8 +135,8 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "august 1";
-		Output.showToUser(extractDate(str).toString());
+		String str = "215";
+		Output.showToUser(extractTime(str).toString());
 
 	}
 }

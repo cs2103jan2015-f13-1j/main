@@ -20,7 +20,7 @@ public class Logic {
 	private boolean inSearchState = false;
 	private String keyword = "";
 	private String resultToUser = "";
-	public static UndoOps u = new UndoOps(TaskList);
+	public static UndoOps u = new UndoOps();
 
 	private final static Logger log = Logger.getLogger(Logic.class.getName());
 
@@ -37,7 +37,7 @@ public class Logic {
 
 	public void addTask(Task t) {
 		isSuccessful = true;
-		u.undoAdd();
+
 		TaskList.add(t);
 		resultToUser = MSG_ADD;
 		// log(LEVEL_INFO, MSG_ADD);
@@ -45,6 +45,9 @@ public class Logic {
 			Output.showToUser("from " + t.getStartTime().toString());
 		if (t.getEndTime() != null)
 			Output.showToUser("to " + t.getEndTime().toString());
+		Sort s = new Sort(TaskList);
+		s.sortList();
+		u.undoAdd(t.getIndex());
 
 	}
 
@@ -90,7 +93,7 @@ public class Logic {
 			edit.editTask(cmd);
 			break;
 		case UNDO:
-			u.undoOperation();
+			u.undoOperation(TaskList);
 			break;
 		case SEARCH_TASK:
 			Search s = new Search(TaskList);
@@ -112,6 +115,10 @@ public class Logic {
 			resultToUser = "Unrecognized command type";
 			throw new Error("Unrecognized command type");
 		}
+		sortOutput();
+	}
+
+	private void sortOutput() {
 		Sort s = new Sort(TaskList);
 		s.sortList();
 		if (inSearchState) {
