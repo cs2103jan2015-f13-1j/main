@@ -1,8 +1,5 @@
 package gui;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Vector;
 
 import fileIO.FileStream;
@@ -15,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import logic.Logic;
@@ -75,32 +73,30 @@ public class TaskDisplayController {
 	private Text formatTask(Task t) {
 		Text text;
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			text = new Text(t.getIndex() + "." + t.getTaskDesc()
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc()
 					+ "\nFrom: "
 					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			text = new Text(t.getIndex() + "." + t.getTaskDesc() + "\nBy: "
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\nBy: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
-			text = new Text(t.getIndex() + "." + t.getTaskDesc() + "\n");
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\n");
 		}
+
 		return text;
 	}
 
 	@FXML
 	private void initialize() {
+		FileStream.initializeDir();
 		VectorTaskList = FileStream.loadTasksFromXML();
-
-		// Make sure that a vectorTask is always present
-		//assert (list.size() >= 0);
 		setTaskList(VectorTaskList);
 
 		inputBox.setPromptText("Enter Command:");
-
 		inputBox.setWrapText(true);
-		label.setText("");
+		updateLabel("");
 	}
 
 	@FXML
@@ -126,6 +122,11 @@ public class TaskDisplayController {
 					}
 
 				}
+				
+				if (key.getCode().equals(KeyCode.F5)) {
+					FileStream.changeDir();
+				}
+				
 			}
 		});
 	}
