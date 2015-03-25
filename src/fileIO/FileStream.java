@@ -65,7 +65,7 @@ public class FileStream {
 
 	public static void initializeDir() {
 
-		if(getFilePath().exists()) {
+		if(getFilePath() != null) {
 			file = getFilePath();
 		} else {
 			file = null;
