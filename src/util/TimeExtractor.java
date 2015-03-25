@@ -21,28 +21,6 @@ public class TimeExtractor {
 		return t.format(formatter);
 	}
 
-	public static LocalDateTime getTime(String str) {
-		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
-		builder.parseDefaulting(ChronoField.YEAR, 2015);
-		builder.parseCaseInsensitive();
-		builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu HHmm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu HHmm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
-		// builder.optionalStart().parseDefaulting(ChronoField.ALIGNED_WEEK_OF_YEAR,10);
-		// builder.appendOptional(DateTimeFormatter.ofPattern("EEE"));
-		builder.optionalStart().appendValue(ChronoField.HOUR_OF_DAY, 1)
-				.optionalEnd();
-		builder.optionalStart().appendValue(ChronoField.MINUTE_OF_HOUR, 1)
-				.optionalEnd();
-		// builder.optionalStart().appendValue(ChronoField.SECOND_OF_MINUTE,1).optionalEnd();
-		builder.optionalStart().parseDefaulting(ChronoField.HOUR_OF_DAY, 0);
-		DateTimeFormatter dtf = builder.toFormatter()
-				.withLocale(Locale.ENGLISH);
-		LocalDateTime date = LocalDateTime.parse(str, dtf);
-		return date;
-	}
-
 	public static LocalTime extractTime(String str) {
 		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 		builder.parseCaseInsensitive();
@@ -81,6 +59,9 @@ public class TimeExtractor {
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMMM"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d M"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
