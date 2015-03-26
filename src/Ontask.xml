@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Tasks>
+    <Task>
+        <index>1</index>
+        <taskDesc>a</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+    <Task>
+        <index>2</index>
+        <taskDesc>b</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+</Tasks>

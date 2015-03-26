@@ -8,14 +8,9 @@ import util.TimeExtractor;
 import util.Task.TASK_TYPE;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -51,78 +46,43 @@ public class TaskDisplayController {
 
 		listView.setItems(list);
 		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
-			
-			class TaskCell extends ListCell<Task> {
-		        HBox hbox = new HBox();
-		        Text desc = new Text("(empty)");
-		        Text details = new Text("(empty)");
-		        Pane pane = new Pane();
-		        CheckBox done = new CheckBox();
-		        Button delete = new Button("Del");
 
-		        public TaskCell() {
-		            super();
-		            hbox.getChildren().addAll(done, desc, details, pane, delete);
-		            HBox.setHgrow(pane, Priority.ALWAYS);
-		            delete.setOnAction(new EventHandler<ActionEvent>() {
-		                @Override
-		                public void handle(ActionEvent event) {
-		                    System.out.println("DELETE THIS!");
-		                }
-		            });
-		        }
-		        
-		        public void updateDesc(Text descValue) {
-		            desc = descValue;
-		        }
-		        
-		        public void updateDetails(Text detailsValue) {
-		            details =  detailsValue;
-		        }
-		    }
-			
-				@Override
-				public ListCell<Task> call(ListView<Task> ListViewTask) {
-					
-					 TaskCell cell = new TaskCell() {
-						@Override
-						protected void updateItem(Task t, boolean b) {
-							super.updateItem(t, b);
-							if (t != null) {
-								updateDesc(formatTask1(t));
-								updateDetails(formatTask2(t));
-								setGraphic(hbox);
-							} else {
-								setGraphic(new Text(""));
-							}
+			@Override
+			public ListCell<Task> call(ListView<Task> ListViewTask) {
+				ListCell<Task> cell = new ListCell<Task>() {
+					private Text text;
+
+					@Override
+					protected void updateItem(Task t, boolean b) {
+						super.updateItem(t, b);
+						if (t != null) {
+							text = formatTask(t);
+							text.setWrappingWidth(listView.getPrefWidth());
+							setGraphic(text);
+						} else {
+							setGraphic(new Text(""));
 						}
-					};
-					return cell;
-				}
-			});
+					}
+				};
+				return cell;
+			}
+		});
 
 	}
 
-	private Text formatTask1(Task t) {
-		Text text;
-		text = new Text(t.getIndex() + ": " + t.getTaskDesc());
-		return text;
-		}
-	
-	private Text formatTask2(Task t) {
+	private Text formatTask(Task t) {
 		Text text;
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			text = new Text(
-					"\nFrom: "
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc()
+					+ "\nFrom: "
 					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			text = new Text(
-					"\nBy: "
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\nBy: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
-			text = new Text("\n");
+			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\n");
 		}
 
 		return text;
