@@ -16,7 +16,7 @@ import util.Task.TASK_TYPE;
 
 public class TaskBuilder {
 	private String _input, desc;
-	private Task t;
+	Task t;
 	private Vector<LocalTime> timeList = new Vector<LocalTime>();
 	private Vector<LocalDate> dateList = new Vector<LocalDate>();
 	private static final String MSG_FORMAT = "Incorrect Format!\n";
@@ -416,7 +416,7 @@ public class TaskBuilder {
 	}
 
 	public static void main(String[] args) {
-		TaskBuilder tb = new TaskBuilder("Running w/ Pat 1 apr");
+		TaskBuilder tb = new TaskBuilder(args.toString());
 		tb.run();
 
 	}
