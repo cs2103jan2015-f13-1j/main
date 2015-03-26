@@ -10,11 +10,13 @@ public class OperationType {
 		if (commandTypeString == null)
 			throw new Error("command type string cannot be null!");
 
-		if (commandTypeString.equalsIgnoreCase("add")) {
+		if (commandTypeString.equalsIgnoreCase("add")
+				|| commandTypeString.equalsIgnoreCase("create")) {
 			return COMMAND_TYPE.ADD_TASK;
 		} else if (commandTypeString.equalsIgnoreCase("delete")) {
 			return COMMAND_TYPE.DELETE_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("edit")) {
+		} else if (commandTypeString.equalsIgnoreCase("edit")
+				|| commandTypeString.equalsIgnoreCase("update")) {
 			return COMMAND_TYPE.EDIT_TASK;
 		} else if (commandTypeString.equalsIgnoreCase("search")) {
 			return COMMAND_TYPE.SEARCH_TASK;
@@ -24,16 +26,17 @@ public class OperationType {
 			return COMMAND_TYPE.CLEAR;
 		} else if (commandTypeString.equalsIgnoreCase("changedir")) {
 			return COMMAND_TYPE.CHANGEDIR;
-		} else if (commandTypeString.equalsIgnoreCase("done") || commandTypeString.equalsIgnoreCase("mark")) {
+		} else if (commandTypeString.equalsIgnoreCase("done")
+				|| commandTypeString.equalsIgnoreCase("mark")) {
 			return COMMAND_TYPE.DONE;
-		} else if (commandTypeString.equalsIgnoreCase("undone") || commandTypeString.equalsIgnoreCase("unmark")) {
+		} else if (commandTypeString.equalsIgnoreCase("undone")
+				|| commandTypeString.equalsIgnoreCase("unmark")) {
 			return COMMAND_TYPE.DONE;
-		}  else if (commandTypeString.isEmpty()) {
+		} else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
 	}
-
 
 }
