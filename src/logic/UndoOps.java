@@ -12,9 +12,10 @@ public class UndoOps {
 	private Stack<Task> UndoList = new Stack<Task>();
 	private Stack<String> CommandList = new Stack<String>();
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
+	private static final String MSG_UNDO = "Undo successful!";
+
 	
-	
-	public String undoOperation(Vector<Task> TaskList) {
+	public void undoOperation(Vector<Task> TaskList) {
 		if (UndoList != null) {
 			Task u = UndoList.pop();
 			String cmd = CommandList.pop();
@@ -47,10 +48,10 @@ public class UndoOps {
 				editTaskEndDate.setEndTime(u.getEndTime());
 				break;
 			}
-			return Logic.MSG_UNDO;
+			Logic.setText(MSG_UNDO);
 			} 
 		else {
-			return String.format(MSG_COMMAND_FAILURE, "undo");
+			Logic.setText(String.format(MSG_COMMAND_FAILURE, "undo"));
 		}
 	}
 	
