@@ -31,7 +31,7 @@ public class TaskBuilderTest {
 	@Test
 	public void test() {
 
-		// case 1
+		// case 1 format M/dd
 		TaskBuilder tb = new TaskBuilder("Bank holiday 8/14");
 		LocalDateTime tm = LocalDateTime.of(LocalDate.of(2015, 8, 14),
 				LocalTime.of(23, 59));
@@ -40,14 +40,14 @@ public class TaskBuilderTest {
 		assertEquals("Bank holiday", tb.t.getTaskDesc());
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
-		// case 2
-		tb = new TaskBuilder("Volleyball at 5pm");
-		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 00));
+		// case 2 format 3pm/11.14pm
+		tb = new TaskBuilder("Volleyball at 11.14pm");
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 14));
 		tb.run();
 		assertEquals("Volleyball", tb.t.getTaskDesc());
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
-		// case 3
+		// case 3 format with quotes
 		tb = new TaskBuilder(
 				"lunch with John at \"Taco Tuesdays\" Friday 12 pm");
 		tm = LocalDateTime.of(
@@ -57,7 +57,7 @@ public class TaskBuilderTest {
 		assertEquals("lunch with John at Taco Tuesdays", tb.t.getTaskDesc());
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
-		// case 4
+		// case 4 format tomorrow, hh:mm, ha
 		tb = new TaskBuilder("Running w/ Pat 14:15 - 3 pm tomorrow");
 		tm = LocalDateTime
 				.of(LocalDate.now().plusDays(1), LocalTime.of(14, 15));
@@ -69,9 +69,9 @@ public class TaskBuilderTest {
 				.of(LocalDate.now().plusDays(1), LocalTime.of(15, 00));
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
-		// case 5
+		// case 5 dd/MM/uuuu
 		tb = new TaskBuilder(
-				"National Conference in Atlanta 9/23 - 9/26");
+				"National Conference in Atlanta 23/9/2015 - 26/9/2015");
 		tm = LocalDateTime.of(
 				LocalDate.of(LocalDate.now().getYear(), 9, 23),
 				LocalTime.of(0, 0));
@@ -82,6 +82,20 @@ public class TaskBuilderTest {
 				LocalDate.of(LocalDate.now().getYear(), 9, 26),
 				LocalTime.of(23, 59));
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+		
+		// case 6 dd/MM/uuuu hhmm
+				tb = new TaskBuilder(
+						"CS2013 from 12/12/2015 1230 to 12/12/2015 1400");
+				tm = LocalDateTime.of(
+						LocalDate.of(2015, 12, 12),
+						LocalTime.of(12, 30));
+				tb.run();
+				assertEquals("CS2013", tb.t.getTaskDesc());
+				assertEquals(tm.toString(), tb.t.getStartTime().toString());
+				tm = LocalDateTime.of(
+						LocalDate.of(2015, 12, 12),
+						LocalTime.of(14, 00));
+				assertEquals(tm.toString(), tb.t.getEndTime().toString());
 	}
 
 }

@@ -9,12 +9,11 @@ public class TimeExtractor {
 
 	public static String formatDateTime(LocalDateTime t) {
 		DateTimeFormatter formatter;
-		
+
 		if (t.getMinute() == 0) {
 			formatter = DateTimeFormatter.ofPattern("MMM d ha").withLocale(
 					Locale.ENGLISH);
-		}
-		else{
+		} else {
 			formatter = DateTimeFormatter.ofPattern("MMM d h.ma").withLocale(
 					Locale.ENGLISH);
 		}
@@ -22,20 +21,24 @@ public class TimeExtractor {
 	}
 
 	public static LocalTime extractTime(String str) {
-		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
-		builder.parseCaseInsensitive();
-		builder.appendOptional(DateTimeFormatter.ofPattern("Hmm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("HHmm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("H mm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("HH mm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("H:mm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
-		builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
-		DateTimeFormatter dtf = builder.toFormatter()
-				.withLocale(Locale.ENGLISH);
-		LocalTime time = LocalTime.parse(str, dtf);
-		return time;
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.appendOptional(DateTimeFormatter.ofPattern("Hmm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HHmm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("H mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HH mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("H:mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalTime time = LocalTime.parse(str, dtf);
+			return time;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static LocalDate extractDate(String str) {
@@ -78,8 +81,10 @@ public class TimeExtractor {
 		try {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
+			builder.appendOptional(DateTimeFormatter.ofPattern("d M uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d uuuu"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
