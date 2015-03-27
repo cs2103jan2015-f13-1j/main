@@ -45,9 +45,11 @@ public class EditTask {
 				break;
 			}
 			if (isSuccessful) {
+				Logic.setText(MSG_EDIT);
 				Output.showToUser (MSG_EDIT);
 			}
 		} else {
+			Logic.setText(String.format(MSG_TASK_FAILURE, index));
 			Output.showToUser (String.format(MSG_TASK_FAILURE, index));
 		}
 	}

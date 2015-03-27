@@ -19,7 +19,7 @@ public class Logic {
 	private boolean isSuccessful = false;
 	private boolean inSearchState = false;
 	private String keyword = "";
-	private String resultToUser = "";
+	private static String resultToUser = "";
 	public static UndoOps u = new UndoOps();
 
 	private final static Logger log = Logger.getLogger(Logic.class.getName());
@@ -29,10 +29,13 @@ public class Logic {
 	private static final String MSG_DELETE_FAILURE = "%s does not exist!\n";
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	private static final String MSG_CHGDIR = "Directory changed!\n";
-	static final String MSG_UNDO = "Undo successful!";
 
 	public String getText() {
 		return resultToUser;
+	}
+	
+	public static void setText(String s) {
+		resultToUser = s;
 	}
 
 	public void addTask(Task t) {
@@ -91,6 +94,7 @@ public class Logic {
 		case EDIT_TASK:
 			EditTask edit = new EditTask(TaskList);
 			edit.editTask(cmd);
+			
 			break;
 		case UNDO:
 			u.undoOperation(TaskList);
@@ -146,6 +150,7 @@ public class Logic {
 		if (isSuccessful) {
 			FileStream.writeTasksToXML(TaskList);
 		}
+
 		return OutputList;
 	}
 
