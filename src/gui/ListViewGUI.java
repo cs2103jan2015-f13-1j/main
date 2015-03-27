@@ -33,7 +33,7 @@ public class ListViewGUI extends Application {
 		
 
 		root = new BorderPane();
-		Scene scene = new Scene(root, 400, 600);
+		Scene scene = new Scene(root, 700, 600);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		

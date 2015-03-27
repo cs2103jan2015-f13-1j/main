@@ -65,7 +65,6 @@ public class TaskDisplayController {
 			super.updateItem(t, b);
 			if (t != null) {
 	            desc = formatTask1(t);
-	            desc.setText("TEST");
 	            details = formatTask2(t);
                 setGraphic(hbox);
 			} else {
