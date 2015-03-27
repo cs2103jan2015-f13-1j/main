@@ -3,14 +3,18 @@ package gui;
 import java.util.Vector;
 
 import fileIO.FileStream;
+import gui.TaskDispC.XCell;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -35,54 +39,95 @@ public class TaskDisplayController {
 	private ListViewGUI gui;
 
 	private Vector<Task> VectorTaskList;
+	
+	static class TaskCell extends ListCell<Task> {
+        HBox hbox = new HBox();
+        CheckBox done = new CheckBox();
+        Text desc = new Text("(empty)");
+        Text details = new Text("(empty)");
+        Pane pane = new Pane();
+        Button delete = new Button("Del");
 
-	public TaskDisplayController() {
-
-	}
+        public TaskCell() {
+            super();
+            hbox.getChildren().addAll(done, desc, details, pane, delete);
+            HBox.setHgrow(pane, Priority.ALWAYS);
+            delete.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    System.out.println("DELETE!");
+                }
+            });
+        }
+        
+        @Override
+        protected void updateItem(Task t, boolean b) {
+			super.updateItem(t, b);
+			if (t != null) {
+	            desc = formatTask1(t);
+	            details = formatTask2(t);
+                setGraphic(hbox);
+			} else {
+				setGraphic(null);
+			}
+		}
+    }
 
 	public void setTaskList(Vector<Task> TaskList) {
 
 		list = FXCollections.observableList(TaskList);
-
 		listView.setItems(list);
 		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
-
+			
 			@Override
-			public ListCell<Task> call(ListView<Task> ListViewTask) {
-				ListCell<Task> cell = new ListCell<Task>() {
-					private Text text;
-
-					@Override
-					protected void updateItem(Task t, boolean b) {
-						super.updateItem(t, b);
-						if (t != null) {
-							text = formatTask(t);
-							text.setWrappingWidth(listView.getPrefWidth());
-							setGraphic(text);
-						} else {
-							setGraphic(new Text(""));
-						}
-					}
-				};
-				return cell;
-			}
+            public ListCell<Task> call(ListView<Task> param) {
+                return new TaskCell();
+            }
+//			@Override
+//			public ListCell<Task> call(ListView<Task> ListViewTask) {
+//				TaskCell cell = new TaskCell() {
+//					@Override
+//					protected void updateItem(Task t, boolean b) {
+//						super.updateItem(t, b);
+//						if (t != null) {
+//							Node nodeDesc = hbox.getChildren().get(1);
+//							Node nodeDetails = hbox.getChildren().get(2);
+//					        if(nodeDesc instanceof Text) {
+//					            nodeDesc = formatTask1(t);
+//					            }
+//							details = formatTask2(t);
+//							setGraphic(hbox);
+//						} else {
+//							setGraphic(new Text(null));
+//						}
+//					}
+//				};
+//				return cell;
+//			}
 		});
 
 	}
 
-	private Text formatTask(Task t) {
+	private static Text formatTask1(Task t) {
+		Text text;
+		text = new Text(t.getIndex() + ". " + t.getTaskDesc());
+		return text;
+	}
+	
+	private static Text formatTask2(Task t) {
 		Text text;
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			text = new Text(t.getIndex() + ". " + t.getTaskDesc()
-					+ "\nFrom: "
+			text = new Text(
+					"\nFrom: "
 					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\nBy: "
+			text = new Text(
+					"\nBy: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
-			text = new Text(t.getIndex() + ". " + t.getTaskDesc() + "\n");
+			text = new Text("\n");
 		}
 
 		return text;
