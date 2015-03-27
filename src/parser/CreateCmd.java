@@ -19,6 +19,18 @@ public class CreateCmd {
 		dirCommand.setContent(str);
 		return dirCommand;
 	}
+	
+	public Command createMarkCommand(int i){
+		Command markCommand = new Command("mark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
+	
+	public Command createUnmarkCommand(int i){
+		Command markCommand = new Command("unmark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
 
 	public Command createAddCommand(Task t) {
 		Command addCommand = new Command("add");

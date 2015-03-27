@@ -33,7 +33,7 @@ public class Logic {
 	public String getText() {
 		return resultToUser;
 	}
-	
+
 	public static void setText(String s) {
 		resultToUser = s;
 	}
@@ -79,6 +79,20 @@ public class Logic {
 		TaskList.clear();
 	}
 
+	private void unmarkTask(int i) {
+		
+		if (i >= 0 && i < TaskList.size()) {
+			TaskList.get(i).markTaskAsUndone();;
+		}
+	}
+
+	private void markTask(int i) {
+		
+		if (i >= 0 && i < TaskList.size()) {
+			TaskList.get(i).markTaskAsDone();
+		}
+	}
+
 	private void executeCommand(Command cmd) {
 		String cmdDesc = cmd.getCommandType();
 		COMMAND_TYPE commandType = OperationType.determineCommandType(cmdDesc);
@@ -94,7 +108,6 @@ public class Logic {
 		case EDIT_TASK:
 			EditTask edit = new EditTask(TaskList);
 			edit.editTask(cmd);
-			
 			break;
 		case UNDO:
 			u.undoOperation(TaskList);
@@ -114,6 +127,13 @@ public class Logic {
 		case CLEAR:
 			clearTask();
 			break;
+		case DONE:
+			markTask(cmd.getIndex());
+			break;
+		case UNDONE:
+			unmarkTask(cmd.getIndex());
+			break;
+
 		default:
 			// throw an error if the command is not recognized
 			resultToUser = "Unrecognized command type";
