@@ -63,6 +63,23 @@ public class Search {
 		return resultTaskList;
 	}
 
+	private Vector<Task> searchTaskType(Task.TASK_TYPE type) {
+		Vector<Task> resultTaskList = new Vector<Task>();
+		Task t = null;
+
+		for (int index = 1; index <= TaskList.size(); index++) {
+			t = TaskList.get(index - 1);
+
+			if (t.getTaskType() == type) {
+
+				resultTaskList.add(TaskList.get(index - 1));
+
+			}
+		}
+		// isSuccessful = true;
+		return resultTaskList;
+	}
+
 	public Vector<Task> searchTask(String str) {
 		Vector<Task> resultTaskList = new Vector<Task>();
 		String textContent = null;
