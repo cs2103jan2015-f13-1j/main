@@ -31,7 +31,7 @@ public class OperationType {
 			return COMMAND_TYPE.DONE;
 		} else if (commandTypeString.equalsIgnoreCase("undone")
 				|| commandTypeString.equalsIgnoreCase("unmark")) {
-			return COMMAND_TYPE.DONE;
+			return COMMAND_TYPE.UNDONE;
 		} else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {

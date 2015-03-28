@@ -31,15 +31,37 @@ public class Parser {
 			return clearTask();
 		case BACK:
 			return createBackCommand();
+		case DONE:			
+			return markTask(input);
+		case UNDONE:
+			return unmarkTask(input);
+	
 		default:
 			// throw an error if the command is not recognized
 			throw new Error("Unrecognized command type");
 		}
 	}
 
+	private Command unmarkTask(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+
+		CreateCmd markcmd = new CreateCmd();
+		return markcmd.createUnmarkCommand(i - 1);
+	}
+
+	private Command markTask(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+
+		CreateCmd markcmd = new CreateCmd();
+		return markcmd.createMarkCommand(i - 1);
+		
+	}
+
 	private Command changeDir(String input) {
 		CreateCmd clearcmd = new CreateCmd();
-		input = input.replaceFirst("changedir", "").trim();
+		input = input.substring(input.indexOf(" ")+1).trim();
 		return clearcmd.createDirCommand(input);
 	}
 
@@ -59,13 +81,13 @@ public class Parser {
 	}
 
 	private Command searchTask(String input) {
-		input = input.replaceFirst("search", "").trim();
+		input = input.substring(input.indexOf(" ")+1).trim();
 		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createSearchCommand(input);
 	}
 
 	private Command editTask(String input) {
-		input = input.replaceFirst("edit", "").trim();
+		input = input.substring(input.indexOf(" ")+1).trim();
 		String editType, modifiedContent = "";
 		
 		CreateCmd createCmd = new CreateCmd();
@@ -80,14 +102,14 @@ public class Parser {
 	}
 
 	private Command deleteTask(String input) {
-		input = input.replaceFirst("delete", "").trim();
+		input = input.substring(input.indexOf(" ")+1).trim();
 		int index = Integer.parseInt(input);
 		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createDeleteCommand(index);
 	}
 
 	private Command addTask(String input) {
-		input = input.replaceFirst("add", "").trim();
+		input = input.substring(input.indexOf(" ")+1).trim();
 		TaskBuilder extractor = new TaskBuilder(input);
 		Task t = extractor.extractAddCommand();
 		CreateCmd createCmd = new CreateCmd();

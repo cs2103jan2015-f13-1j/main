@@ -11,10 +11,10 @@ public class TimeExtractor {
 		DateTimeFormatter formatter;
 
 		if (t.getMinute() == 0) {
-			formatter = DateTimeFormatter.ofPattern("MMM d ha").withLocale(
+			formatter = DateTimeFormatter.ofPattern("MMM d ha uu").withLocale(
 					Locale.ENGLISH);
 		} else {
-			formatter = DateTimeFormatter.ofPattern("MMM d h.ma").withLocale(
+			formatter = DateTimeFormatter.ofPattern("MMM d h.ma uu").withLocale(
 					Locale.ENGLISH);
 		}
 		return t.format(formatter);
@@ -103,17 +103,13 @@ public class TimeExtractor {
 					LocalDate.now().getMonthValue());
 			builder.optionalStart().parseDefaulting(
 					ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
-			builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("E"));
-
+			builder.appendOptional(DateTimeFormatter.ofPattern("EEE"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("EEEE"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
-			int d = date.getDayOfYear() - LocalDate.now().getDayOfYear();
-			if (d < 0) {
-				date = date.withDayOfYear(((-d) / 7 + 1) * 7
-						+ date.getDayOfYear());
-			}
+			DayOfWeek day = date.getDayOfWeek();
+			date = LocalDate.now().with(TemporalAdjusters.next(day));
 			return date;
 		} catch (Exception e) {
 			return null;
@@ -121,8 +117,8 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "215";
-		Output.showToUser(extractTime(str).toString());
+		String str = "fri";
+		Output.showToUser(DateFormatter3(str).toString());
 
 	}
 }
