@@ -46,18 +46,31 @@ public class TaskDisplayController {
         Text desc = new Text("(empty)");
         Text details = new Text("(empty)");
         Pane pane = new Pane();
+        VBox buttonVBox = new VBox();
+        VBox taskVBox = new VBox();
+        Button flag = new Button("Flag");
         Button delete = new Button("Del");
 
         public TaskCell() {
             super();
-            hbox.getChildren().addAll(done, desc, details, pane, delete);
-            HBox.setHgrow(pane, Priority.ALWAYS);
+            taskVBox.getChildren().addAll(desc,details);
+            buttonVBox.getChildren().addAll(flag, delete);
             delete.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     System.out.println("DELETE!");
                 }
             });
+            
+            flag.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    System.out.println("THIS IS IMPORTANT!");
+                }
+            });
+            hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
+            HBox.setHgrow(pane, Priority.ALWAYS);
+            
         }
         
         @Override
