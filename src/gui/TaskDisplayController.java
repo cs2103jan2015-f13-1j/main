@@ -64,8 +64,8 @@ public class TaskDisplayController {
         protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
 			if (t != null) {
-	            desc = formatTask1(t);
-	            details = formatTask2(t);
+	            desc.setText(formatTask1(t));
+	            details.setText(formatTask2(t));
                 setGraphic(hbox);
 			} else {
 				setGraphic(null);
@@ -108,29 +108,25 @@ public class TaskDisplayController {
 
 	}
 
-	private static Text formatTask1(Task t) {
-		Text text;
-		text = new Text(t.getIndex() + ". " + t.getTaskDesc());
-		return text;
+	private static String formatTask1(Task t) {
+		return (t.getIndex() + ". " + t.getTaskDesc());
 	}
 	
-	private static Text formatTask2(Task t) {
-		Text text;
+	private static String formatTask2(Task t) {
+		
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			text = new Text(
+			return(
 					"\nFrom: "
 					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			text = new Text(
+			return(
 					"\nBy: "
 					+ TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
-			text = new Text("\n");
+			return("\n");
 		}
-
-		return text;
 	}
 
 	@FXML
