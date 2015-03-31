@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import util.OperationType.COMMAND_TYPE;
+
 public class Task {
 
 	private String taskDesc;
@@ -13,16 +15,18 @@ public class Task {
 	private LocalDateTime endTime;
 	private TASK_TYPE type;
 	private boolean isDone = false;
+	private boolean isDue = false;
 	private int index;
 
 	public static enum TASK_TYPE {
-		TIMED_TASK, FLOATING_TASK, DEADLINE, NULL;
+		TIMED_TASK, FLOATING_TASK, DEADLINE, RECURRING_TASK, NULL;
 	}
 
 	private void setTimeFormat() {
 		// TODO Auto-generated method stub
 
 	}
+
 
 	public Task() {
 		this.type = TASK_TYPE.NULL;
@@ -54,6 +58,18 @@ public class Task {
 	
 	public boolean isDone(){
 		return isDone;
+	}
+	
+	public boolean isDue(){
+		return isDue;
+	}
+	
+	public void markTaskAsDue() {
+		isDue = true;
+	}
+	
+	public void markTaskAsUndue() {
+		isDue = false;
 	}
 	
 	public void markTaskAsDone() {

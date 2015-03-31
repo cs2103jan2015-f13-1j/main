@@ -10,9 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import logic.Logic;
-import util.Output;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
@@ -55,7 +53,8 @@ public class TaskBuilder {
 
 	private void buildFloatingTask() {
 		t = new Task(_input.trim());
-		log.setLevel(Level.INFO);
+		// TODO
+		log.setLevel(Level.OFF);
 	}
 
 	private void buildDeadline() {
@@ -104,6 +103,9 @@ public class TaskBuilder {
 
 	private Task.TASK_TYPE checkTaskType() {
 
+		if (checkRecurring())
+			return Task.TASK_TYPE.RECURRING_TASK;
+
 		int i = -1, j = -1;
 		checkTimePattern();
 		checkDatePattern();
@@ -128,6 +130,12 @@ public class TaskBuilder {
 		} else {
 			return Task.TASK_TYPE.DEADLINE;
 		}
+
+	}
+
+	private boolean checkRecurring() {
+		return false;
+		// TODO Auto-generated method stub
 
 	}
 
@@ -183,121 +191,133 @@ public class TaskBuilder {
 		return true;
 	}
 
-	// extract the date format mar 13 2015, mar-13-2015, mar/3/2015
-	private int dateFormat1() {
-		int i, index = -1;
+	// extract the date format mar 13 2015, mar-13-2015, mar/3/2015, March.2
+	private void dateFormat1() {
+		int i = 0, index = -1, k = 0;
 		boolean isNew;
 
 		Matcher m = Pattern.compile(
-				"[^\"]\\w+[\\s/\\-]\\d{1,2}([\\s/\\-]\\d{4})?\\b",
+				"[^\"]\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
-		while (m.find()) {
-			if (dateIndex.size() != 0) {
-				index = dateIndex.get(0);
-			}
+		try {
+			while (m.find(k)) {
+				k = _input.indexOf(" ", i + 1);
 
-			String dt = m.group();
-			dt = dt.trim().replaceAll("[\\s/\\-]", " ");
-			log.info(dt);
-			i = m.start();
-			isNew = checkDateIndex(i);
+				if (dateIndex.size() != 0) {
+					index = dateIndex.get(0);
+				}
 
-			if (isNew) {
-				LocalDate date = TimeExtractor.extractDate(dt);
+				String dt = m.group();
+				dt = dt.trim().replaceAll("[\\s/\\-\\.]", " ");
+				log.info(dt);
+				i = m.start();
+				isNew = checkDateIndex(i);
 
-				if (date != null) {
-					if (index < 0 || i < index) {
-						dateList.add(0, date);
-						dateIndex.add(0, i);
-					} else {
-						dateList.add(date);
-						dateIndex.add(i);
+				if (isNew) {
+					LocalDate date = TimeExtractor.extractDate(dt);
+
+					if (date != null) {
+						if (index < 0 || i < index) {
+							dateList.add(0, date);
+							dateIndex.add(0, i);
+						} else {
+							dateList.add(date);
+							dateIndex.add(i);
+						}
+						log.info("1:" + date.toString());
 					}
-					log.info("1:" + date.toString());
 				}
 			}
+		} catch (Exception e) {
+			return;
 		}
-		return index;
 	}
 
-	// extract date format 3-3-2015,3 3 2015,3/3/2015
-	private int dateFormat2() {
-		int i, index = -1;
+	// extract date format 3-3-2015,3 3 2015,3/3/2015, 3.3.2015
+	private void dateFormat2() {
+		int i = 0, index = -1, k = 0;
 		boolean isNew;
 
 		Matcher m;
-		m = Pattern.compile(
-				"[^\"]\\d{1,2}+[\\s/\\-]\\d{1,2}([\\s/\\-]\\d{4})?\\b",
-				Pattern.CASE_INSENSITIVE).matcher(_input);
-		while (m.find()) {
-			if (dateIndex.size() > 0) {
-				index = dateIndex.get(0);
-				Output.showToUser("hh\n");
-			}
+		m = Pattern
+				.compile(
+						"[^\"]\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
+						Pattern.CASE_INSENSITIVE).matcher(_input);
+		try {
+			while (m.find(k)) {
+				k = _input.indexOf(" ", i + 1);
+				if (dateIndex.size() > 0) {
+					index = dateIndex.get(0);
+				}
 
-			String dt = m.group();
-			dt = dt.trim().replaceAll("[\\s/\\-]", " ");
-			log.info(dt);
-			i = m.start();
-			isNew = checkDateIndex(i);
+				String dt = m.group();
+				dt = dt.trim().replaceAll("[\\s/\\-]", " ");
+				log.info(dt);
+				i = m.start();
+				isNew = checkDateIndex(i);
 
-			if (isNew) {
-				LocalDate date = TimeExtractor.extractDate(dt);
+				if (isNew) {
+					LocalDate date = TimeExtractor.extractDate(dt);
 
-				if (date != null) {
-					if (index < 0 || i < index) {
-						dateList.add(0, date);
-						dateIndex.add(0, i);
-						Output.showToUser(dt + " " + dateIndex.get(0));
-					} else {
-						dateList.add(date);
-						dateIndex.add(i);
+					if (date != null) {
+						if (index < 0 || i < index) {
+							dateList.add(0, date);
+							dateIndex.add(0, i);
+						} else {
+							dateList.add(date);
+							dateIndex.add(i);
+						}
+						log.info("2:" + date.toString());
 					}
-					log.info("2:" + date.toString());
 				}
 			}
+		} catch (Exception e) {
+			return;
 		}
-		return index;
 	}
 
-	// extract the date format mar 13 2015, mar-13-2015, mar/3/2015
-	private int dateFormat3() {
-		int i, index = -1;
+	// extract the date format 13 mar 2015, 13-mar-2015, 3/mar/2015, 3 march
+	private void dateFormat3() {
+		int i = 0, index = -1, k = 0;
 		boolean isNew;
 
 		Matcher m = Pattern.compile(
-				"[^\"]\\d{1,2}[\\s/\\-]\\w+([\\s/\\-]\\d{4})?\\b",
+				"[^\"]\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
-		while (m.find()) {
-			if (dateIndex.size() != 0) {
-				index = dateIndex.get(0);
-			}
+		try {
+			while (m.find(k)) {
+				k = _input.indexOf(" ", i + 1);
+				if (dateIndex.size() != 0) {
+					index = dateIndex.get(0);
+				}
 
-			String dt = m.group();
-			dt = dt.trim().replaceAll("[\\s/\\-]", " ");
-			log.info(dt);
-			i = m.start();
-			isNew = checkDateIndex(i);
+				String dt = m.group();
+				dt = dt.trim().replaceAll("[\\s/\\-]", " ");
+				log.info(dt);
+				i = m.start();
+				isNew = checkDateIndex(i);
 
-			if (isNew) {
-				LocalDate date = TimeExtractor.extractDate(dt);
-				if (date != null) {
-					if (index < 0 || i < index) {
-						dateList.add(0, date);
-						dateIndex.add(0, i);
-					} else {
-						dateList.add(date);
-						dateIndex.add(i);
+				if (isNew) {
+					LocalDate date = TimeExtractor.extractDate(dt);
+					if (date != null) {
+						if (index < 0 || i < index) {
+							dateList.add(0, date);
+							dateIndex.add(0, i);
+						} else {
+							dateList.add(date);
+							dateIndex.add(i);
+						}
+						log.info(date.toString());
 					}
-					log.info(date.toString());
 				}
 			}
+		} catch (Exception e) {
+			return;
 		}
-		return index;
 	}
 
 	// extract date format monday
-	private int dateFormat4() {
+	private void dateFormat4() {
 		int i, index = -1;
 
 		String s;
@@ -329,16 +349,14 @@ public class TaskBuilder {
 						dateIndex.add(i);
 					}
 
-					log.info("3:" + date.toString());
+					log.info(date.toString());
 				}
 			}
 		}
-
-		return index;
 	}
 
 	// extract date format mon
-	private int dateFormat5() {
+	private void dateFormat5() {
 		int i, index = -1;
 
 		String s;
@@ -369,15 +387,14 @@ public class TaskBuilder {
 						dateIndex.add(i);
 					}
 
-					log.info("4:" + date.toString());
+					log.info(date.toString());
 				}
 			}
 		}
-		return index;
 	}
 
 	// extract tmr, tomorrow, today
-	private int dateFormat6() {
+	private void dateFormat6() {
 		int i, index = -1;
 
 		String s;
@@ -410,11 +427,9 @@ public class TaskBuilder {
 					dateList.add(date);
 					dateIndex.add(i);
 				}
-				log.info("5:" + date.toString());
+				log.info(date.toString());
 			}
 		}
-
-		return index;
 	}
 
 	private void checkTimePattern() {
@@ -425,7 +440,8 @@ public class TaskBuilder {
 
 	}
 
-	private int timePattern1() {
+	// time format hh:mm, eg.12:00
+	private void timePattern1() {
 		int i, index = -1;
 
 		Matcher m = Pattern.compile("[^\"]\\b\\d{1,2}:\\d{2}\\b").matcher(
@@ -444,18 +460,18 @@ public class TaskBuilder {
 					timeList.add(time);
 					timeIndex.add(i);
 				}
+				log.info(time.toString());
 			}
-			log.info(time.toString());
+
 		}
-		return index;
 	}
 
 	// extract time pattern 3pm/2.15pm
-	private int timePattern2() {
+	private void timePattern2() {
 		int i, index = -1;
 
 		Matcher m;
-		m = Pattern.compile("[^\"]\\b\\d{1,2}(.\\d{1,2})?\\s*[ap]m\\b",
+		m = Pattern.compile("[^\"]\\b\\d{1,2}(.\\d{1,2})?\\s*[ap]m\\s*",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		while (m.find()) {
 			LocalTime time = TimeExtractor.extractTime(m.group().replace(" ",
@@ -474,17 +490,17 @@ public class TaskBuilder {
 					timeList.add(time);
 					timeIndex.add(i);
 				}
+				log.info(time.toString());
 			}
-			log.info(time.toString());
+
 		}
-		return index;
 	}
 
-	private int timePattern3() {
+	private void timePattern3() {
 		int i, index = -1;
 
 		Matcher m;
-		m = Pattern.compile("[^\"]\\d{3,4}\\b", Pattern.CASE_INSENSITIVE)
+		m = Pattern.compile("[^\"]\\d{3,4}\\s*", Pattern.CASE_INSENSITIVE)
 				.matcher(_input);
 		while (m.find()) {
 			LocalTime time = TimeExtractor.extractTime(m.group().replace(" ",
@@ -504,7 +520,6 @@ public class TaskBuilder {
 				log.info(time.toString());
 			}
 		}
-		return index;
 	}
 
 	public static void main(String[] args) {
@@ -513,7 +528,6 @@ public class TaskBuilder {
 	}
 
 	public void run() {
-		// _input = "National Conference from 25-3-2015 to 26-3-2015";
 
 		Task t = extractAddCommand();
 		log.info(t.getTaskType().toString());

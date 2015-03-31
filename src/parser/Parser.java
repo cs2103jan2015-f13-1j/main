@@ -35,11 +35,18 @@ public class Parser {
 			return markTask(input);
 		case UNDONE:
 			return unmarkTask(input);
-	
+		case REDO:
+			return redoTask();
 		default:
-			// throw an error if the command is not recognized
-			throw new Error("Unrecognized command type");
+			//TODO throw an error if the command is not recognized
+			return null;
+			//throw new Error("Unrecognized command type");
 		}
+	}
+
+	private Command redoTask() {
+		CreateCmd redocmd = new CreateCmd();
+		return redocmd.createNewCommand("redo");
 	}
 
 	private Command unmarkTask(String input) {
@@ -47,7 +54,7 @@ public class Parser {
 		int i = Integer.parseInt(input);
 
 		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createUnmarkCommand(i - 1);
+		return markcmd.createUnmarkCommand(i);
 	}
 
 	private Command markTask(String input) {
@@ -55,7 +62,7 @@ public class Parser {
 		int i = Integer.parseInt(input);
 
 		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createMarkCommand(i - 1);
+		return markcmd.createMarkCommand(i);
 		
 	}
 

@@ -1,5 +1,6 @@
 package logic;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
@@ -15,13 +16,30 @@ public class Sort {
 	}
 
 	public void sortList() {
-		listComparator ls = new listComparator();
+		if (!TaskList.isEmpty()) {
+			checkDue();
 
-		Collections.sort(TaskList, ls);
-		
-		for(int i = 0; i < TaskList.size(); i++){
-			TaskList.get(i).setIndex(i + 1);
+			listComparator ls = new listComparator();
+
+			Collections.sort(TaskList, ls);
+
+			for (int i = 0; i < TaskList.size(); i++) {
+				TaskList.get(i).setIndex(i + 1);
+			}
 		}
+	}
+
+	private void checkDue() {
+		for (Task t : TaskList) {
+			if (t.getEndTime() != null) {
+				if (t.getEndTime().isBefore(LocalDateTime.now())) {
+					t.markTaskAsDue();
+				}else{
+					t.markTaskAsUndue();
+				}
+			}
+		}
+
 	}
 
 	class listComparator implements Comparator<Task> {

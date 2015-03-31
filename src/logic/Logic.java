@@ -1,12 +1,6 @@
 package logic;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.*;
-
 import fileIO.FileStream;
 import parser.*;
 import util.*;
@@ -18,128 +12,186 @@ public class Logic {
 	private int isFirstTime = 0;
 	private boolean isSuccessful = false;
 	private boolean inSearchState = false;
+	private boolean inUndoState = false;
 	private String keyword = "";
-	private static String resultToUser = "";
 	public static UndoOps u = new UndoOps();
 
-	private final static Logger log = Logger.getLogger(Logic.class.getName());
+	// private final static Logger log =
+	// Logger.getLogger(Logic.class.getName());
 
 	private static final String MSG_ADD = "Task added successfully!";
 	private static final String MSG_DELETE = "Task deleted successfully!";
 	private static final String MSG_DELETE_FAILURE = "%s does not exist!\n";
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	private static final String MSG_CHGDIR = "Directory changed!\n";
-
-	public String getText() {
-		return resultToUser;
-	}
-
-	public static void setText(String s) {
-		resultToUser = s;
-	}
+	private static final String MSG_CLEAR = "List cleared!\n";
+	private static final String MSG_MARK = "Task %d marked as done!\n";
+	private static final String MSG_UNMARK = "Task %d marked as undone!\n";
+	private static final String MSG_BACK = "Back to main list.\n";
 
 	public void addTask(Task t) {
 		isSuccessful = true;
 
 		TaskList.add(t);
-		resultToUser = MSG_ADD;
-		// log(LEVEL_INFO, MSG_ADD);
-		if (t.getStartTime() != null)
-			Output.showToUser("from " + t.getStartTime().toString());
-		if (t.getEndTime() != null)
-			Output.showToUser("to " + t.getEndTime().toString());
+
+		Output.showToUser(MSG_ADD);
+
 		Sort s = new Sort(TaskList);
 		s.sortList();
 		u.undoAdd(t.getIndex());
-
+		u.redoAdd(t);
+		Output.showToUser(MSG_ADD);
 	}
 
 	void deleteTask(int index) {
 		try {
 			if (index > 0 && index <= TaskList.size()) {
 				u.undoDelete(TaskList.get(index - 1));
+				u.redoDelete(index);
 				TaskList.remove(index - 1);
-				resultToUser = MSG_DELETE;
+				Output.showToUser(MSG_DELETE);
 				isSuccessful = true;
 			} else {
+				Output.showToUser(String.format(MSG_COMMAND_FAILURE, "delete"));
 			}
 		} catch (IndexOutOfBoundsException e) {
-			resultToUser = String.format(MSG_COMMAND_FAILURE, "delete");
 			Output.showToUser(String.format(MSG_DELETE_FAILURE, index));
 		}
 	}
 
 	private void changeDir(String str) {
 		u.undoChgdir();
+		u.redoChgdir();
 		Output.showToUser(String.format(MSG_CHGDIR));
 	}
 
 	private void clearTask() {
 		u.undoClear();
+		u.redoClear();
 		TaskList.clear();
+		isSuccessful = true;
+		Output.showToUser(String.format(MSG_CLEAR));
 	}
 
 	private void unmarkTask(int i) {
-		
+
 		if (i >= 0 && i < TaskList.size()) {
-			TaskList.get(i).markTaskAsUndone();;
+			Task t = TaskList.get(i - 1);
+			t.markTaskAsUndone();
+			isSuccessful = true;
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoMark(t.getIndex());
+			u.redoUnmark(i);
+			Output.showToUser(String.format(MSG_UNMARK, i));
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unmark"));
 		}
 	}
 
 	private void markTask(int i) {
-		
+
 		if (i >= 0 && i < TaskList.size()) {
-			TaskList.get(i).markTaskAsDone();
+			Task t = TaskList.get(i - 1);
+			t.markTaskAsDone();
+			isSuccessful = true;
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoMark(t.getIndex());
+			u.redoMark(i);
+			Output.showToUser(String.format(MSG_MARK, i));
+
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "mark"));
 		}
 	}
 
+	private void redoTask() {
+		inUndoState = true;
+
+		isSuccessful = u.redoOperation(TaskList);
+	}
+
 	private void executeCommand(Command cmd) {
-		String cmdDesc = cmd.getCommandType();
-		COMMAND_TYPE commandType = OperationType.determineCommandType(cmdDesc);
-		isSuccessful = false;
 
-		switch (commandType) {
-		case ADD_TASK:
-			addTask(cmd.getTask());
-			break;
-		case DELETE_TASK:
-			deleteTask(cmd.getIndex());
-			break;
-		case EDIT_TASK:
-			EditTask edit = new EditTask(TaskList);
-			edit.editTask(cmd);
-			break;
-		case UNDO:
-			u.undoOperation(TaskList);
-			break;
-		case SEARCH_TASK:
-			Search s = new Search(TaskList);
-			keyword = cmd.getContent();
-			OutputList = s.searchTask(keyword);
-			inSearchState = true;
-			return;
-		case BACK:
-			inSearchState = false;
-			break;
-		case CHANGEDIR:
-			changeDir(cmd.getContent());
-			break;
-		case CLEAR:
-			clearTask();
-			break;
-		case DONE:
-			markTask(cmd.getIndex());
-			break;
-		case UNDONE:
-			unmarkTask(cmd.getIndex());
-			break;
+		if (cmd == null) {
+			Output.showToUser(String.format("Unrecognized command type"));
 
-		default:
-			// throw an error if the command is not recognized
-			resultToUser = "Unrecognized command type";
-			throw new Error("Unrecognized command type");
+		} else {
+			String cmdDesc = cmd.getCommandType();
+			COMMAND_TYPE commandType = OperationType
+					.determineCommandType(cmdDesc);
+			isSuccessful = false;
+			Output.showToUser(cmdDesc);
+
+			switch (commandType) {
+			case ADD_TASK:
+				addTask(cmd.getTask());
+				break;
+			case DELETE_TASK:
+				deleteTask(cmd.getIndex());
+				break;
+			case EDIT_TASK:
+				EditTask edit = new EditTask(TaskList);
+				isSuccessful = edit.editTask(cmd);
+				break;
+			case UNDO:
+				undoTask();
+				break;
+			case SEARCH_TASK:
+				searchKey(cmd);
+				return;
+			case BACK:
+				backToMain();
+				break;
+			case CHANGEDIR:
+				changeDir(cmd.getContent());
+				break;
+			case CLEAR:
+				clearTask();
+				break;
+			case DONE:
+				markTask(cmd.getIndex());
+				break;
+			case UNDONE:
+				unmarkTask(cmd.getIndex());
+				break;
+			case REDO:
+				redoTask();
+			default:
+				// throw an error if the command is not recognized
+				// throw new Error("Unrecognized command type");
+			}
+			clearUndoHistory(commandType);
 		}
 		sortOutput();
+	}
+
+	private void backToMain() {
+		inSearchState = false;
+		Output.showToUser(String.format(MSG_BACK));
+	}
+
+	private void searchKey(Command cmd) {
+		Search s = new Search(TaskList);
+		keyword = cmd.getContent();
+		OutputList = s.searchTask(keyword);
+		inSearchState = true;
+	}
+
+	//clean unnecessary undo history
+	private void clearUndoHistory(COMMAND_TYPE commandType) {
+		if(inUndoState){
+			if(commandType != COMMAND_TYPE.UNDO && commandType != COMMAND_TYPE.REDO){
+				inUndoState = false;
+				u.clearList();
+			}
+		}		
+	}
+
+	private void undoTask() {
+		isSuccessful = u.undoOperation(TaskList);
+		inUndoState = true;
 	}
 
 	private void sortOutput() {
@@ -155,7 +207,6 @@ public class Logic {
 	}
 
 	public Vector<Task> run(String input) {
-		log.setLevel(Level.INFO);
 
 		isFirstTime++;
 		if (isFirstTime == 1) {
@@ -165,7 +216,6 @@ public class Logic {
 		Parser pr = new Parser();
 		Command cmd = pr.parseInputString(input);
 		executeCommand(cmd);
-		log.info(resultToUser);
 
 		if (isSuccessful) {
 			FileStream.writeTasksToXML(TaskList);
@@ -187,8 +237,12 @@ public class Logic {
 		sc.close();
 	}
 
-	private Vector<Task> initializeList() {
-		return FileStream.loadTasksFromXML();
+	public Vector<Task> initializeList() {
+		FileStream.initializeDir();
+		Vector<Task> list = FileStream.loadTasksFromXML();
+		Sort s = new Sort(list);
+		s.sortList();
+		return list;
 	}
 
 }

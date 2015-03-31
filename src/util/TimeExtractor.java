@@ -11,11 +11,11 @@ public class TimeExtractor {
 		DateTimeFormatter formatter;
 
 		if (t.getMinute() == 0) {
-			formatter = DateTimeFormatter.ofPattern("MMM d ha uu").withLocale(
-					Locale.ENGLISH);
+			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu ha")
+					.withLocale(Locale.ENGLISH);
 		} else {
-			formatter = DateTimeFormatter.ofPattern("MMM d h.ma uu").withLocale(
-					Locale.ENGLISH);
+			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu h.ma")
+					.withLocale(Locale.ENGLISH);
 		}
 		return t.format(formatter);
 	}
@@ -50,6 +50,9 @@ public class TimeExtractor {
 		if (date == null) {
 			date = DateFormatter3(str);
 		}
+		if (date == null) {
+			date = DateFormatter4(str);
+		}
 		return date;
 	}
 
@@ -58,18 +61,18 @@ public class TimeExtractor {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMMM"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
 			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
-				date = date.withYear(2016);
+				date = date.plusYears(1);
 			}
 			return date;
 		} catch (Exception e) {
@@ -83,6 +86,7 @@ public class TimeExtractor {
 			builder.parseCaseInsensitive();
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("dd.MM.uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d uuuu"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
@@ -99,12 +103,11 @@ public class TimeExtractor {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-			builder.optionalStart().parseDefaulting(ChronoField.MONTH_OF_YEAR,
-					LocalDate.now().getMonthValue());
-			builder.optionalStart().parseDefaulting(
-					ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
+			builder.parseDefaulting(ChronoField.MONTH_OF_YEAR, LocalDate.now()
+					.getMonthValue());
+			builder.parseDefaulting(ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
+			builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("EEE"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("EEEE"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
@@ -116,9 +119,30 @@ public class TimeExtractor {
 		}
 	}
 
+	private static LocalDate DateFormatter4(String str) {
+		String s;
+		LocalDate date = null;
+		String[] spcdt = { "tomorrow", "tmr", "today" };
+
+		String[] info = str.split(" ");
+
+		for (int j = 0; j < info.length; j++) {
+			s = info[j];
+			if (s.equalsIgnoreCase(spcdt[2])) {
+				date = LocalDate.now();
+			} else if (s.equalsIgnoreCase(spcdt[1])
+					|| s.equalsIgnoreCase(spcdt[0])) {
+				date = LocalDate.now().plusDays(1);
+			} else {
+				date = null;
+			}
+		}
+		return date;
+	}
+
 	public static void main(String[] args) {
-		String str = "fri";
-		Output.showToUser(DateFormatter3(str).toString());
+		String str = "1 nov";
+		Output.showToUser(DateFormatter1(str).toString());
 
 	}
 }

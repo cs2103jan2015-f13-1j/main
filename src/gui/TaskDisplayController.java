@@ -1,5 +1,7 @@
 package gui;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Vector;
 
 import fileIO.FileStream;
@@ -39,84 +41,84 @@ public class TaskDisplayController {
 	private ListViewGUI gui;
 
 	private Vector<Task> VectorTaskList;
-	
-	static class TaskCell extends ListCell<Task> {
-        HBox hbox = new HBox();
-        CheckBox done = new CheckBox();
-        Text desc = new Text("(empty)");
-        Text details = new Text("(empty)");
-        Pane pane = new Pane();
-        VBox buttonVBox = new VBox();
-        VBox taskVBox = new VBox();
-        Button flag = new Button("Flag");
-        Button delete = new Button("Del");
 
-        public TaskCell() {
-            super();
-            taskVBox.getChildren().addAll(desc,details);
-            buttonVBox.getChildren().addAll(flag, delete);
-            delete.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    System.out.println("DELETE!");
-                }
-            });
-            
-            flag.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    System.out.println("THIS IS IMPORTANT!");
-                }
-            });
-            hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
-            HBox.setHgrow(pane, Priority.ALWAYS);
-            
-        }
-        
-        @Override
-        protected void updateItem(Task t, boolean b) {
+	static class TaskCell extends ListCell<Task> {
+		HBox hbox = new HBox();
+		CheckBox done = new CheckBox();
+		Text desc = new Text("(empty)");
+		Text details = new Text("(empty)");
+		Pane pane = new Pane();
+		VBox buttonVBox = new VBox();
+		VBox taskVBox = new VBox();
+		Button flag = new Button("Flag");
+		Button delete = new Button("Del");
+
+		public TaskCell() {
+			super();
+			taskVBox.getChildren().addAll(desc, details);
+			buttonVBox.getChildren().addAll(flag, delete);
+			delete.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("DELETE!");
+				}
+			});
+
+			flag.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("THIS IS IMPORTANT!");
+				}
+			});
+			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
+			HBox.setHgrow(pane, Priority.ALWAYS);
+
+		}
+
+		@Override
+		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
 			if (t != null) {
-	            desc.setText(formatTask1(t));
-	            details.setText(formatTask2(t));
-                setGraphic(hbox);
+				desc.setText(formatTask1(t));
+				details.setText(formatTask2(t));
+				setGraphic(hbox);
 			} else {
 				setGraphic(null);
 			}
 		}
-    }
+	}
 
 	public void setTaskList(Vector<Task> TaskList) {
 
 		list = FXCollections.observableList(TaskList);
 		listView.setItems(list);
 		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
-			
+
 			@Override
-            public ListCell<Task> call(ListView<Task> param) {
-                return new TaskCell();
-            }
-//			@Override
-//			public ListCell<Task> call(ListView<Task> ListViewTask) {
-//				TaskCell cell = new TaskCell() {
-//					@Override
-//					protected void updateItem(Task t, boolean b) {
-//						super.updateItem(t, b);
-//						if (t != null) {
-//							Node nodeDesc = hbox.getChildren().get(1);
-//							Node nodeDetails = hbox.getChildren().get(2);
-//					        if(nodeDesc instanceof Text) {
-//					            nodeDesc = formatTask1(t);
-//					            }
-//							details = formatTask2(t);
-//							setGraphic(hbox);
-//						} else {
-//							setGraphic(new Text(null));
-//						}
-//					}
-//				};
-//				return cell;
-//			}
+			public ListCell<Task> call(ListView<Task> param) {
+				return new TaskCell();
+			}
+			// @Override
+			// public ListCell<Task> call(ListView<Task> ListViewTask) {
+			// TaskCell cell = new TaskCell() {
+			// @Override
+			// protected void updateItem(Task t, boolean b) {
+			// super.updateItem(t, b);
+			// if (t != null) {
+			// Node nodeDesc = hbox.getChildren().get(1);
+			// Node nodeDetails = hbox.getChildren().get(2);
+			// if(nodeDesc instanceof Text) {
+			// nodeDesc = formatTask1(t);
+			// }
+			// details = formatTask2(t);
+			// setGraphic(hbox);
+			// } else {
+			// setGraphic(new Text(null));
+			// }
+			// }
+			// };
+			// return cell;
+			// }
 		});
 
 	}
@@ -124,33 +126,33 @@ public class TaskDisplayController {
 	private static String formatTask1(Task t) {
 		return (t.getIndex() + ". " + t.getTaskDesc());
 	}
-	
+
 	private static String formatTask2(Task t) {
-		
+
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			return(
-					"\nFrom: "
-					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
-					+ TimeExtractor.formatDateTime(t.getEndTime()));
+			return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
+					+ " To: " + TimeExtractor.formatDateTime(t.getEndTime()));
 
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			return(
-					"\nBy: "
-					+ TimeExtractor.formatDateTime(t.getEndTime()));
+			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
-			return("\n");
+			return ("\n");
 		}
 	}
 
 	@FXML
 	private void initialize() {
-		FileStream.initializeDir();
-		VectorTaskList = FileStream.loadTasksFromXML();
+		VectorTaskList = l.initializeList();
+		
 		setTaskList(VectorTaskList);
 
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
-		updateLabel("");
+
+		GUIMsg feedback = new GUIMsg(System.out, label);
+		System.setOut(feedback);
+		System.setErr(feedback);
+		label.setText("");
 	}
 
 	@FXML
@@ -166,7 +168,8 @@ public class TaskDisplayController {
 					String text = inputBox.getText();
 
 					// Terminates program if exit, else refresh list
-					if (!text.toLowerCase().equals("exit")) {
+					if (!text.toLowerCase().equals("exit")
+							&& !text.toLowerCase().equals("quit")) {
 						processUserInput(text);
 
 						// clear text
@@ -176,11 +179,11 @@ public class TaskDisplayController {
 					}
 
 				}
-				
+
 				if (key.getCode().equals(KeyCode.F5)) {
 					FileStream.changeDir();
 				}
-				
+
 			}
 		});
 	}
@@ -196,15 +199,35 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
-		
-		//Comments on replacing listView.setItems with the following 2 lines:
-		//This theoretically works the same way, but the 2 lines will fix the way listView updates accordingly.
-		//listView.setItems(list);		
+
+		// Comments on replacing listView.setItems with the following 2 lines:
+		// This theoretically works the same way, but the 2 lines will fix the
+		// way listView updates accordingly.
+		// listView.setItems(list);
 		listView.getItems().clear();
 		listView.getItems().addAll(VectorTaskList);
-		
-		String resultToUser = l.getText();
-		updateLabel(resultToUser);
+
+	}
+
+	public class GUIMsg extends PrintStream {
+		private Label label;
+
+		public GUIMsg(OutputStream out, Label label) {
+			super(out);
+			this.label = label;
+		}
+
+		@Override
+		public synchronized void write(byte[] buf, int off, int len) {
+			final String message = new String(buf, off, len);
+
+			label.setText(message);
+		}
+
+		@Override
+		public synchronized void write(int i) {
+			label.setText(String.valueOf((char) i));
+		}
 	}
 
 }

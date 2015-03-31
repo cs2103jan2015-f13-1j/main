@@ -15,17 +15,18 @@ public class EditTask {
 	private Vector<Task> TaskList = new Vector<Task>();
 	private static final String MSG_EDIT = "Task edited successfully";
 	private static final String MSG_TASK_FAILURE = "Edit %s does not exist!\n";
-	
-	public EditTask(Vector<Task> TaskList){
+	private static final String MSG_EDIT_FAILURE = "Edit %d %s failed!\n";
+
+	public EditTask(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
 	}
 
-	void editTask(Command cmd) {
-		
+	boolean editTask(Command cmd) {
+
 		int index = cmd.getIndex();
 		String editType = cmd.getContent();
 		String modifiedContent = cmd.getModifiedString();
-		
+
 		if (index > 0 && index <= TaskList.size()) {
 			switch (editType.toLowerCase()) {
 			case "task":
@@ -43,120 +44,145 @@ public class EditTask {
 			case "enddate":
 				isSuccessful = editTaskEndDate(index, modifiedContent);
 				break;
+			default:
+				Output.showToUser(String.format(MSG_EDIT_FAILURE, index,
+						editType));
+				break;
 			}
 			if (isSuccessful) {
-				Logic.setText(MSG_EDIT);
-				Output.showToUser (MSG_EDIT);
+				Output.showToUser(MSG_EDIT);
+			} else {
+				Output.showToUser(String.format(MSG_EDIT_FAILURE, index,
+						editType));
 			}
 		} else {
-			Logic.setText(String.format(MSG_TASK_FAILURE, index));
-			Output.showToUser (String.format(MSG_TASK_FAILURE, index));
+
+			Output.showToUser(String.format(MSG_TASK_FAILURE, index));
 		}
+		return isSuccessful;
 	}
 
 	private boolean editTaskEndDate(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
 			LocalDateTime endTime = editTask.getEndTime();
+			LocalDateTime modifiedTime;
 
 			if (endTime != null) {
-				
-				Logic.u.undoEditEndDate(index, endTime);
-				
+
 				LocalDate t = TimeExtractor.extractDate(modifiedContent);
-				editTask.setEndTime(endTime.withYear(t.getYear())
-						.withDayOfYear(t.getDayOfYear()));
+				modifiedTime = LocalDateTime.of(t, endTime.toLocalTime());
+				editTask.setEndTime(modifiedTime);
+
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditEndDate(editTask.getIndex(), endTime);
+				Logic.u.redoEditEndDate(index, modifiedTime);
+
 				return true;
 			} else {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			Output.showToUser (String.format(MSG_TASK_FAILURE, "enddate for " + index));
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "enddate for "
+					+ index));
 			return false;
 		}
 	}
 
-	
-	
 	private boolean editTaskStartDate(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
 			LocalDateTime startTime = editTask.getStartTime();
+			LocalDateTime modifiedTime;
 
 			if (startTime != null) {
 				LocalDate t = TimeExtractor.extractDate(modifiedContent);
-				
-				Logic.u.undoEditStartDate(index, startTime);
-				
-				editTask.setStartTime(startTime.withYear(t.getYear())
-						.withDayOfYear(t.getDayOfYear()));
+
+				modifiedTime = LocalDateTime.of(t, startTime.toLocalTime());
+				editTask.setEndTime(modifiedTime);
+
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditStartDate(editTask.getIndex(), startTime);
+				Logic.u.redoEditStartDate(index, modifiedTime);
 				return true;
 			} else {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			Output.showToUser (String.format(MSG_TASK_FAILURE, "startdate for " + index));
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "startdate for "
+					+ index));
 			return false;
 		}
 	}
-	
 
 	private boolean editTaskEndTime(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
 			LocalDateTime endTime = editTask.getEndTime();
-
+			LocalDateTime modifiedTime;
+			
 			if (endTime != null) {
 				LocalTime t = TimeExtractor.extractTime(modifiedContent);
 				
-				Logic.u.undoEditEndTime(index, endTime);
-				
-				editTask.setEndTime(endTime.withHour(t.getHour()).withMinute(
-						t.getMinute()));
+				modifiedTime = LocalDateTime.of(endTime.toLocalDate(), t);
+				editTask.setEndTime(modifiedTime);
+		
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditEndTime(editTask.getIndex(), endTime);
+				Logic.u.redoEditEndDate(index, modifiedTime);
 				return true;
 			} else {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			Output.showToUser (String.format(MSG_TASK_FAILURE, "endtime for " + index));
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "endtime for "
+					+ index));
 			return false;
 		}
 	}
-	
 
 	private boolean editTaskStartTime(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
 			LocalDateTime startTime = editTask.getStartTime();
+			LocalDateTime modifiedTime;
 
 			if (startTime != null) {
 				LocalTime t = TimeExtractor.extractTime(modifiedContent);
-				
-				Logic.u.undoEditStartTime(index, startTime);
-				
-				editTask.setStartTime(startTime.withHour(t.getHour())
-						.withMinute(t.getMinute()));
+				modifiedTime = LocalDateTime.of(startTime.toLocalDate(), t);
+				editTask.setEndTime(modifiedTime);
+		
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditStartTime(editTask.getIndex(), startTime);
+				Logic.u.redoEditStartTime(index, modifiedTime);
 				return true;
 			} else {
 				return false;
 			}
 		} catch (NullPointerException e) {
-			Output.showToUser (String.format(MSG_TASK_FAILURE, "startdate for " + index));
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "startdate for "
+					+ index));
 			return false;
 		}
 	}
-	
 
 	private boolean editTaskDesc(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
-			
-			Logic.u.undoEditTaskDesc(index, editTask);
-			
+			String originalContent = editTask.getTaskDesc();
+
 			editTask.setTaskDesc(modifiedContent);
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			Logic.u.undoEditTaskDesc(editTask.getIndex(), originalContent);
+			Logic.u.redoEditTaskDesc(index, modifiedContent);
 			return true;
 		} catch (IndexOutOfBoundsException e) {
-			Output.showToUser (String.format(MSG_TASK_FAILURE, index));
+			Output.showToUser(String.format(MSG_TASK_FAILURE, index));
 			return false;
 		}
 	}

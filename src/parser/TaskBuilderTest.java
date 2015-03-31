@@ -72,30 +72,75 @@ public class TaskBuilderTest {
 		// case 5 dd/MM/uuuu
 		tb = new TaskBuilder(
 				"National Conference in Atlanta 23/9/2015 - 26/9/2015");
-		tm = LocalDateTime.of(
-				LocalDate.of(LocalDate.now().getYear(), 9, 23),
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 9, 23),
 				LocalTime.of(0, 0));
 		tb.run();
 		assertEquals("National Conference in Atlanta", tb.t.getTaskDesc());
 		assertEquals(tm.toString(), tb.t.getStartTime().toString());
-		tm = LocalDateTime.of(
-				LocalDate.of(LocalDate.now().getYear(), 9, 26),
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 9, 26),
 				LocalTime.of(23, 59));
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
-		
+
 		// case 6 dd/MM/uuuu hhmm
-				tb = new TaskBuilder(
-						"CS2013 from 12/12/2015 1230 to 12/12/2015 1400");
-				tm = LocalDateTime.of(
-						LocalDate.of(2015, 12, 12),
-						LocalTime.of(12, 30));
-				tb.run();
-				assertEquals("CS2013", tb.t.getTaskDesc());
-				assertEquals(tm.toString(), tb.t.getStartTime().toString());
-				tm = LocalDateTime.of(
-						LocalDate.of(2015, 12, 12),
-						LocalTime.of(14, 00));
-				assertEquals(tm.toString(), tb.t.getEndTime().toString());
+		tb = new TaskBuilder("CS2013 from 12/12/2015 1230 to 12/12/2015 1400");
+		tm = LocalDateTime.of(LocalDate.of(2015, 12, 12), LocalTime.of(12, 30));
+		tb.run();
+		assertEquals("CS2013", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.of(2015, 12, 12), LocalTime.of(14, 00));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 7 MMMM d hh:mm
+		tb = new TaskBuilder("Conference jan 1 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+			System.out.println("hh");
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 8 d MMM hh:mm
+		tb = new TaskBuilder("Conference 1 jan 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 9 MMMM.d hh:mm
+		tb = new TaskBuilder("Conference January.1 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 10 dd MM
+		tb = new TaskBuilder("t3 3 mar");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 3, 3),
+				LocalTime.of(0, 0));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("t3", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 3, 3),
+				LocalTime.of(23, 59));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
 	}
 
 }
