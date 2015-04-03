@@ -44,9 +44,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ToggleButton mnemonicParsing="false" text="Show" />
-                  <ToggleButton layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="1" />
-                  <ToggleButton layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="2" />
+                  <ToggleButton fx:id="showTimed" mnemonicParsing="false" text="Show" />
+                  <ToggleButton fx:id="showDeadline" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="1" />
+                  <ToggleButton fx:id="showFloating" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="2" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="  Timed Tasks" GridPane.columnIndex="1" />
                   <Text layoutX="94.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  Deadline Tasks" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Text layoutX="122.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  Floating Tasks" GridPane.columnIndex="1" GridPane.rowIndex="2" />
