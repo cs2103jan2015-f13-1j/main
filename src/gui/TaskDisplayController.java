@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.util.Vector;
 
 import fileIO.FileStream;
-import gui.TaskDispC.XCell;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
@@ -42,11 +41,12 @@ public class TaskDisplayController {
 
 	private Vector<Task> VectorTaskList;
 
-	static class TaskCell extends ListCell<Task> {
+	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
 		Text desc = new Text("(empty)");
 		Text details = new Text("(empty)");
+		int index = -1;
 		Pane pane = new Pane();
 		VBox buttonVBox = new VBox();
 		VBox taskVBox = new VBox();
@@ -60,14 +60,15 @@ public class TaskDisplayController {
 			delete.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("DELETE!");
+					processUserInput(("delete "+index));
+					
 				}
 			});
 
 			flag.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("THIS IS IMPORTANT!");
+					processUserInput(("mark "+index));
 				}
 			});
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
@@ -81,6 +82,7 @@ public class TaskDisplayController {
 			if (t != null) {
 				desc.setText(formatTask1(t));
 				details.setText(formatTask2(t));
+				index = t.getIndex();
 				setGraphic(hbox);
 			} else {
 				setGraphic(null);
@@ -98,27 +100,6 @@ public class TaskDisplayController {
 			public ListCell<Task> call(ListView<Task> param) {
 				return new TaskCell();
 			}
-			// @Override
-			// public ListCell<Task> call(ListView<Task> ListViewTask) {
-			// TaskCell cell = new TaskCell() {
-			// @Override
-			// protected void updateItem(Task t, boolean b) {
-			// super.updateItem(t, b);
-			// if (t != null) {
-			// Node nodeDesc = hbox.getChildren().get(1);
-			// Node nodeDetails = hbox.getChildren().get(2);
-			// if(nodeDesc instanceof Text) {
-			// nodeDesc = formatTask1(t);
-			// }
-			// details = formatTask2(t);
-			// setGraphic(hbox);
-			// } else {
-			// setGraphic(new Text(null));
-			// }
-			// }
-			// };
-			// return cell;
-			// }
 		});
 
 	}
@@ -149,9 +130,9 @@ public class TaskDisplayController {
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
 
-		GUIMsg feedback = new GUIMsg(System.out, label);
-		System.setOut(feedback);
-		System.setErr(feedback);
+//		GUIMsg feedback = new GUIMsg(System.out, label);
+//		System.setOut(feedback);
+//		System.setErr(feedback);
 		label.setText("");
 	}
 
