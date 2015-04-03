@@ -167,7 +167,7 @@ public class TaskBuilder {
 			desc = desc.substring(0, desc.length() - 4).trim();
 		}
 		if (desc.toLowerCase().endsWith(" by")) {
-			t.setTaskType(Task.TASK_TYPE.DEADLINE);
+			//t.setTaskType(Task.TASK_TYPE.DEADLINE);
 			desc = desc.substring(0, desc.length() - 2).trim();
 		}
 		if (desc.endsWith(" at")) {
