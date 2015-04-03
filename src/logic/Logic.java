@@ -74,7 +74,22 @@ public class Logic {
 		isSuccessful = true;
 		Output.showToUser(String.format(MSG_CLEAR));
 	}
+	
+	private void toggleMarkTask(int i) {
+		if (i >= 0 && i < TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			if(t.isDone()) {
+				unmarkTask(i);
+			} 
+			
+			else {
+				markTask(i);
+			}
+					
+			}
+		}
 
+	
 	private void unmarkTask(int i) {
 
 		if (i > 0 && i <= TaskList.size()) {
