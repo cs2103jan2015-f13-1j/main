@@ -16,6 +16,7 @@ public class Task {
 	private TASK_TYPE type;
 	private boolean isDone = false;
 	private boolean isDue = false;
+	private boolean flag = false;
 	private int index;
 
 	public static enum TASK_TYPE {
@@ -56,6 +57,10 @@ public class Task {
 		}
 	}
 	
+	public boolean flag(){
+		return flag;
+	}
+	
 	public boolean isDone(){
 		return isDone;
 	}
@@ -78,6 +83,14 @@ public class Task {
 	
 	public void markTaskAsUndone() {
 		isDone = false;
+	}
+	
+	public void markFlag() {
+		flag = true;
+	}
+	
+	public void unmarkFlag() {
+		flag = false;
 	}
 
 	public void setTaskDesc(String desc) {

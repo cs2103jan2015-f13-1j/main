@@ -32,6 +32,7 @@ public class TimeExtractor {
 			builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("h:ma"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalTime time = LocalTime.parse(str, dtf);

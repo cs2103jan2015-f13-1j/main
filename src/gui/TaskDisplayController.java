@@ -42,7 +42,7 @@ public class TaskDisplayController {
 
 	private Vector<Task> VectorTaskList;
 
-	static class TaskCell extends ListCell<Task> {
+	 class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
 		Text desc = new Text("(empty)");
@@ -68,6 +68,7 @@ public class TaskDisplayController {
 				@Override
 				public void handle(ActionEvent event) {
 					System.out.println("THIS IS IMPORTANT!");
+					processUserInput("haha");
 				}
 			});
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);

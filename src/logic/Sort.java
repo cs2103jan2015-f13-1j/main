@@ -34,7 +34,7 @@ public class Sort {
 			if (t.getEndTime() != null) {
 				if (t.getEndTime().isBefore(LocalDateTime.now())) {
 					t.markTaskAsDue();
-				}else{
+				} else {
 					t.markTaskAsUndue();
 				}
 			}
@@ -44,11 +44,23 @@ public class Sort {
 
 	class listComparator implements Comparator<Task> {
 
-		// Sort task according to whether it is marked as done, endtime and
+		// Sort task according to flag
 		// alphatical order
 		@Override
 		public int compare(Task a, Task b) {
+			if (a.flag() && b.flag()) {
+				return compareDone(a, b);
+			} else if (a.flag()) {
+				return -1;
+			} else if (b.flag()) {
+				return 1;
+			} else {
+				return compareDone(a, b);
+			}
+		}
 
+		// Sort task according to whether it is marked as done
+		private int compareDone(Task a, Task b) {
 			if (a.isDone() && b.isDone()) {
 				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
 			} else if (a.isDone()) {
@@ -58,9 +70,10 @@ public class Sort {
 			} else {
 				return compareType(a, b);
 			}
-
 		}
 
+		// Sort task according to whether task type, endtime and alphatical
+		// order
 		private int compareType(Task a, Task b) {
 
 			Task.TASK_TYPE typeA = a.getTaskType();

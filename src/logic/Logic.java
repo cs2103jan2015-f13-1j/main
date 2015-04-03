@@ -27,6 +27,8 @@ public class Logic {
 	private static final String MSG_CLEAR = "List cleared!\n";
 	private static final String MSG_MARK = "Task %d marked as done!\n";
 	private static final String MSG_UNMARK = "Task %d marked as undone!\n";
+	private static final String MSG_FLAG = "Task %d prioritised!\n";
+	private static final String MSG_UNFLAG = "Task %d unprioritised!\n";
 	private static final String MSG_BACK = "Back to main list.\n";
 
 	public void addTask(Task t) {
@@ -75,7 +77,7 @@ public class Logic {
 
 	private void unmarkTask(int i) {
 
-		if (i >= 0 && i < TaskList.size()) {
+		if (i > 0 && i <= TaskList.size()) {
 			Task t = TaskList.get(i - 1);
 			t.markTaskAsUndone();
 			isSuccessful = true;
@@ -91,7 +93,7 @@ public class Logic {
 
 	private void markTask(int i) {
 
-		if (i >= 0 && i < TaskList.size()) {
+		if (i > 0 && i <= TaskList.size()) {
 			Task t = TaskList.get(i - 1);
 			t.markTaskAsDone();
 			isSuccessful = true;
@@ -103,6 +105,40 @@ public class Logic {
 
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "mark"));
+		}
+	}
+	
+	private void flagTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.markFlag();
+			isSuccessful = true;
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoFlag(t.getIndex());
+			u.redoFlag(i);
+			Output.showToUser(String.format(MSG_FLAG, i));
+
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "flag"));
+		}
+	}
+	
+	private void unflagTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.unmarkFlag();
+			isSuccessful = true;
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoUnflag(t.getIndex());
+			u.redoUnflag(i);
+			Output.showToUser(String.format(MSG_UNFLAG, i));
+
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unflag"));
 		}
 	}
 
@@ -156,8 +192,15 @@ public class Logic {
 			case UNDONE:
 				unmarkTask(cmd.getIndex());
 				break;
+			case FLAG:
+				flagTask(cmd.getIndex());
+				break;
+			case UNFLAG:
+				unflagTask(cmd.getIndex());
+				break;
 			case REDO:
 				redoTask();
+				break;
 			default:
 				// throw an error if the command is not recognized
 				// throw new Error("Unrecognized command type");

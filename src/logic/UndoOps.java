@@ -76,6 +76,14 @@ public class UndoOps {
 			Task unmarkTask = TaskList.get(u.getIndex() - 1);
 			unmarkTask.markTaskAsUndone();
 			break;
+		case "flag":
+			Task flagTask = TaskList.get(u.getIndex() - 1);
+			flagTask.markFlag();
+			break;
+		case "unflag":
+			Task unflagTask = TaskList.get(u.getIndex() - 1);
+			unflagTask.unmarkFlag();
+			break;
 		}
 	}
 
@@ -245,6 +253,34 @@ public class UndoOps {
 	public void redoUnmark(int index) {
 		Task u = new Task();
 		RedoCommandList.push(new String("unmark"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+	
+	public void undoFlag(int index){
+		Task u = new Task();
+		CommandList.push(new String("unflag"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+	
+	public void redoFlag(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("flag"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+	
+	public void undoUnflag(int index) {
+		Task u = new Task();
+		CommandList.push(new String("flag"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+	
+	public void redoUnflag(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("unflag"));
 		u.setIndex(index);
 		RedoList.push(u);
 	}

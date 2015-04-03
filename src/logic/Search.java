@@ -122,8 +122,7 @@ public class Search {
 		}
 		// TODO throw new Error("command type string cannot be null!");
 		Output.showToUser("Search task type!");
-		if (taskTypeString.equalsIgnoreCase("floating")
-				|| taskTypeString.equalsIgnoreCase("create")) {
+		if (taskTypeString.equalsIgnoreCase("floating")) {
 			return TASK_TYPE.FLOATING_TASK;
 		} else if (taskTypeString.equalsIgnoreCase("deadline")
 				|| taskTypeString.equalsIgnoreCase("due")) {

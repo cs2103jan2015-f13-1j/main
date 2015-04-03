@@ -3,7 +3,7 @@ package util;
 public class OperationType {
 
 	public static enum COMMAND_TYPE {
-		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR, DONE, UNDONE, REDO
+		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR, DONE, UNDONE, REDO, FLAG, UNFLAG
 	};
 
 	public static COMMAND_TYPE determineCommandType(String commandTypeString) {
@@ -34,7 +34,12 @@ public class OperationType {
 			return COMMAND_TYPE.UNDONE;
 		} else if (commandTypeString.equalsIgnoreCase("redo")) {
 			return COMMAND_TYPE.REDO;
-		}else if (commandTypeString.isEmpty()) {
+		} else if (commandTypeString.equalsIgnoreCase("flag")
+				|| commandTypeString.equalsIgnoreCase("prioritise")) {
+			return COMMAND_TYPE.FLAG;
+		} else if (commandTypeString.equalsIgnoreCase("unflag")) {
+			return COMMAND_TYPE.UNFLAG;
+		} else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {
 			return COMMAND_TYPE.INVALID;

@@ -20,6 +20,18 @@ public class CreateCmd {
 		return dirCommand;
 	}
 	
+	public Command createFlagCommand(int i){
+		Command flagCommand = new Command("flag");
+		flagCommand.setIndex(i);
+		return flagCommand;
+	}
+	
+	public Command createUnflagCommand(int i){
+		Command unflagCommand = new Command("unflag");
+		unflagCommand.setIndex(i);
+		return unflagCommand;
+	}
+	
 	public Command createMarkCommand(int i){
 		Command markCommand = new Command("mark");
 		markCommand.setIndex(i);

@@ -5,11 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
+import java.util.Scanner;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import logic.Logic;
 import util.Task;
 import util.TimeExtractor;
@@ -103,9 +105,6 @@ public class TaskBuilder {
 
 	private Task.TASK_TYPE checkTaskType() {
 
-		if (checkRecurring())
-			return Task.TASK_TYPE.RECURRING_TASK;
-
 		int i = -1, j = -1;
 		checkTimePattern();
 		checkDatePattern();
@@ -130,12 +129,6 @@ public class TaskBuilder {
 		} else {
 			return Task.TASK_TYPE.DEADLINE;
 		}
-
-	}
-
-	private boolean checkRecurring() {
-		return false;
-		// TODO Auto-generated method stub
 
 	}
 
@@ -471,7 +464,7 @@ public class TaskBuilder {
 		int i, index = -1;
 
 		Matcher m;
-		m = Pattern.compile("[^\"]\\b\\d{1,2}(.\\d{1,2})?\\s*[ap]m\\s*",
+		m = Pattern.compile("[^\"]\\b\\d{1,2}([.:]\\d{1,2})?\\s*[ap]m\\s*",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		while (m.find()) {
 			LocalTime time = TimeExtractor.extractTime(m.group().replace(" ",
@@ -525,11 +518,27 @@ public class TaskBuilder {
 	public static void main(String[] args) {
 		TaskBuilder tb = new TaskBuilder(args.toString());
 		tb.run();
+
 	}
 
 	public void run() {
 
-		Task t = extractAddCommand();
+		Scanner sc = new Scanner(System.in);
+
+		_input = sc.nextLine();
+		while (!_input.contains(new String("exit"))) {
+			Task t = extractAddCommand();
+			displayTask(t);
+			_input = sc.nextLine();
+		}
+		sc.close();
+
+		/*
+		 * _input = "tennis 4.23pm"; timePattern2();
+		 */
+	}
+
+	private void displayTask(Task t) {
 		log.info(t.getTaskType().toString());
 		String text;
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
@@ -544,10 +553,6 @@ public class TaskBuilder {
 			text = new String(t.getTaskDesc() + "\n");
 		}
 		log.info(text);
-
-		/*
-		 * _input = "tennis 4.23pm"; timePattern2();
-		 */
 	}
 
 }
