@@ -61,9 +61,12 @@ public class Logic {
 		}
 	}
 
-	private void changeDir(String str) {
-		u.undoChgdir();
-		u.redoChgdir();
+	private void changeDir() {
+		FileStream.changeDir();
+		if(!FileStream.getOldPath().equals(FileStream.getNewPath())) {
+			u.undoChgdir();
+			u.redoChgdir();
+		}
 		Output.showToUser(String.format(MSG_CHGDIR));
 	}
 
@@ -196,7 +199,7 @@ public class Logic {
 				backToMain();
 				break;
 			case CHANGEDIR:
-				changeDir(cmd.getContent());
+				changeDir();
 				break;
 			case CLEAR:
 				clearTask();

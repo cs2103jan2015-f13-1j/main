@@ -12,7 +12,6 @@ public class Parser {
 		String commandTypeString = input.trim().split("\\s+")[0];
 		COMMAND_TYPE commandType = OperationType
 				.determineCommandType(commandTypeString);
-		input = input.toLowerCase();
 
 		switch (commandType) {
 		case ADD_TASK:

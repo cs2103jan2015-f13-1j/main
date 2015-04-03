@@ -4,7 +4,7 @@ import util.Task;
 
 public class CreateCmd {
 	public Command createNewCommand(String str){
-		assert str.equals(new String("clear")) || str.equals(new String(""));
+		//TODO assert str.equals(new String("clear")) || str.equals(new String(""));
 		Command backCommand = new Command(str);
 		return backCommand;
 	}

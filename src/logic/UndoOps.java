@@ -3,6 +3,8 @@ package logic;
 import java.time.LocalDateTime;
 import java.util.Stack;
 import java.util.Vector;
+
+import fileIO.FileStream;
 import util.Output;
 import util.Task;
 
@@ -83,6 +85,10 @@ public class UndoOps {
 		case "unflag":
 			Task unflagTask = TaskList.get(u.getIndex() - 1);
 			unflagTask.unmarkFlag();
+			break;
+		case "changedir":
+			String pathName = u.getTaskDesc();
+			FileStream.changeDirWithString(pathName);
 			break;
 		}
 	}
@@ -225,8 +231,19 @@ public class UndoOps {
 	}
 
 	public void undoChgdir() {
-		// TODO Auto-generated method stub
-
+		Task u = new Task();
+		String desc = FileStream.getOldPath();
+		CommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		UndoList.push(u);
+	}
+	
+	public void redoChgdir() {
+		Task u = new Task();
+		String desc = FileStream.getNewPath();
+		RedoCommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		RedoList.push(u);
 	}
 
 	public void undoMark(int index) {
@@ -286,11 +303,6 @@ public class UndoOps {
 	}
 
 	public void redoClear() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void redoChgdir() {
 		// TODO Auto-generated method stub
 
 	}
