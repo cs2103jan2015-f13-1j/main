@@ -54,6 +54,9 @@ public class TimeExtractor {
 		if (date == null) {
 			date = DateFormatter4(str);
 		}
+		if (date == null) {
+			date = DateFormatter5(str);
+		}
 		return date;
 	}
 
@@ -62,13 +65,34 @@ public class TimeExtractor {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d.M"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d-M"));
+
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalDate date = LocalDate.parse(str, dtf);
+			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
+				date = date.plusYears(1);
+			}
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	private static LocalDate DateFormatter2(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+			
+			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
@@ -81,7 +105,7 @@ public class TimeExtractor {
 		}
 	}
 
-	private static LocalDate DateFormatter2(String str) {
+	private static LocalDate DateFormatter3(String str) {
 		try {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
@@ -99,7 +123,7 @@ public class TimeExtractor {
 		}
 	}
 
-	private static LocalDate DateFormatter3(String str) {
+	private static LocalDate DateFormatter4(String str) {
 		try {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
@@ -120,7 +144,7 @@ public class TimeExtractor {
 		}
 	}
 
-	private static LocalDate DateFormatter4(String str) {
+	private static LocalDate DateFormatter5(String str) {
 		String s;
 		LocalDate date = null;
 		String[] spcdt = { "tomorrow", "tmr", "today" };
@@ -142,8 +166,8 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "1 nov";
-		Output.showToUser(DateFormatter1(str).toString());
+		String str = "8.14";
+		Output.showToUser(DateFormatter2(str).toString());
 
 	}
 }
