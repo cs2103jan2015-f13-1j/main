@@ -37,11 +37,31 @@ public class Parser {
 			return unmarkTask(input);
 		case REDO:
 			return redoTask();
+		case FLAG:
+			return flag(input);
+		case UNFLAG:
+			return unflag(input);
 		default:
 			//TODO throw an error if the command is not recognized
 			return null;
 			//throw new Error("Unrecognized command type");
 		}
+	}
+
+	private Command flag(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+
+		CreateCmd flagcmd = new CreateCmd();
+		return flagcmd.createFlagCommand(i);
+	}
+
+	private Command unflag(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+
+		CreateCmd flagcmd = new CreateCmd();
+		return flagcmd.createUnflagCommand(i);
 	}
 
 	private Command redoTask() {
