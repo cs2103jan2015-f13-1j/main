@@ -9,6 +9,8 @@ import gui.TaskDispC.XCell;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,6 +35,15 @@ public class TaskDisplayController {
 
 	@FXML
 	private Label label = new Label();
+	
+	@FXML
+	private ToggleButton showTimed;
+	
+	@FXML
+	private ToggleButton showDeadline;
+	
+	@FXML
+	private ToggleButton showFloating;
 
 	private ObservableList<Task> list;
 
@@ -56,6 +67,7 @@ public class TaskDisplayController {
 
 		public TaskCell() {
 			super();
+			done.setSelected(false);
 			taskVBox.getChildren().addAll(desc, details);
 			buttonVBox.getChildren().addAll(flag, delete);
 			delete.setOnAction(new EventHandler<ActionEvent>() {
@@ -68,9 +80,30 @@ public class TaskDisplayController {
 			flag.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					processUserInput(("mark "+index));
+					processUserInput(("flag "+index));
+					System.out.println("item "+index+ " flagged.");
 				}
 			});
+			
+//			done.setOnAction(new EventHandler<ActionEvent>() {
+//				@Override
+//				public 
+//			});
+			
+//			done.selectedProperty().addListener(new ChangeListener<Boolean>() {
+//				public void changed(ObservableValue<? extends Boolean> ov,
+//						Boolean old_val, Boolean new_val) {
+//					if(new_val) {
+//						processUserInput("unmark "+ index);
+//						System.out.println("unmark "+ index);
+//					}
+//					else {
+//						processUserInput("mark "+ index);
+//						System.out.println("mark "+ index);
+//					}
+//				}
+//			});
+			
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
 			HBox.setHgrow(pane, Priority.ALWAYS);
 
@@ -82,6 +115,7 @@ public class TaskDisplayController {
 			if (t != null) {
 				desc.setText(formatTask1(t));
 				details.setText(formatTask2(t));
+				done.setSelected(t.isDone());
 				index = t.getIndex();
 				setGraphic(hbox);
 			} else {
@@ -167,6 +201,7 @@ public class TaskDisplayController {
 				}
 
 			}
+			
 		});
 	}
 
