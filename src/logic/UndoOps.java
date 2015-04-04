@@ -18,6 +18,7 @@ public class UndoOps {
 	private Stack<String> RedoCommandList = new Stack<String>();
 	private Stack<String> CommandListAfterUndo = new Stack<String>();
 	private Stack<String> RedoCommandListAfterUndo = new Stack<String>();
+	private Stack<Vector<Task>> backUpList = new Stack<Vector<Task>>();
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	private static final String MSG_UNDO = "Undo successful!";
 	private static final String MSG_REDO = "Redo successful!";
@@ -33,10 +34,29 @@ public class UndoOps {
 			UndoListAfterUndo.add(UndoList.pop());
 			RedoCommandListAfterUndo.add(RedoCommandList.pop());
 			CommandListAfterUndo.add(CommandList.pop());
-			
+
 			return true;
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "undo"));
+			return false;
+		}
+	}
+
+	public boolean redoOperation(Vector<Task> TaskList) {
+		if (!RedoListAfterUndo.isEmpty()) {
+			Task u = RedoListAfterUndo.peek();
+			String cmd = RedoCommandListAfterUndo.peek();
+
+			executeCmd(TaskList, u, cmd);
+			Output.showToUser(MSG_REDO);
+
+			RedoList.add(RedoListAfterUndo.pop());
+			UndoList.add(UndoListAfterUndo.pop());
+			RedoCommandList.add(RedoCommandListAfterUndo.pop());
+			CommandList.add(CommandListAfterUndo.pop());
+			return true;
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "redo"));
 			return false;
 		}
 	}
@@ -90,29 +110,32 @@ public class UndoOps {
 			String pathName = u.getTaskDesc();
 			FileStream.changeDirWithString(pathName);
 			break;
+		case "recover":
+			recoverList(TaskList);
+			break;
+		case "clear":
+			clearList(TaskList);
+			break;
 		}
 	}
 
-	public boolean redoOperation(Vector<Task> TaskList) {
-		if (!RedoListAfterUndo.isEmpty()) {
-			Task u = RedoListAfterUndo.peek();
-			String cmd = RedoCommandListAfterUndo.peek();
-			
-			executeCmd(TaskList, u, cmd);
-			Output.showToUser(MSG_REDO);
-			
-			RedoList.add(RedoListAfterUndo.pop());
-			UndoList.add(UndoListAfterUndo.pop());
-			RedoCommandList.add(RedoCommandListAfterUndo.pop());
-			CommandList.add(CommandListAfterUndo.pop());
-			return true;
-		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "redo"));
-			return false;
+	private void clearList(Vector<Task> TaskList) {
+		Vector<Task> copyOfTaskList = new Vector<Task>();
+		for (Task t : TaskList) {
+			copyOfTaskList.add(t);
+		}
+		TaskList.clear();
+		backUpList.push(copyOfTaskList);
+	}
+
+	private void recoverList(Vector<Task> TaskList) {
+		Vector<Task> copyOfTaskList = backUpList.pop();
+		for (Task t : copyOfTaskList) {
+			TaskList.add(t);
 		}
 	}
 
-	public void clearList() {
+	public void clearHistoryList() {
 		RedoListAfterUndo.clear();
 		UndoListAfterUndo.clear();
 		RedoCommandListAfterUndo.clear();
@@ -130,6 +153,53 @@ public class UndoOps {
 
 		RedoCommandList.add(new String("add"));
 		RedoList.add(t);
+	}
+
+	public void undoClear(Vector<Task> TaskList) {
+
+		Vector<Task> copyOfTaskList = new Vector<Task>();
+		for (Task t : TaskList) {
+			copyOfTaskList.add(t);
+		}
+
+		backUpList.push(copyOfTaskList);
+		CommandList.push("recover");
+		UndoList.push(new Task());
+	}
+
+	public void redoClear() {
+		// TODO Auto-generated method stub
+
+		RedoCommandList.push("clear");
+		RedoList.push(new Task());
+	}
+
+	public void undoChgdir() {
+		Task u = new Task();
+		String desc = FileStream.getOldPath();
+		CommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		UndoList.push(u);
+	}
+
+	public void redoChgdir() {
+		Task u = new Task();
+		String desc = FileStream.getNewPath();
+		RedoCommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		RedoList.push(u);
+	}
+
+	public void undoDelete(Task u) {
+		CommandList.push(new String("add"));
+		UndoList.push(u);
+	}
+
+	public void redoDelete(int index) {
+		Task u = new Task();
+		u.setIndex(index);
+		RedoCommandList.push(new String("delete"));
+		RedoList.push(u);
 	}
 
 	public void undoEditEndDate(int index, LocalDateTime endTime) {
@@ -213,36 +283,17 @@ public class UndoOps {
 		RedoList.add(u);
 	}
 
-	public void undoDelete(Task u) {
-		CommandList.push(new String("add"));
-		UndoList.push(u);
-	}
-
-	public void redoDelete(int index) {
+	public void undoFlag(int index) {
 		Task u = new Task();
+		CommandList.push(new String("unflag"));
 		u.setIndex(index);
-		RedoCommandList.push(new String("delete"));
-		RedoList.push(u);
-	}
-
-	public void undoClear() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void undoChgdir() {
-		Task u = new Task();
-		String desc = FileStream.getOldPath();
-		CommandList.push(new String("changedir"));
-		u.setTaskDesc(desc);
 		UndoList.push(u);
 	}
-	
-	public void redoChgdir() {
+
+	public void redoFlag(int index) {
 		Task u = new Task();
-		String desc = FileStream.getNewPath();
-		RedoCommandList.push(new String("changedir"));
-		u.setTaskDesc(desc);
+		RedoCommandList.push(new String("flag"));
+		u.setIndex(index);
 		RedoList.push(u);
 	}
 
@@ -273,38 +324,19 @@ public class UndoOps {
 		u.setIndex(index);
 		RedoList.push(u);
 	}
-	
-	public void undoFlag(int index){
-		Task u = new Task();
-		CommandList.push(new String("unflag"));
-		u.setIndex(index);
-		UndoList.push(u);
-	}
-	
-	public void redoFlag(int index) {
-		Task u = new Task();
-		RedoCommandList.push(new String("flag"));
-		u.setIndex(index);
-		RedoList.push(u);
-	}
-	
+
 	public void undoUnflag(int index) {
 		Task u = new Task();
 		CommandList.push(new String("flag"));
 		u.setIndex(index);
 		UndoList.push(u);
 	}
-	
+
 	public void redoUnflag(int index) {
 		Task u = new Task();
 		RedoCommandList.push(new String("unflag"));
 		u.setIndex(index);
 		RedoList.push(u);
-	}
-
-	public void redoClear() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

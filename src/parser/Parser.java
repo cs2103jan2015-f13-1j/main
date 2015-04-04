@@ -40,6 +40,10 @@ public class Parser {
 			return flag(input);
 		case UNFLAG:
 			return unflag(input);
+		case TOGGLEFLAG:
+			return toggleflag(input);
+		case TOGGLEDONE:
+			return toggledone(input);
 		default:
 			//TODO throw an error if the command is not recognized
 			return null;
@@ -47,42 +51,12 @@ public class Parser {
 		}
 	}
 
-	private Command flag(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
-
-		CreateCmd flagcmd = new CreateCmd();
-		return flagcmd.createFlagCommand(i);
-	}
-
-	private Command unflag(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
-
-		CreateCmd flagcmd = new CreateCmd();
-		return flagcmd.createUnflagCommand(i);
-	}
-
-	private Command redoTask() {
-		CreateCmd redocmd = new CreateCmd();
-		return redocmd.createNewCommand("redo");
-	}
-
-	private Command unmarkTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
-
-		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createUnmarkCommand(i);
-	}
-
-	private Command markTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
-
-		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createMarkCommand(i);
-		
+	private Command addTask(String input) {
+		input = input.substring(input.indexOf(" ")+1).trim();
+		TaskBuilder extractor = new TaskBuilder(input);
+		Task t = extractor.extractAddCommand();
+		CreateCmd createCmd = new CreateCmd();
+		return createCmd.createAddCommand(t);
 	}
 
 	private Command changeDir(String input) {
@@ -101,15 +75,11 @@ public class Parser {
 		return backcmd.createBackCommand();
 	}
 
-	private Command undo() {
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createUndoCommand();
-	}
-
-	private Command searchTask(String input) {
+	private Command deleteTask(String input) {
 		input = input.substring(input.indexOf(" ")+1).trim();
+		int index = Integer.parseInt(input);
 		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createSearchCommand(input);
+		return createCmd.createDeleteCommand(index);
 	}
 
 	private Command editTask(String input) {
@@ -117,7 +87,7 @@ public class Parser {
 		String editType, modifiedContent = "";
 		
 		CreateCmd createCmd = new CreateCmd();
-
+	
 		StringTokenizer st = new StringTokenizer(input);
 		int index = Integer.parseInt(st.nextToken());
 		editType = st.nextToken();
@@ -127,19 +97,69 @@ public class Parser {
 		return createCmd.createEditCommand(editType, modifiedContent.trim(), index);
 	}
 
-	private Command deleteTask(String input) {
-		input = input.substring(input.indexOf(" ")+1).trim();
-		int index = Integer.parseInt(input);
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createDeleteCommand(index);
+	private Command flag(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+	
+		CreateCmd flagcmd = new CreateCmd();
+		return flagcmd.createFlagCommand(i);
 	}
 
-	private Command addTask(String input) {
+	private Command unflag(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+	
+		CreateCmd flagcmd = new CreateCmd();
+		return flagcmd.createUnflagCommand(i);
+	}
+
+	private Command toggleflag(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+		
+		CreateCmd flagcmd = new CreateCmd();
+		return flagcmd.createToggleFlagCommand(i);
+	}
+
+	private Command markTask(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+	
+		CreateCmd markcmd = new CreateCmd();
+		return markcmd.createMarkCommand(i);
+		
+	}
+
+	private Command unmarkTask(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+	
+		CreateCmd markcmd = new CreateCmd();
+		return markcmd.createUnmarkCommand(i);
+	}
+
+	private Command toggledone(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		int i = Integer.parseInt(input);
+		
+		CreateCmd markcmd = new CreateCmd();
+		return markcmd.createToggleMarkCommand(i);
+	}
+
+	private Command searchTask(String input) {
 		input = input.substring(input.indexOf(" ")+1).trim();
-		TaskBuilder extractor = new TaskBuilder(input);
-		Task t = extractor.extractAddCommand();
 		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createAddCommand(t);
+		return createCmd.createSearchCommand(input);
+	}
+
+	private Command undo() {
+		CreateCmd createCmd = new CreateCmd();
+		return createCmd.createUndoCommand();
+	}
+
+	private Command redoTask() {
+		CreateCmd redocmd = new CreateCmd();
+		return redocmd.createNewCommand("redo");
 	}
 
 	public void main() {

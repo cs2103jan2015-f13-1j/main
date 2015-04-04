@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.*;
+
 import fileIO.FileStream;
 import parser.*;
 import util.*;
@@ -30,22 +31,26 @@ public class Logic {
 	private static final String MSG_FLAG = "Task %d prioritised!\n";
 	private static final String MSG_UNFLAG = "Task %d unprioritised!\n";
 	private static final String MSG_BACK = "Back to main list.\n";
+	private static final String MSG_FORMAT = "Incorrect Format!\n";
 
-	public void addTask(Task t) {
-		isSuccessful = true;
+	private void addTask(Task t) {
+		if (t != null) {
+			isSuccessful = true;
 
-		TaskList.add(t);
+			TaskList.add(t);
 
-		Output.showToUser(MSG_ADD);
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoAdd(t.getIndex());
+			u.redoAdd(t);
 
-		Sort s = new Sort(TaskList);
-		s.sortList();
-		u.undoAdd(t.getIndex());
-		u.redoAdd(t);
-		Output.showToUser(MSG_ADD);
+			Output.showToUser(MSG_ADD);
+		} else {
+			Output.showToUser(MSG_FORMAT);
+		}
 	}
 
-	void deleteTask(int index) {
+	private void deleteTask(int index) {
 		try {
 			if (index > 0 && index <= TaskList.size()) {
 				u.undoDelete(TaskList.get(index - 1));
@@ -63,7 +68,7 @@ public class Logic {
 
 	private void changeDir() {
 		FileStream.changeDir();
-		if(!FileStream.getOldPath().equals(FileStream.getNewPath())) {
+		if (!FileStream.getOldPath().equals(FileStream.getNewPath())) {
 			u.undoChgdir();
 			u.redoChgdir();
 		}
@@ -71,42 +76,11 @@ public class Logic {
 	}
 
 	private void clearTask() {
-		u.undoClear();
+		u.undoClear(TaskList);
 		u.redoClear();
 		TaskList.clear();
 		isSuccessful = true;
 		Output.showToUser(String.format(MSG_CLEAR));
-	}
-	
-	private void toggleMarkTask(int i) {
-		if (i >= 0 && i < TaskList.size()) {
-			Task t = TaskList.get(i - 1);
-			if(t.isDone()) {
-				unmarkTask(i);
-			} 
-			
-			else {
-				markTask(i);
-			}
-					
-			}
-		}
-
-	
-	private void unmarkTask(int i) {
-
-		if (i > 0 && i <= TaskList.size()) {
-			Task t = TaskList.get(i - 1);
-			t.markTaskAsUndone();
-			isSuccessful = true;
-			Sort s = new Sort(TaskList);
-			s.sortList();
-			u.undoMark(t.getIndex());
-			u.redoUnmark(i);
-			Output.showToUser(String.format(MSG_UNMARK, i));
-		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unmark"));
-		}
 	}
 
 	private void markTask(int i) {
@@ -125,7 +99,34 @@ public class Logic {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "mark"));
 		}
 	}
-	
+
+	private void unmarkTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.markTaskAsUndone();
+			isSuccessful = true;
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoMark(t.getIndex());
+			u.redoUnmark(i);
+			Output.showToUser(String.format(MSG_UNMARK, i));
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unmark"));
+		}
+	}
+
+	private void toggleMarkTask(int index) {
+		if (index > 0 && index <= TaskList.size()) {
+			Task t = TaskList.get(index - 1);
+			if (t.isDone()) {
+				unmarkTask(index);
+			} else {
+				markTask(index);
+			}
+		}
+	}
+
 	private void flagTask(int i) {
 
 		if (i > 0 && i <= TaskList.size()) {
@@ -142,7 +143,7 @@ public class Logic {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "flag"));
 		}
 	}
-	
+
 	private void unflagTask(int i) {
 
 		if (i > 0 && i <= TaskList.size()) {
@@ -160,10 +161,61 @@ public class Logic {
 		}
 	}
 
+	private void toggleFlagTask(int index) {
+		if (index > 0 && index <= TaskList.size()) {
+			Task t = TaskList.get(index - 1);
+			if (t.flag()) {
+				unflagTask(index);
+			} else {
+				flagTask(index);
+			}
+		}
+	}
+
+	private void undoTask() {
+		isSuccessful = u.undoOperation(TaskList);
+		inUndoState = true;
+	}
+
 	private void redoTask() {
 		inUndoState = true;
 
 		isSuccessful = u.redoOperation(TaskList);
+	}
+
+	private void backToMain() {
+		inSearchState = false;
+		Output.showToUser(String.format(MSG_BACK));
+	}
+
+	private void searchKey(Command cmd) {
+		Search s = new Search(TaskList);
+		keyword = cmd.getContent();
+		OutputList = s.searchTask(keyword);
+		inSearchState = true;
+	}
+
+	// clean unnecessary undo history
+	private void clearUndoHistory(COMMAND_TYPE commandType) {
+		if (inUndoState) {
+			if (commandType != COMMAND_TYPE.UNDO
+					&& commandType != COMMAND_TYPE.REDO) {
+				inUndoState = false;
+				u.clearHistoryList();
+			}
+		}
+	}
+
+	private void sortOutput() {
+		Sort s = new Sort(TaskList);
+		s.sortList();
+		if (inSearchState) {
+			Search st = new Search(TaskList);
+			assert !keyword.equals("");
+			OutputList = st.searchTask(keyword);
+		} else {
+			OutputList = TaskList;
+		}
 	}
 
 	private void executeCommand(Command cmd) {
@@ -189,12 +241,6 @@ public class Logic {
 				EditTask edit = new EditTask(TaskList);
 				isSuccessful = edit.editTask(cmd);
 				break;
-			case UNDO:
-				undoTask();
-				break;
-			case SEARCH_TASK:
-				searchKey(cmd);
-				return;
 			case BACK:
 				backToMain();
 				break;
@@ -216,8 +262,20 @@ public class Logic {
 			case UNFLAG:
 				unflagTask(cmd.getIndex());
 				break;
+			case SEARCH_TASK:
+				searchKey(cmd);
+				return;
+			case UNDO:
+				undoTask();
+				break;
 			case REDO:
 				redoTask();
+				break;
+			case TOGGLEFLAG:
+				toggleFlagTask(cmd.getIndex());
+				break;
+			case TOGGLEDONE:
+				toggleMarkTask(cmd.getIndex());
 				break;
 			default:
 				// throw an error if the command is not recognized
@@ -226,45 +284,6 @@ public class Logic {
 			clearUndoHistory(commandType);
 		}
 		sortOutput();
-	}
-
-	private void backToMain() {
-		inSearchState = false;
-		Output.showToUser(String.format(MSG_BACK));
-	}
-
-	private void searchKey(Command cmd) {
-		Search s = new Search(TaskList);
-		keyword = cmd.getContent();
-		OutputList = s.searchTask(keyword);
-		inSearchState = true;
-	}
-
-	//clean unnecessary undo history
-	private void clearUndoHistory(COMMAND_TYPE commandType) {
-		if(inUndoState){
-			if(commandType != COMMAND_TYPE.UNDO && commandType != COMMAND_TYPE.REDO){
-				inUndoState = false;
-				u.clearList();
-			}
-		}		
-	}
-
-	private void undoTask() {
-		isSuccessful = u.undoOperation(TaskList);
-		inUndoState = true;
-	}
-
-	private void sortOutput() {
-		Sort s = new Sort(TaskList);
-		s.sortList();
-		if (inSearchState) {
-			Search st = new Search(TaskList);
-			assert !keyword.equals("");
-			OutputList = st.searchTask(keyword);
-		} else {
-			OutputList = TaskList;
-		}
 	}
 
 	public Vector<Task> run(String input) {
