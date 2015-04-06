@@ -4,7 +4,7 @@ import util.Task;
 
 public class CreateCmd {
 	public Command createNewCommand(String str){
-		//TODO assert str.equals(new String("clear")) || str.equals(new String(""));
+		assert str.equals(new String("clear")) || str.equals(new String(""));
 		Command backCommand = new Command(str);
 		return backCommand;
 	}
@@ -32,6 +32,12 @@ public class CreateCmd {
 		return unflagCommand;
 	}
 	
+	public Command createToggleFlagCommand(int i){
+		Command flagCommand = new Command("toggleflag");
+		flagCommand.setIndex(i);
+		return flagCommand;
+	}
+	
 	public Command createMarkCommand(int i){
 		Command markCommand = new Command("mark");
 		markCommand.setIndex(i);
@@ -40,6 +46,12 @@ public class CreateCmd {
 	
 	public Command createUnmarkCommand(int i){
 		Command markCommand = new Command("unmark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
+	
+	public Command createToggleMarkCommand(int i){
+		Command markCommand = new Command("togglemark");
 		markCommand.setIndex(i);
 		return markCommand;
 	}

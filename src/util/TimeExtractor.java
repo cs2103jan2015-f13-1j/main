@@ -137,7 +137,7 @@ public class TimeExtractor {
 					Locale.ENGLISH);
 			LocalDate date = LocalDate.parse(str, dtf);
 			DayOfWeek day = date.getDayOfWeek();
-			date = LocalDate.now().with(TemporalAdjusters.next(day));
+			date = LocalDate.now().with(TemporalAdjusters.nextOrSame(day));
 			return date;
 		} catch (Exception e) {
 			return null;
@@ -166,8 +166,8 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "8.14";
-		Output.showToUser(DateFormatter2(str).toString());
+		String str = "apr 10 2359";
+		Output.showToUser(DateFormatter3(str).toString());
 
 	}
 }

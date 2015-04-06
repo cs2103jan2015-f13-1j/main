@@ -82,7 +82,7 @@ public class TaskBuilderTest {
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
 		// case 6 dd/MM/uuuu hhmm
-		tb = new TaskBuilder("CS2013 from 12/12/2015 1230 to 12/12/2015 1400");
+		tb = new TaskBuilder("CS2013 from 12/12/2015 12:30 to 12/12/2015 14:00");
 		tm = LocalDateTime.of(LocalDate.of(2015, 12, 12), LocalTime.of(12, 30));
 		tb.run();
 		assertEquals("CS2013", tb.t.getTaskDesc());
@@ -140,6 +140,11 @@ public class TaskBuilderTest {
 			tm = tm.plusYears(1);
 		}
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 11 failed case: from without to
+		tb = new TaskBuilder("add P-P from jan 9 2015 23:20");
+		tb.run();
+		assertEquals(tb.t, null);
 
 	}
 

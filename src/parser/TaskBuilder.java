@@ -21,6 +21,7 @@ public class TaskBuilder {
 	private String _input, desc;
 	Task t;
 	private int startOfTimeString;
+	private Task.TASK_TYPE inferredType = Task.TASK_TYPE.NULL;
 	private Vector<LocalTime> timeList = new Vector<LocalTime>();
 	private Vector<LocalDate> dateList = new Vector<LocalDate>();
 	private Vector<Integer> timeIndex = new Vector<Integer>();
@@ -64,17 +65,26 @@ public class TaskBuilder {
 	}
 
 	private void buildDeadline() {
-		LocalDateTime EndTime;
 
-		if (dateList.size() == 0) {
-			EndTime = LocalDateTime.of(LocalDate.now(), timeList.get(0));
-		} else if (dateList.size() == 1) {
-			EndTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
+		if (inferredType == Task.TASK_TYPE.TIMED_TASK) {
+			Output.showToUser(MSG_FORMAT);
+			return;
 		} else {
-			throw new Error(MSG_FORMAT);
-		}
+			LocalDateTime EndTime;
 
-		t = new Task(desc, EndTime);
+			if (dateList.size() == 0) {
+				EndTime = LocalDateTime.of(LocalDate.now(), timeList.get(0));
+			} else if (dateList.size() == 1 && timeList.size() == 1) {
+				EndTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
+			} else if (dateList.size() == 1 && timeList.size() == 0) {
+				EndTime = LocalDateTime.of(dateList.get(0),
+						LocalTime.of(23, 59));
+			} else {
+				Output.showToUser(MSG_FORMAT);
+				return;
+			}
+			t = new Task(desc, EndTime);
+		}
 
 	}
 
@@ -121,6 +131,7 @@ public class TaskBuilder {
 		}
 
 		extractDesc(startIndexOfDate, startIndexOfTime);
+		// TODO
 		log.info(startIndexOfDate + " " + startIndexOfTime);
 
 		int tm = timeList.size();
@@ -129,7 +140,7 @@ public class TaskBuilder {
 
 		if (tm == 0 && d == 0) {
 			return Task.TASK_TYPE.FLOATING_TASK;
-		} else if (tm != 1) {
+		} else if (tm != 1 && inferredType != Task.TASK_TYPE.DEADLINE) {
 			return Task.TASK_TYPE.TIMED_TASK;
 		} else {
 			return Task.TASK_TYPE.DEADLINE;
@@ -158,22 +169,6 @@ public class TaskBuilder {
 		}
 
 		desc = desc.replaceAll("\"", "");
-		desc = removeIndicationWords();
-	}
-
-	private String removeIndicationWords() {
-		// && t.getTaskType() == Task.TASK_TYPE.TIMED_TASK
-		if (desc.toLowerCase().endsWith(" from")) {
-			desc = desc.substring(0, desc.length() - 4).trim();
-		}
-		if (desc.toLowerCase().endsWith(" by")) {
-			//t.setTaskType(Task.TASK_TYPE.DEADLINE);
-			desc = desc.substring(0, desc.length() - 2).trim();
-		}
-		if (desc.endsWith(" at")) {
-			desc = desc.substring(0, desc.length() - 2).trim();
-		}
-		return desc;
 	}
 
 	private void checkDatePattern() {
@@ -198,10 +193,9 @@ public class TaskBuilder {
 
 	private void extractDate(Matcher m) {
 		boolean isNew;
+		int i = 0, index = -1, k = 0;
 		try {
-			int i = 0, index = -1, k = 0;
 			while (m.find(k)) {
-				k = _input.indexOf(" ", i + 1);
 
 				if (dateIndex.size() != 0) {
 					index = dateIndex.get(0);
@@ -224,9 +218,12 @@ public class TaskBuilder {
 							dateList.add(date);
 							dateIndex.add(i);
 						}
-						log.info("1:" + date.toString());
+						checkTimeIndicationWord(i, false);
+						i = m.end() - 1;
+						log.info(date.toString());
 					}
 				}
+				k = _input.indexOf(" ", i + 1);
 			}
 		} catch (Exception e) {
 			return;
@@ -239,6 +236,7 @@ public class TaskBuilder {
 		Matcher m = Pattern.compile(
 				"[^\"]\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("1:");
 		extractDate(m);
 	}
 
@@ -250,6 +248,7 @@ public class TaskBuilder {
 				.compile(
 						"[^\"]\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
 						Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("2:");
 		extractDate(m);
 	}
 
@@ -259,6 +258,7 @@ public class TaskBuilder {
 		Matcher m = Pattern.compile(
 				"[^\"]\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("3:");
 		extractDate(m);
 
 	}
@@ -274,39 +274,6 @@ public class TaskBuilder {
 		extractDayOfWeek(dayOfWeek);
 		extractDayOfWeek(dayOfWeekShort);
 
-	}
-
-	private void extractDayOfWeek(String[] dayOfWeek) {
-		String s;
-		String[] info = _input.split(" ");
-		int i, index = -1;
-		for (String d : dayOfWeek) {
-
-			for (int j = 0; j < info.length; j++) {
-				s = info[j];
-				if (s.equalsIgnoreCase(d)) {
-					if (j > 1 && info[j - 1].equalsIgnoreCase("next")) {
-						i = _input.indexOf(info[j - 1]);
-					} else {
-						i = _input.indexOf(s);
-					}
-					if (dateIndex.size() != 0) {
-						index = dateIndex.get(0);
-					}
-
-					LocalDate date = TimeExtractor.extractDate(s);
-					if (index < 0 || i < index) {
-						dateList.add(0, date);
-						dateIndex.add(0, i);
-					} else {
-						dateList.add(date);
-						dateIndex.add(i);
-					}
-
-					log.info(date.toString());
-				}
-			}
-		}
 	}
 
 	// extract tmr, tomorrow, today
@@ -344,6 +311,40 @@ public class TaskBuilder {
 					dateIndex.add(i);
 				}
 				log.info(date.toString());
+				checkTimeIndicationWord(i, false);
+			}
+		}
+	}
+
+	private void extractDayOfWeek(String[] dayOfWeek) {
+		String s;
+		String[] info = _input.split(" ");
+		int i, index = -1;
+		for (String d : dayOfWeek) {
+
+			for (int j = 0; j < info.length; j++) {
+				s = info[j];
+				if (s.equalsIgnoreCase(d)) {
+					if (j > 1 && info[j - 1].equalsIgnoreCase("next")) {
+						i = _input.indexOf(info[j - 1]);
+					} else {
+						i = _input.indexOf(s);
+					}
+					if (dateIndex.size() != 0) {
+						index = dateIndex.get(0);
+					}
+
+					LocalDate date = TimeExtractor.extractDate(s);
+					if (index < 0 || i < index) {
+						dateList.add(0, date);
+						dateIndex.add(0, i);
+					} else {
+						dateList.add(date);
+						dateIndex.add(i);
+					}
+					checkTimeIndicationWord(i, false);
+					log.info(date.toString());
+				}
 			}
 		}
 	}
@@ -352,7 +353,6 @@ public class TaskBuilder {
 
 		timePattern1();
 		timePattern2();
-		timePattern3();
 
 	}
 
@@ -370,14 +370,6 @@ public class TaskBuilder {
 		Matcher m;
 		m = Pattern.compile("[^\"]\\b\\d{1,2}([.:]\\d{1,2})?\\s*[ap]m\\s*",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
-		extractTime(m);
-	}
-
-	private void timePattern3() {
-
-		Matcher m;
-		m = Pattern.compile("[^\"]\\d{3,4}\\s*", Pattern.CASE_INSENSITIVE)
-				.matcher(_input);
 		extractTime(m);
 	}
 
@@ -402,8 +394,36 @@ public class TaskBuilder {
 					timeIndex.add(i);
 				}
 				log.info(time.toString());
+				checkTimeIndicationWord(i, true);
 			}
 
+		}
+	}
+
+	private void checkTimeIndicationWord(int i, boolean isTime) {
+		int startIndex = _input.length();
+
+		if (isTime && _input.substring(0, i).trim().endsWith(" at")) {
+			startIndex = _input.substring(0, i).lastIndexOf("at");
+		} else if (!isTime && _input.substring(0, i).trim().endsWith(" on")) {
+			startIndex = _input.substring(0, i).lastIndexOf("on");
+		} else if (_input.substring(0, i).trim().endsWith(" until")) {
+			startIndex = _input.substring(0, i).lastIndexOf("until");
+		} else if (_input.substring(0, i).trim().endsWith(" till")) {
+			startIndex = _input.substring(0, i).lastIndexOf("till");
+		} else if (_input.substring(0, i).trim().endsWith(" from")) {
+			startIndex = _input.substring(0, i).lastIndexOf("from");
+			inferredType = Task.TASK_TYPE.TIMED_TASK;
+		} else if (_input.substring(0, i).trim().endsWith(" to")) {
+			startIndex = _input.substring(0, i).lastIndexOf("to");
+			inferredType = Task.TASK_TYPE.TIMED_TASK;
+		} else if (_input.substring(0, i).trim().endsWith(" by")) {
+			startIndex = _input.substring(0, i).lastIndexOf("by");
+			inferredType = Task.TASK_TYPE.DEADLINE;
+		}
+
+		if (startIndex < startOfTimeString) {
+			startOfTimeString = startIndex;
 		}
 	}
 
@@ -414,6 +434,8 @@ public class TaskBuilder {
 	}
 
 	public void run() {
+
+		_input = "P-P from jan 9 2015";
 		Task t = extractAddCommand();
 		displayTask(t);
 		/*

@@ -32,6 +32,15 @@ public class TaskDisplayController {
 
 	@FXML
 	private Label label = new Label();
+	
+	@FXML
+	private ToggleButton showTimed = new ToggleButton();
+
+	@FXML
+	private ToggleButton showDeadline = new ToggleButton();
+
+	@FXML
+	private ToggleButton showFloating = new ToggleButton();
 
 	private ObservableList<Task> list;
 
@@ -70,7 +79,7 @@ public class TaskDisplayController {
 			flag.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					processUserInput(("flag "+index));
+					processUserInput(("toggleflag "+index));
 				}
 			});
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
@@ -83,8 +92,9 @@ public class TaskDisplayController {
 			super.updateItem(t, b);
 			if (t != null) {
 				desc.setText(formatTask1(t));
-				desc.setWrappingWidth(listView.getPrefWidth());
+				desc.setWrappingWidth(listView.getMinWidth());
 				details.setText(formatTask2(t));
+				details.setWrappingWidth(listView.getMinWidth());
 				index = t.getIndex();
 				setGraphic(hbox);
 			} else {

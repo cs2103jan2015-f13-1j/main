@@ -9,23 +9,32 @@ import java.util.logging.StreamHandler;
 
 public class Output {
 
+	private static int count = 0;
+	private static Logger log;
+
 	public static void showToUser(String text) {
-		final Logger log = Logger.getLogger("");
-		StreamHandler handler;
-		try {
-			handler = new ConsoleHandler();
-			handler.setFormatter(new outputFormatter());
-			log.addHandler(handler);
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (count == 0) {
+			log = Logger.getLogger("");
+			StreamHandler handler;
+			try {
+				handler = new ConsoleHandler();
+				handler.setFormatter(new outputFormatter());
+				log.addHandler(handler);
+				log.setUseParentHandlers(false);
+				log.setLevel(Level.INFO);
+				log.removeHandler(log.getHandlers()[0]);
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-		log.setLevel(Level.INFO);
+		//System.out.println(log.getHandlers().length);
 
-		// System.out.println(text);
 		log.log(Level.INFO, text);
 
+		count++;
 		// TaskDisplayController.updateLabel(text);
 	}
 
@@ -33,9 +42,10 @@ public class Output {
 
 		@Override
 		public String format(LogRecord record) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(record.getMessage());
-			return sb.toString();
+			// StringBuffer sb = new StringBuffer();
+
+			// sb.append(record.getMessage());
+			return record.getMessage();
 		}
 	}
 }
