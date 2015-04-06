@@ -32,6 +32,15 @@ public class TaskDisplayController {
 
 	@FXML
 	private Label label = new Label();
+	
+	@FXML
+	private ToggleButton showTimed = new ToggleButton();
+
+	@FXML
+	private ToggleButton showDeadline = new ToggleButton();
+
+	@FXML
+	private ToggleButton showFloating = new ToggleButton();
 
 	private ObservableList<Task> list;
 
