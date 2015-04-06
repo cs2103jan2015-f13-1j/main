@@ -8,6 +8,8 @@ import fileIO.FileStream;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,8 +52,14 @@ public class TaskDisplayController {
 
 	private Vector<Task> VectorTaskList;
 	
+	Vector<Task> removed = new Vector<Task>();
+	
 	private Vector<String> commandHistory;
 	private int commandHistoryIndex;
+	
+	private String SelCrit = null; //Selection Criteria for togglebuttons
+	
+	final ToggleGroup group = new ToggleGroup();
 
 	 class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
@@ -90,6 +98,28 @@ public class TaskDisplayController {
 		@Override
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
+
+			inputBox.setText("Displaying all when Updated: SelCrit is "+SelCrit);
+			
+//			if(SelCrit==null) 	
+//				inputBox.setText("Displaying all when Updated: SelCrit is "+SelCrit);
+//			else if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+//				setGraphic(null);
+//				inputBox.setText("Displaying timed when Updated: SelCrit is "+SelCrit);
+//				return;
+//			}
+//			else if(SelCrit.equalsIgnoreCase("deadline") && !t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+//				setGraphic(null);
+//				inputBox.setText("Displaying deadlined when Updated: SelCrit is "+SelCrit);
+//				return;
+//			}
+//			else if(SelCrit.equalsIgnoreCase("floating") && !t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
+//				inputBox.setText("Displaying floating when Updated: SelCrit is "+SelCrit);
+//				setGraphic(null);
+//				return;
+//			}
+			
+			
 			if (t != null) {
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getMinWidth());
@@ -145,6 +175,76 @@ public class TaskDisplayController {
 
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
+		
+		showTimed.setToggleGroup(group);
+		showDeadline.setToggleGroup(group);
+		showFloating.setToggleGroup(group);
+		showTimed.setUserData("timed");
+		showDeadline.setUserData("deadline");
+		showFloating.setUserData("floating");
+		
+		
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
+				if(new_toggle == null) {
+					SelCrit=null;
+				}
+				else {
+					SelCrit = (String)new_toggle.getUserData();
+				}
+//				ObservableList<Task> tasks = FXCollections.observableArrayList((Task[])listView.getItems().toArray());
+
+//				listView.setItems(null);				
+				
+				VectorTaskList = l.run("");
+				for(Task t: VectorTaskList) {
+					if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+						VectorTaskList.remove(t);
+					}
+					else if(SelCrit.equalsIgnoreCase("deadline") && !t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+						VectorTaskList.remove(t);
+					}
+					else if(SelCrit.equalsIgnoreCase("floating") && !t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
+						VectorTaskList.remove(t);
+					}
+				}
+				
+				inputBox.setText("Handler run");
+				
+				listView.getItems().clear();
+				listView.getItems().addAll(VectorTaskList);
+				ObservableList<Task> tasks = listView.getItems();
+
+				listView.setItems(null);
+				listView.setItems(tasks);
+
+//				for (Task task : removed) {
+//					tasks.add(task);
+//					removed.remove(task);
+//				}				
+
+//				for(Task t : tasks) {
+//					if(SelCrit==null) {
+//						//do nothing
+//					}
+//					if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+//						tasks.remove(t);
+//						removed.add(t);
+//					}
+//				}
+				
+//				if(SelCrit.equalsIgnoreCase("timed")) {
+//					tasks.remove(1);
+//				}
+					
+//				listView.setItems(tasks);
+			}
+		});
+		
+		
+		
+		System.out.println("handler set");	
+				
 
 		GUIMsg feedback = new GUIMsg(System.out, label);
 		System.setOut(feedback);
