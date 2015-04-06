@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Tasks>
+    <Task>
+        <endTime>2015-04-09T17:00:00</endTime>
+        <index>1</index>
+        <startTime>2015-04-06T15:25:00</startTime>
+        <taskDesc>new task description</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <endTime>2015-04-10T14:00:00</endTime>
+        <index>2</index>
+        <taskDesc>due TASK</taskDesc>
+        <taskType>DEADLINE</taskType>
+    </Task>
+    <Task>
+        <endTime>2015-04-10T17:00:00</endTime>
+        <index>3</index>
+        <taskDesc>due task</taskDesc>
+        <taskType>DEADLINE</taskType>
+    </Task>
+    <Task>
+        <endTime>2015-05-01T17:25:00</endTime>
+        <index>4</index>
+        <startTime>2015-04-30T03:25:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <endTime>2015-06-01T17:00:00</endTime>
+        <index>5</index>
+        <startTime>2015-05-30T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <endTime>2015-06-16T17:00:00</endTime>
+        <index>6</index>
+        <startTime>2015-06-15T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <endTime>2016-02-02T17:00:00</endTime>
+        <index>7</index>
+        <startTime>2016-01-01T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <index>8</index>
+        <taskDesc>FloAtinG task by 3 aPr</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+</Tasks>
