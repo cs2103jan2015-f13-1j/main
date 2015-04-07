@@ -282,13 +282,13 @@ public class TaskBuilder {
 
 		String s;
 		LocalDate date = null;
-		String[] spcdt = { "tomorrow", "tmr", "today" };
+		String[] spcdt = { "tomorrow", "tmr", "today", "tdy" };
 
 		String[] info = _input.split(" ");
 
 		for (int j = 0; j < info.length; j++) {
 			s = info[j];
-			if (s.equalsIgnoreCase(spcdt[2])) {
+			if (s.equalsIgnoreCase(spcdt[2]) || s.equalsIgnoreCase(spcdt[3])) {
 				i = _input.indexOf(s);
 				date = LocalDate.now();
 			} else if (s.equalsIgnoreCase(spcdt[1])
@@ -435,7 +435,7 @@ public class TaskBuilder {
 
 	public void run() {
 
-		_input = "P-P from jan 9 2015";
+		_input = "P-P by tdy 3pm";
 		Task t = extractAddCommand();
 		displayTask(t);
 		/*

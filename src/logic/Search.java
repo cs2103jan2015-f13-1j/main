@@ -98,6 +98,8 @@ public class Search {
 		switch (searchtype.toLowerCase()) {
 		case "desc":
 			return searchDesc(str.substring(str.indexOf(" ")));
+		case "task":
+			return searchDesc(str.substring(str.indexOf(" ")));
 		case "before":
 			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
 			return searchBeforeDate(dt);

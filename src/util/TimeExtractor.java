@@ -147,13 +147,13 @@ public class TimeExtractor {
 	private static LocalDate DateFormatter5(String str) {
 		String s;
 		LocalDate date = null;
-		String[] spcdt = { "tomorrow", "tmr", "today" };
+		String[] spcdt = { "tomorrow", "tmr", "today", "tdy" };
 
 		String[] info = str.split(" ");
 
 		for (int j = 0; j < info.length; j++) {
 			s = info[j];
-			if (s.equalsIgnoreCase(spcdt[2])) {
+			if (s.equalsIgnoreCase(spcdt[2]) || s.equalsIgnoreCase(spcdt[3])) {
 				date = LocalDate.now();
 			} else if (s.equalsIgnoreCase(spcdt[1])
 					|| s.equalsIgnoreCase(spcdt[0])) {
