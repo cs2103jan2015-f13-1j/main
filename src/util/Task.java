@@ -5,18 +5,15 @@ import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import util.OperationType.COMMAND_TYPE;
-
 public class Task {
 
 	private String taskDesc;
-
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private TASK_TYPE type;
 	private boolean isDone = false;
-	private boolean isDue = false;
 	private boolean flag = false;
+	private boolean isDue = false;
 	private int index;
 
 	public static enum TASK_TYPE {
@@ -25,9 +22,7 @@ public class Task {
 
 	private void setTimeFormat() {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	public Task() {
 		this.type = TASK_TYPE.NULL;
@@ -38,12 +33,16 @@ public class Task {
 		setTimeFormat();
 		this.taskDesc = desc;
 		this.type = TASK_TYPE.FLOATING_TASK;
+		this.isDone = false;
+		this.flag = false;
 	}
 
 	public Task(String desc, LocalDateTime et) {
 		this.taskDesc = desc;
 		this.endTime = et;
 		this.type = TASK_TYPE.DEADLINE;
+		this.isDone = false;
+		this.flag = false;
 	}
 
 	public Task(String desc, LocalDateTime st, LocalDateTime et)
@@ -55,17 +54,21 @@ public class Task {
 		if (st.isAfter(et)) {
 			throw new Exception("End time cannot be earlier than Start time");
 		}
+		this.isDone = false;
+		this.flag = false;
 	}
-	
-	public boolean flag(){
+
+	@XmlSchemaType(name = "flag")
+	public boolean getFlag() {
 		return flag;
 	}
-	
-	public boolean isDone(){
+
+	@XmlSchemaType(name = "done")
+	public boolean isDone() {
 		return isDone;
 	}
 	
-	public boolean isDue(){
+	public boolean isDue() {
 		return isDue;
 	}
 	
@@ -128,7 +131,7 @@ public class Task {
 	}
 
 	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
-	@XmlSchemaType(name = "endTime")
+	@XmlSchemaType(name = "endTimee")
 	public LocalDateTime getEndTime() {
 		return endTime;
 	}

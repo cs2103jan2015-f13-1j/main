@@ -48,11 +48,11 @@ public class Sort {
 		// alphatical order
 		@Override
 		public int compare(Task a, Task b) {
-			if (a.flag() && b.flag()) {
+			if (a.getFlag() && b.getFlag()) {
 				return compareDone(a, b);
-			} else if (a.flag()) {
+			} else if (a.getFlag()) {
 				return -1;
-			} else if (b.flag()) {
+			} else if (b.getFlag()) {
 				return 1;
 			} else {
 				return compareDone(a, b);

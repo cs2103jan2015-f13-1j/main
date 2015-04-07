@@ -126,9 +126,9 @@ public class TaskDisplayController {
 				}
 				
 				desc.setText(formatTask1(t));
-				desc.setWrappingWidth(listView.getMinWidth());
+				desc.setWrappingWidth(listView.getPrefWidth()+40);
 				details.setText(formatTask2(t));
-				details.setWrappingWidth(listView.getMinWidth());
+				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
 				
 			} else {
@@ -277,10 +277,6 @@ public class TaskDisplayController {
 				
 				if (key.getCode().equals(KeyCode.DOWN)) {
 					showPrevCommandDown();
-				}
-				
-				if (key.getCode().equals(KeyCode.CONTROL) && key.getCode().equals(KeyCode.A)) {
-					inputBox.selectAll();
 				}
 				
 				if (key.getCode().equals(KeyCode.BACK_SPACE)) {

@@ -164,7 +164,7 @@ public class Logic {
 	private void toggleFlagTask(int index) {
 		if (index > 0 && index <= TaskList.size()) {
 			Task t = TaskList.get(index - 1);
-			if (t.flag()) {
+			if (t.getFlag()) {
 				unflagTask(index);
 			} else {
 				flagTask(index);
