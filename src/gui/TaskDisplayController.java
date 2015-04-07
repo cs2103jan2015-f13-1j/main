@@ -57,9 +57,14 @@ public class TaskDisplayController {
 	private Vector<String> commandHistory;
 	private int commandHistoryIndex;
 	
-	private String SelCrit = null; //Selection Criteria for togglebuttons
+	//Selection Criteria for togglebuttons
+	private boolean isTimedOn = true;
+	private boolean isDeadlineOn = true;
+	private boolean isFloatingOn = true;
 	
-	final ToggleGroup group = new ToggleGroup();
+	final ToggleGroup timed = new ToggleGroup();
+	final ToggleGroup deadline = new ToggleGroup();
+	final ToggleGroup floating = new ToggleGroup();
 
 	 class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
@@ -98,35 +103,34 @@ public class TaskDisplayController {
 		@Override
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
-
-			inputBox.setText("Displaying all when Updated: SelCrit is "+SelCrit);
-			
-//			if(SelCrit==null) 	
-//				inputBox.setText("Displaying all when Updated: SelCrit is "+SelCrit);
-//			else if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-//				setGraphic(null);
-//				inputBox.setText("Displaying timed when Updated: SelCrit is "+SelCrit);
-//				return;
-//			}
-//			else if(SelCrit.equalsIgnoreCase("deadline") && !t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-//				setGraphic(null);
-//				inputBox.setText("Displaying deadlined when Updated: SelCrit is "+SelCrit);
-//				return;
-//			}
-//			else if(SelCrit.equalsIgnoreCase("floating") && !t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
-//				inputBox.setText("Displaying floating when Updated: SelCrit is "+SelCrit);
-//				setGraphic(null);
-//				return;
-//			}
-			
 			
 			if (t != null) {
+				
+				if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
+					getStyleClass().add("full");
+					setGraphic(hbox);
+				}
+				else if (t.getTaskType().equals(TASK_TYPE.DEADLINE) && isDeadlineOn) {
+					getStyleClass().add("full");
+					setGraphic(hbox);
+				}
+				else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK) && isFloatingOn) {
+					getStyleClass().add("full");
+					setGraphic(hbox);
+				}
+				
+				else {
+					getStyleClass().add("empty");
+					setGraphic(null);
+					return;
+				}
+				
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getMinWidth());
 				details.setText(formatTask2(t));
 				details.setWrappingWidth(listView.getMinWidth());
 				index = t.getIndex();
-				setGraphic(hbox);
+				
 			} else {
 				setGraphic(null);
 			}
@@ -176,72 +180,56 @@ public class TaskDisplayController {
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
 		
-		showTimed.setToggleGroup(group);
-		showDeadline.setToggleGroup(group);
-		showFloating.setToggleGroup(group);
-		showTimed.setUserData("timed");
-		showDeadline.setUserData("deadline");
-		showFloating.setUserData("floating");
+		showTimed.setToggleGroup(timed);
+		showDeadline.setToggleGroup(deadline);
+		showFloating.setToggleGroup(floating);
 		
 		
-		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+		timed.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
 				if(new_toggle == null) {
-					SelCrit=null;
+					isTimedOn = false;
+					inputBox.setText("Timed is off");
 				}
 				else {
-					SelCrit = (String)new_toggle.getUserData();
+					isTimedOn = true;
+					inputBox.setText("Timed is on");
 				}
-//				ObservableList<Task> tasks = FXCollections.observableArrayList((Task[])listView.getItems().toArray());
 
-//				listView.setItems(null);				
-				
-				VectorTaskList = l.run("");
-				for(Task t: VectorTaskList) {
-					if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-						VectorTaskList.remove(t);
-					}
-					else if(SelCrit.equalsIgnoreCase("deadline") && !t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-						VectorTaskList.remove(t);
-					}
-					else if(SelCrit.equalsIgnoreCase("floating") && !t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
-						VectorTaskList.remove(t);
-					}
-				}
-				
-				inputBox.setText("Handler run");
-				
-				listView.getItems().clear();
-				listView.getItems().addAll(VectorTaskList);
-				ObservableList<Task> tasks = listView.getItems();
-
-				listView.setItems(null);
-				listView.setItems(tasks);
-
-//				for (Task task : removed) {
-//					tasks.add(task);
-//					removed.remove(task);
-//				}				
-
-//				for(Task t : tasks) {
-//					if(SelCrit==null) {
-//						//do nothing
-//					}
-//					if(SelCrit.equalsIgnoreCase("timed") && !t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-//						tasks.remove(t);
-//						removed.add(t);
-//					}
-//				}
-				
-//				if(SelCrit.equalsIgnoreCase("timed")) {
-//					tasks.remove(1);
-//				}
-					
-//				listView.setItems(tasks);
+				setTaskList(VectorTaskList);
 			}
 		});
 		
+		deadline.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
+				if(new_toggle == null) {
+					isDeadlineOn = false;
+					inputBox.setText("Deadline is off");
+				}
+				else {
+					isDeadlineOn = true;
+					inputBox.setText("Deadline is on");
+				}
+				
+				setTaskList(VectorTaskList);
+			}
+		});
 		
+		floating.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
+				if(new_toggle == null) {
+					isFloatingOn = false;
+					inputBox.setText("Floating is off");
+				}
+				else {
+					isFloatingOn = true;
+					inputBox.setText("Floating is on");
+				}
+				
+				setTaskList(VectorTaskList);
+
+			}
+		});
 		
 		System.out.println("handler set");	
 				
