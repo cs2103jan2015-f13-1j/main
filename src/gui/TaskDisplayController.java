@@ -242,6 +242,7 @@ public class TaskDisplayController {
 
 	@FXML
 	private void handleInput() {
+		final KeyCombination keyComb1=new KeyCodeCombination(KeyCode.Z,KeyCombination.CONTROL_DOWN);
 
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -281,6 +282,10 @@ public class TaskDisplayController {
 				
 				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
 					commandHistoryIndex = commandHistory.size();
+				}
+				
+				if(keyComb1.match(key)){
+					processUserInput("undo");
 				}
 
 			}
