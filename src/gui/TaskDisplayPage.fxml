@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="700.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
-      <SplitPane maxWidth="400.0" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
+      <SplitPane maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
          <items>
       
             <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0">
@@ -25,8 +25,8 @@
             </SplitPane>
          </items>
       </SplitPane>
-      <Separator orientation="VERTICAL" prefHeight="600.0" AnchorPane.rightAnchor="250.0" />
-      <VBox layoutX="516.0" prefHeight="600.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Separator orientation="VERTICAL" prefHeight="600.0" prefWidth="18.0" AnchorPane.leftAnchor="430.0" />
+      <VBox fx:id="sideBar" layoutX="451.0" prefHeight="600.0" prefWidth="250.0" style="-fx-background-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" text="DISPLAY TASKS">
                <VBox.margin>
@@ -84,5 +84,6 @@
             </GridPane>
          </children>
       </VBox>
+      <Label fx:id="slide" layoutX="426.0" layoutY="7.0" text="slide" />
    </children>
 </AnchorPane>

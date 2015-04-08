@@ -33,11 +33,23 @@ public class ListViewGUI extends Application {
 		
 
 		root = new BorderPane();
-		Scene scene = new Scene(root, 700, 600);
+		Scene scene = new Scene(root, 450, 600);
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
+		//primaryStage.setResizable(false);
 		
 		primaryStage.show();
+	}
+	
+	public void resetWindowWidth(){
+		primaryStage.setWidth(700);
+	}
+	
+	public void setWindowWidth(){
+		primaryStage.setWidth(450);
+	}
+	
+	public Stage getWindow(){
+		return primaryStage;
 	}
 
 	private void showTaskOverview() throws IOException {

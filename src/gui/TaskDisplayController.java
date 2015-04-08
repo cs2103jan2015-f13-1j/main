@@ -8,6 +8,10 @@ import fileIO.FileStream;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,8 +24,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import logic.Logic;
 
 public class TaskDisplayController {
@@ -36,6 +43,9 @@ public class TaskDisplayController {
 	private Label label = new Label();
 	
 	@FXML
+	private Label slide = new Label();
+	
+	@FXML
 	private ToggleButton showTimed = new ToggleButton();
 
 	@FXML
@@ -43,6 +53,17 @@ public class TaskDisplayController {
 
 	@FXML
 	private ToggleButton showFloating = new ToggleButton();
+	
+	@FXML
+	private VBox sideBar = new VBox();
+	
+	
+	private Timeline timelineUp;
+	private Timeline timelineDown;
+
+	private StackPane rightArrow = StackPaneBuilder.create().style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";").maxHeight(10).maxWidth(15).build();
+	private StackPane leftArrow = StackPaneBuilder.create().style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";").maxHeight(10).maxWidth(15).build();
+	private SimpleBooleanProperty isExpanded = new SimpleBooleanProperty();
 
 	private ObservableList<Task> list;
 
@@ -125,8 +146,9 @@ public class TaskDisplayController {
 					return;
 				}
 				
+				hbox.setPrefWidth(400);
 				desc.setText(formatTask1(t));
-				desc.setWrappingWidth(listView.getPrefWidth()+40);
+				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
 				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
@@ -183,7 +205,7 @@ public class TaskDisplayController {
 		showTimed.setToggleGroup(timed);
 		showDeadline.setToggleGroup(deadline);
 		showFloating.setToggleGroup(floating);
-		
+		sideBar.toBack();		
 		
 		timed.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
@@ -238,11 +260,89 @@ public class TaskDisplayController {
 		System.setOut(feedback);
 		System.setErr(feedback);
 		label.setText("");
+		slide.setText("slide");
+		slide.setGraphic(rightArrow);
+		setAnimation();
+		
+		slide.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent paramT) {
+				togglePaneVisibility();
+			}
+		});
+		
+		isExpanded.addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> paramObservableValue,Boolean paramT1, Boolean paramT2) {
+				if(paramT2){
+					// To expand
+					timelineDown.play();
+					slide.setGraphic(leftArrow);
+					gui.resetWindowWidth();
+				}else{
+					// To close
+					timelineUp.play();
+					slide.setGraphic(rightArrow);
+					gui.setWindowWidth();
+				}
+			}
+		});
+		
+		sideBar.focusedProperty().addListener(new ChangeListener<Boolean>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> paramObservableValue,Boolean paramT1, Boolean paramT2) {
+				if(paramT2){
+					timelineDown.play();
+					slide.setGraphic(leftArrow);
+				}
+			}
+			
+		});
+		
 	}
+	
+	private void setAnimation(){
+
+		sideBar.translateXProperty().set(-250);
+			
+		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+            }
+        };
+        timelineDown = new Timeline();
+        timelineUp = new Timeline();
+        
+        /* Animation for scroll down. */
+		timelineDown.setCycleCount(1);
+		timelineDown.setAutoReverse(true);
+		
+		final KeyValue kvDwn1 = new KeyValue(sideBar.translateXProperty(), 0);
+		final KeyFrame kfDwn = new KeyFrame(Duration.millis(1), onFinished, kvDwn1);
+		timelineDown.getKeyFrames().add(kfDwn);
+		
+		/* Animation for scroll up. */
+		timelineUp.setCycleCount(1); 
+		timelineUp.setAutoReverse(true);
+		final KeyValue kvUp1 = new KeyValue(sideBar.translateXProperty(), -250);
+		final KeyFrame kfUp = new KeyFrame(Duration.millis(100), kvUp1);
+		timelineUp.getKeyFrames().add(kfUp);
+	}
+	
+	private void togglePaneVisibility(){
+		if(isExpanded.get()){
+			isExpanded.set(false);
+		}else{
+			isExpanded.set(true);
+		}
+	}
+	
+	
 
 	@FXML
 	private void handleInput() {
 		final KeyCombination keyComb1=new KeyCodeCombination(KeyCode.Z,KeyCombination.CONTROL_DOWN);
+		final KeyCombination keyComb2=new KeyCodeCombination(KeyCode.R,KeyCombination.CONTROL_DOWN);
 
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -286,6 +386,10 @@ public class TaskDisplayController {
 				
 				if(keyComb1.match(key)){
 					processUserInput("undo");
+				}
+				
+				if(keyComb2.match(key)){
+					processUserInput("redo");
 				}
 
 			}

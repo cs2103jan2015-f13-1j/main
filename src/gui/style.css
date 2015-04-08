@@ -37,3 +37,7 @@
 .root {
     -fx-background-color: red;
 }
+
+.separator:vertical .line {
+    -fx-border-color: transparent transparent transparent transparent;
+}
