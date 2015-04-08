@@ -17,11 +17,18 @@ public class EditTask {
 	private static final String MSG_TASK_FAILURE = "Edit %s does not exist!\n";
 	private static final String MSG_EDIT_FAILURE = "Edit %d %s failed!\n";
 	private static final String MSG_TIME_FAILURE = "End time cannot be earlier than start time!\n";
+	private static final String MSG_DESC_FAILURE = "Task Description cannot be empty!\n";
 
+	// @author A0105952H
 	public EditTask(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
 	}
 
+	/**
+	 * switch to different types of editing according to command
+	 * @param cmd
+	 * @return
+	 */
 	boolean editTask(Command cmd) {
 
 		int index = cmd.getIndex();
@@ -63,6 +70,10 @@ public class EditTask {
 		return isSuccessful;
 	}
 
+	/**
+	 * 
+	 
+	 */
 	private boolean editTaskStartDate(int index, String modifiedContent) {
 		try {
 			Task editTask = TaskList.get(index - 1);
@@ -87,7 +98,7 @@ public class EditTask {
 			return false;
 
 		} catch (NullPointerException e) {
-			Output.showToUser(String.format(MSG_TASK_FAILURE, "startdate for "
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "start date for "
 					+ index));
 			return false;
 		}
@@ -119,7 +130,7 @@ public class EditTask {
 			return false;
 
 		} catch (NullPointerException e) {
-			Output.showToUser(String.format(MSG_TASK_FAILURE, "enddate for "
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "end date for "
 					+ index));
 			return false;
 		}
@@ -148,7 +159,7 @@ public class EditTask {
 			}
 			return false;
 		} catch (NullPointerException e) {
-			Output.showToUser(String.format(MSG_TASK_FAILURE, "startdate for "
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "start time for "
 					+ index));
 			return false;
 		}
@@ -174,11 +185,10 @@ public class EditTask {
 					return true;
 				}
 				Output.showToUser(MSG_TIME_FAILURE);
-
 			}
 			return false;
 		} catch (NullPointerException e) {
-			Output.showToUser(String.format(MSG_TASK_FAILURE, "endtime for "
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "end time for "
 					+ index));
 			return false;
 		}
@@ -189,12 +199,16 @@ public class EditTask {
 			Task editTask = TaskList.get(index - 1);
 			String originalContent = editTask.getTaskDesc();
 
-			editTask.setTaskDesc(modifiedContent);
-			Sort s = new Sort(TaskList);
-			s.sortList();
-			Logic.u.undoEditTaskDesc(editTask.getIndex(), originalContent);
-			Logic.u.redoEditTaskDesc(index, modifiedContent);
-			return true;
+			if (!modifiedContent.isEmpty()) {
+				editTask.setTaskDesc(modifiedContent);
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditTaskDesc(editTask.getIndex(), originalContent);
+				Logic.u.redoEditTaskDesc(index, modifiedContent);
+				return true;
+			}
+			Output.showToUser(String.format(MSG_DESC_FAILURE, index));		
+			return false;
 		} catch (IndexOutOfBoundsException e) {
 			Output.showToUser(String.format(MSG_TASK_FAILURE, index));
 			return false;

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Vector;
+
 import util.Task;
 import util.Output;
 import util.Task.TASK_TYPE;
@@ -16,6 +17,52 @@ public class Search {
 
 	public Search(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
+	}
+
+	// @author A0105952H
+	public Vector<Task> searchTask(String str) {
+		LocalDate dt;
+		String searchtype = str.substring(0, str.indexOf(" "));
+		switch (searchtype.toLowerCase()) {
+		case "desc":
+			return searchDesc(str.substring(str.indexOf(" ")));
+		case "task":
+			return searchDesc(str.substring(str.indexOf(" ")));
+		case "before":
+			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+			return searchBeforeDate(dt);
+		case "date":
+			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+			return searchOnDate(dt);
+		case "type":
+			Task.TASK_TYPE t = determineTaskType(str.substring(
+					str.indexOf(" ") + 1).trim());
+			return searchTaskType(t);
+		default:
+			Output.showToUser(MSG_COMMAND_FAILURE);
+			return TaskList;
+		}
+
+	}
+
+	private Task.TASK_TYPE determineTaskType(String taskTypeString) {
+		if (taskTypeString == null) {
+			Output.showToUser("command type string cannot be null!");
+			return null;
+		}
+
+		if (taskTypeString.equalsIgnoreCase("floating")) {
+			return TASK_TYPE.FLOATING_TASK;
+		} else if (taskTypeString.equalsIgnoreCase("deadline")
+				|| taskTypeString.equalsIgnoreCase("due")) {
+			return TASK_TYPE.DEADLINE;
+		} else if (taskTypeString.equalsIgnoreCase("timedtask")
+				|| taskTypeString.equalsIgnoreCase("event")) {
+			return TASK_TYPE.TIMED_TASK;
+		} else {
+			Output.showToUser("command type string cannot be null!");
+			return null;
+		}
 	}
 
 	private LocalDate extractDate(String str) {
@@ -89,52 +136,6 @@ public class Search {
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
 			return TaskList;
-		}
-	}
-
-	public Vector<Task> searchTask(String str) {
-		LocalDate dt;
-		String searchtype = str.substring(0, str.indexOf(" "));
-		switch (searchtype.toLowerCase()) {
-		case "desc":
-			return searchDesc(str.substring(str.indexOf(" ")));
-		case "task":
-			return searchDesc(str.substring(str.indexOf(" ")));
-		case "before":
-			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
-			return searchBeforeDate(dt);
-		case "date":
-			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
-			return searchOnDate(dt);
-		case "type":
-			Task.TASK_TYPE t = determineTaskType(str.substring(
-					str.indexOf(" ") + 1).trim());
-			return searchTaskType(t);
-		default:
-			Output.showToUser(MSG_COMMAND_FAILURE);
-			return TaskList;
-		}
-
-	}
-
-	public Task.TASK_TYPE determineTaskType(String taskTypeString) {
-		if (taskTypeString == null) {
-			Output.showToUser("command type string cannot be null!");
-			return null;
-		}
-		// TODO throw new Error("command type string cannot be null!");
-		Output.showToUser("Search task type!");
-		if (taskTypeString.equalsIgnoreCase("floating")) {
-			return TASK_TYPE.FLOATING_TASK;
-		} else if (taskTypeString.equalsIgnoreCase("deadline")
-				|| taskTypeString.equalsIgnoreCase("due")) {
-			return TASK_TYPE.DEADLINE;
-		} else if (taskTypeString.equalsIgnoreCase("timedtask")
-				|| taskTypeString.equalsIgnoreCase("event")) {
-			return TASK_TYPE.TIMED_TASK;
-		} else {
-			Output.showToUser("command type string cannot be null!");
-			return null;
 		}
 	}
 

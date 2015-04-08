@@ -116,6 +116,12 @@ public class TaskDisplayController {
 					processUserInput(("toggleflag "+index));
 				}
 			});
+			done.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					processUserInput(("togglemark "+index));
+				}
+			});
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
 			HBox.setHgrow(pane, Priority.ALWAYS);
 
@@ -144,6 +150,11 @@ public class TaskDisplayController {
 					getStyleClass().add("empty");
 					setGraphic(null);
 					return;
+				}
+				if(t.isDone()){
+					done.setSelected(true);
+				}else{
+					done.setSelected(false);
 				}
 				
 				hbox.setPrefWidth(400);
