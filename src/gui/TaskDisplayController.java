@@ -506,9 +506,7 @@ public class TaskDisplayController {
 		// This theoretically works the same way, but the 2 lines will fix the
 		// way listView updates accordingly.
 		// listView.setItems(list);
-		listView.getItems().clear();
-		listView.getItems().addAll(VectorTaskList);
-
+		setTaskList(VectorTaskList);		
 	}
 
 	public class GUIMsg extends PrintStream {
