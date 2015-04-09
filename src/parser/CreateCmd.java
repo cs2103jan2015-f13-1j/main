@@ -9,6 +9,28 @@ public class CreateCmd {
 		return backCommand;
 	}
 	
+	public Command createAddCommand(Task t) {
+		Command addCommand = new Command("add");
+		addCommand.setTask(t);
+		return addCommand;
+	}
+
+	public Command createDeleteCommand(int i) {
+		Command deleteCommand = new Command("delete");
+		deleteCommand.setIndex(i);
+	
+		return deleteCommand;
+	}
+
+	public Command createEditCommand(String f, String t, int i) {
+		Command editCommand = new Command("edit");
+		editCommand.setIndex(i);
+		editCommand.setContent(f);
+		editCommand.setModifiedString(t);
+	
+		return editCommand;
+	}
+
 	public Command createBackCommand(){
 		Command backCommand = new Command("");
 		return backCommand;
@@ -54,28 +76,6 @@ public class CreateCmd {
 		Command markCommand = new Command("togglemark");
 		markCommand.setIndex(i);
 		return markCommand;
-	}
-
-	public Command createAddCommand(Task t) {
-		Command addCommand = new Command("add");
-		addCommand.setTask(t);
-		return addCommand;
-	}
-
-	public Command createEditCommand(String f, String t, int i) {
-		Command editCommand = new Command("edit");
-		editCommand.setIndex(i);
-		editCommand.setContent(f);
-		editCommand.setModifiedString(t);
-
-		return editCommand;
-	}
-
-	public Command createDeleteCommand(int i) {
-		Command deleteCommand = new Command("delete");
-		deleteCommand.setIndex(i);
-
-		return deleteCommand;
 	}
 
 	public Command createSearchCommand(String s) {

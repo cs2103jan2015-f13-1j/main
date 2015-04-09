@@ -8,6 +8,7 @@ import util.OperationType.COMMAND_TYPE;
 
 public class Parser {
 
+	// @author A0105952H
 	public Command parseInputString(String input) {
 		String commandTypeString = input.trim().split("\\s+")[0];
 		COMMAND_TYPE commandType = OperationType
@@ -30,7 +31,7 @@ public class Parser {
 			return clearTask();
 		case BACK:
 			return createBackCommand();
-		case DONE:			
+		case DONE:
 			return markTask(input);
 		case UNDONE:
 			return unmarkTask(input);
@@ -45,14 +46,14 @@ public class Parser {
 		case TOGGLEDONE:
 			return toggledone(input);
 		default:
-			//TODO throw an error if the command is not recognized
+			// TODO throw an error if the command is not recognized
 			return null;
-			//throw new Error("Unrecognized command type");
+			// throw new Error("Unrecognized command type");
 		}
 	}
 
 	private Command addTask(String input) {
-		input = input.substring(input.indexOf(" ")+1).trim();
+		input = input.substring(input.indexOf(" ") + 1).trim();
 		TaskBuilder extractor = new TaskBuilder(input);
 		Task t = extractor.extractAddCommand();
 		CreateCmd createCmd = new CreateCmd();
@@ -61,7 +62,7 @@ public class Parser {
 
 	private Command changeDir(String input) {
 		CreateCmd clearcmd = new CreateCmd();
-		input = input.substring(input.indexOf(" ")+1).trim();
+		input = input.substring(input.indexOf(" ") + 1).trim();
 		return clearcmd.createDirCommand(input);
 	}
 
@@ -76,31 +77,32 @@ public class Parser {
 	}
 
 	private Command deleteTask(String input) {
-		input = input.substring(input.indexOf(" ")+1).trim();
+		input = input.substring(input.indexOf(" ") + 1).trim();
 		int index = Integer.parseInt(input);
 		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createDeleteCommand(index);
 	}
 
 	private Command editTask(String input) {
-		input = input.substring(input.indexOf(" ")+1).trim();
+		input = input.substring(input.indexOf(" ") + 1).trim();
 		String editType, modifiedContent = "";
-		
+
 		CreateCmd createCmd = new CreateCmd();
-	
+
 		StringTokenizer st = new StringTokenizer(input);
-		int index = Integer.parseInt(st.nextToken());
 		editType = st.nextToken();
-		while(st.hasMoreTokens()){
-			modifiedContent = modifiedContent.concat(" "+st.nextToken());
+		int index = Integer.parseInt(st.nextToken());		
+		while (st.hasMoreTokens()) {
+			modifiedContent = modifiedContent.concat(" " + st.nextToken());
 		}
-		return createCmd.createEditCommand(editType, modifiedContent.trim(), index);
+		return createCmd.createEditCommand(editType, modifiedContent.trim(),
+				index);
 	}
 
 	private Command flag(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-	
+
 		CreateCmd flagcmd = new CreateCmd();
 		return flagcmd.createFlagCommand(i);
 	}
@@ -108,7 +110,7 @@ public class Parser {
 	private Command unflag(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-	
+
 		CreateCmd flagcmd = new CreateCmd();
 		return flagcmd.createUnflagCommand(i);
 	}
@@ -116,7 +118,7 @@ public class Parser {
 	private Command toggleflag(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-		
+
 		CreateCmd flagcmd = new CreateCmd();
 		return flagcmd.createToggleFlagCommand(i);
 	}
@@ -124,16 +126,16 @@ public class Parser {
 	private Command markTask(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-	
+
 		CreateCmd markcmd = new CreateCmd();
 		return markcmd.createMarkCommand(i);
-		
+
 	}
 
 	private Command unmarkTask(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-	
+
 		CreateCmd markcmd = new CreateCmd();
 		return markcmd.createUnmarkCommand(i);
 	}
@@ -141,13 +143,13 @@ public class Parser {
 	private Command toggledone(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		int i = Integer.parseInt(input);
-		
+
 		CreateCmd markcmd = new CreateCmd();
 		return markcmd.createToggleMarkCommand(i);
 	}
 
 	private Command searchTask(String input) {
-		input = input.substring(input.indexOf(" ")+1).trim();
+		input = input.substring(input.indexOf(" ") + 1).trim();
 		CreateCmd createCmd = new CreateCmd();
 		return createCmd.createSearchCommand(input);
 	}

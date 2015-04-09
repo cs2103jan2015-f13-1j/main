@@ -5,12 +5,14 @@ import java.io.PrintStream;
 import java.util.Vector;
 
 import fileIO.FileStream;
+import util.Output;
 import util.Task;
 import util.TimeExtractor;
 import util.Task.TASK_TYPE;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,10 +43,10 @@ public class TaskDisplayController {
 
 	@FXML
 	private Label label = new Label();
-	
+
 	@FXML
 	private Label slide = new Label();
-	
+
 	@FXML
 	private ToggleButton showTimed = new ToggleButton();
 
@@ -53,16 +55,22 @@ public class TaskDisplayController {
 
 	@FXML
 	private ToggleButton showFloating = new ToggleButton();
-	
+
 	@FXML
 	private VBox sideBar = new VBox();
-	
-	
+
 	private Timeline timelineUp;
 	private Timeline timelineDown;
+	private static String previousKey;
 
-	private StackPane rightArrow = StackPaneBuilder.create().style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";").maxHeight(10).maxWidth(15).build();
-	private StackPane leftArrow = StackPaneBuilder.create().style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";").maxHeight(10).maxWidth(15).build();
+	private StackPane rightArrow = StackPaneBuilder
+			.create()
+			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";")
+			.maxHeight(10).maxWidth(15).build();
+	private StackPane leftArrow = StackPaneBuilder
+			.create()
+			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";")
+			.maxHeight(10).maxWidth(15).build();
 	private SimpleBooleanProperty isExpanded = new SimpleBooleanProperty();
 
 	private ObservableList<Task> list;
@@ -72,22 +80,22 @@ public class TaskDisplayController {
 	private ListViewGUI gui;
 
 	private Vector<Task> VectorTaskList;
-	
+
 	Vector<Task> removed = new Vector<Task>();
-	
+
 	private Vector<String> commandHistory;
 	private int commandHistoryIndex;
-	
-	//Selection Criteria for togglebuttons
+
+	// Selection Criteria for togglebuttons
 	private boolean isTimedOn = true;
 	private boolean isDeadlineOn = true;
 	private boolean isFloatingOn = true;
-	
+
 	final ToggleGroup timed = new ToggleGroup();
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 
-	 class TaskCell extends ListCell<Task> {
+	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
 		Text desc = new Text("(empty)");
@@ -106,20 +114,14 @@ public class TaskDisplayController {
 			delete.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					processUserInput(("delete "+index));
+					processUserInput(("delete " + index));
 				}
 			});
 
 			flag.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					processUserInput(("toggleflag "+index));
-				}
-			});
-			done.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					processUserInput(("togglemark "+index));
+					processUserInput(("toggleflag " + index));
 				}
 			});
 			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
@@ -130,40 +132,35 @@ public class TaskDisplayController {
 		@Override
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
-			
+
 			if (t != null) {
-				
+
 				if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
 					getStyleClass().add("full");
 					setGraphic(hbox);
-				}
-				else if (t.getTaskType().equals(TASK_TYPE.DEADLINE) && isDeadlineOn) {
+				} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
+						&& isDeadlineOn) {
+					getStyleClass().add("full");
+					setGraphic(hbox);
+				} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
+						&& isFloatingOn) {
 					getStyleClass().add("full");
 					setGraphic(hbox);
 				}
-				else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK) && isFloatingOn) {
-					getStyleClass().add("full");
-					setGraphic(hbox);
-				}
-				
+
 				else {
 					getStyleClass().add("empty");
 					setGraphic(null);
 					return;
 				}
-				if(t.isDone()){
-					done.setSelected(true);
-				}else{
-					done.setSelected(false);
-				}
-				
+
 				hbox.setPrefWidth(400);
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
 				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
-				
+
 			} else {
 				setGraphic(null);
 			}
@@ -180,7 +177,7 @@ public class TaskDisplayController {
 			public ListCell<Task> call(ListView<Task> param) {
 				return new TaskCell();
 			}
-			
+
 		});
 
 	}
@@ -204,68 +201,77 @@ public class TaskDisplayController {
 
 	@FXML
 	private void initialize() {
-		VectorTaskList = l.initializeList();	
+		VectorTaskList = l.initializeList();
 		setTaskList(VectorTaskList);
-		
+
 		commandHistory = new Vector<String>();
 		commandHistoryIndex = 0;
 
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
-		
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				inputBox.requestFocus();
+			}
+		});
+
 		showTimed.setToggleGroup(timed);
 		showDeadline.setToggleGroup(deadline);
 		showFloating.setToggleGroup(floating);
-		sideBar.toBack();		
-		
-		timed.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
-				if(new_toggle == null) {
-					isTimedOn = false;
-					inputBox.setText("Timed is off");
-				}
-				else {
-					isTimedOn = true;
-					inputBox.setText("Timed is on");
-				}
+		sideBar.toBack();
 
-				setTaskList(VectorTaskList);
-			}
-		});
-		
-		deadline.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
-				if(new_toggle == null) {
-					isDeadlineOn = false;
-					inputBox.setText("Deadline is off");
-				}
-				else {
-					isDeadlineOn = true;
-					inputBox.setText("Deadline is on");
-				}
-				
-				setTaskList(VectorTaskList);
-			}
-		});
-		
-		floating.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle, Toggle new_toggle) {
-				if(new_toggle == null) {
-					isFloatingOn = false;
-					inputBox.setText("Floating is off");
-				}
-				else {
-					isFloatingOn = true;
-					inputBox.setText("Floating is on");
-				}
-				
-				setTaskList(VectorTaskList);
+		timed.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isTimedOn = false;
+							inputBox.setText("Timed is off");
+						} else {
+							isTimedOn = true;
+							inputBox.setText("Timed is on");
+						}
 
-			}
-		});
-		
-		System.out.println("handler set");	
-				
+						setTaskList(VectorTaskList);
+					}
+				});
+
+		deadline.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isDeadlineOn = false;
+							inputBox.setText("Deadline is off");
+						} else {
+							isDeadlineOn = true;
+							inputBox.setText("Deadline is on");
+						}
+
+						setTaskList(VectorTaskList);
+					}
+				});
+
+		floating.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isFloatingOn = false;
+							inputBox.setText("Floating is off");
+						} else {
+							isFloatingOn = true;
+							inputBox.setText("Floating is on");
+						}
+
+						setTaskList(VectorTaskList);
+
+					}
+				});
+
+		System.out.println("handler set");
 
 		GUIMsg feedback = new GUIMsg(System.out, label);
 		System.setOut(feedback);
@@ -274,23 +280,25 @@ public class TaskDisplayController {
 		slide.setText("slide");
 		slide.setGraphic(rightArrow);
 		setAnimation();
-		
+
 		slide.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent paramT) {
 				togglePaneVisibility();
 			}
 		});
-		
+
 		isExpanded.addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> paramObservableValue,Boolean paramT1, Boolean paramT2) {
-				if(paramT2){
+			public void changed(
+					ObservableValue<? extends Boolean> paramObservableValue,
+					Boolean paramT1, Boolean paramT2) {
+				if (paramT2) {
 					// To expand
 					timelineDown.play();
 					slide.setGraphic(leftArrow);
 					gui.resetWindowWidth();
-				}else{
+				} else {
 					// To close
 					timelineUp.play();
 					slide.setGraphic(rightArrow);
@@ -298,62 +306,66 @@ public class TaskDisplayController {
 				}
 			}
 		});
-		
-		sideBar.focusedProperty().addListener(new ChangeListener<Boolean>(){
+
+		sideBar.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Boolean> paramObservableValue,Boolean paramT1, Boolean paramT2) {
-				if(paramT2){
+			public void changed(
+					ObservableValue<? extends Boolean> paramObservableValue,
+					Boolean paramT1, Boolean paramT2) {
+				if (paramT2) {
 					timelineDown.play();
 					slide.setGraphic(leftArrow);
 				}
 			}
-			
+
 		});
-		
+
 	}
-	
-	private void setAnimation(){
+
+	private void setAnimation() {
 
 		sideBar.translateXProperty().set(-250);
-			
+
 		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-            }
-        };
-        timelineDown = new Timeline();
-        timelineUp = new Timeline();
-        
-        /* Animation for scroll down. */
+			public void handle(ActionEvent t) {
+			}
+		};
+		timelineDown = new Timeline();
+		timelineUp = new Timeline();
+
+		/* Animation for scroll down. */
 		timelineDown.setCycleCount(1);
 		timelineDown.setAutoReverse(true);
-		
+
 		final KeyValue kvDwn1 = new KeyValue(sideBar.translateXProperty(), 0);
-		final KeyFrame kfDwn = new KeyFrame(Duration.millis(1), onFinished, kvDwn1);
+		final KeyFrame kfDwn = new KeyFrame(Duration.millis(1), onFinished,
+				kvDwn1);
 		timelineDown.getKeyFrames().add(kfDwn);
-		
+
 		/* Animation for scroll up. */
-		timelineUp.setCycleCount(1); 
+		timelineUp.setCycleCount(1);
 		timelineUp.setAutoReverse(true);
 		final KeyValue kvUp1 = new KeyValue(sideBar.translateXProperty(), -250);
 		final KeyFrame kfUp = new KeyFrame(Duration.millis(100), kvUp1);
 		timelineUp.getKeyFrames().add(kfUp);
 	}
-	
-	private void togglePaneVisibility(){
-		if(isExpanded.get()){
+
+	private void togglePaneVisibility() {
+		if (isExpanded.get()) {
 			isExpanded.set(false);
-		}else{
+		} else {
 			isExpanded.set(true);
 		}
 	}
-	
-	
 
 	@FXML
 	private void handleInput() {
-		final KeyCombination keyComb1=new KeyCodeCombination(KeyCode.Z,KeyCombination.CONTROL_DOWN);
-		final KeyCombination keyComb2=new KeyCodeCombination(KeyCode.R,KeyCombination.CONTROL_DOWN);
+
+		final KeyCombination keyComb1 = new KeyCodeCombination(KeyCode.Z,
+				KeyCombination.CONTROL_DOWN);
+		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.R,
+				KeyCombination.CONTROL_DOWN);
 
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -382,60 +394,100 @@ public class TaskDisplayController {
 				if (key.getCode().equals(KeyCode.F5)) {
 					FileStream.changeDir();
 				}
-				
+
 				if (key.getCode().equals(KeyCode.UP)) {
 					showPrevCommandUp();
 				}
-				
+
 				if (key.getCode().equals(KeyCode.DOWN)) {
 					showPrevCommandDown();
 				}
-				
+
 				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
 					commandHistoryIndex = commandHistory.size();
 				}
-				
-				if(keyComb1.match(key)){
+
+				if (keyComb1.match(key)) {
 					processUserInput("undo");
 				}
-				
-				if(keyComb2.match(key)){
+
+				if (keyComb2.match(key)) {
 					processUserInput("redo");
 				}
 
 			}
 		});
+
+		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
+				new EventHandler<KeyEvent>() {
+					String autoCompleteList[] = { "add ", "changedir",
+							"create ", "delete ", "edit ", "exit", "flag",
+							"mark ", "search ", "undo", "redo", "prioritise",
+							"quit", "search task ", "search before ",
+							"search date ", "search type ", "edit desc ",
+							"edit task ", "edit start", "edit end",
+							"edit starttime ", "edit startdate ",
+							"edit endtime ", "edit enddate " };
+
+					public void handle(KeyEvent key) {
+
+						String input = inputBox.getText();
+
+						for (String s : autoCompleteList) {
+							input = input.replaceAll("\\s+", " ");
+							if (!input.isEmpty()
+									&& s.toLowerCase().startsWith(input)) {
+								Output.showToUser("Enter space to autocomplete");
+								previousKey = s;
+								break;
+							}
+						}
+						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						}
+
+						if (key.getCode().equals(KeyCode.SPACE)) {
+							if (previousKey != null) {
+								inputBox.setText(previousKey);
+								inputBox.end();
+								previousKey = null;
+								Output.showToUser(" ");
+							}
+						}
+					}
+				});
 	}
-	
+
 	private void showPrevCommandUp() {
-		if(commandHistoryIndex == 0) {
+		if (commandHistoryIndex == 0) {
 			commandHistoryIndex = commandHistory.size();
 		}
-		
-		if(commandHistoryIndex > 0) {
+
+		if (commandHistoryIndex > 0) {
 			commandHistoryIndex--;
-		} 
-		
+		}
+
 		String text = commandHistory.get(commandHistoryIndex);
 		inputBox.setText(text);
 		inputBox.positionCaret(text.length());
-		
 
 	}
-	
+
 	private void showPrevCommandDown() {
-		if(commandHistoryIndex == commandHistory.size()-1) {
-			commandHistoryIndex = -1;;
+		if (commandHistoryIndex == commandHistory.size() - 1) {
+			commandHistoryIndex = -1;
+			;
 		}
-		
-		if(commandHistoryIndex < commandHistory.size()) {
+
+		if (commandHistoryIndex < commandHistory.size()) {
 			commandHistoryIndex++;
 		}
-		
+
 		String text = commandHistory.get(commandHistoryIndex);
- 		inputBox.setText(text);
-		inputBox.positionCaret(text.length());	
-		
+		inputBox.setText(text);
+		inputBox.positionCaret(text.length());
+
 	}
 
 	public void setGUI(ListViewGUI listViewGUI) {
