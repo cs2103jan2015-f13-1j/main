@@ -13,7 +13,10 @@ import util.TimeExtractor;
 public class Search {
 	private Vector<Task> TaskList = new Vector<Task>();
 
+	private static final String MSG_SEARCH_COMMAND = "%s searched!\n";
 	private static final String MSG_COMMAND_FAILURE = "Search format incorrect!\n";
+	private static final String MSG_COMMAND_NULL = "command type string cannot be null!";
+	private static final String MSG_INCORRECT_FORMAT = "search command with incorrect format!";
 
 	public Search(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
@@ -47,7 +50,7 @@ public class Search {
 
 	private Task.TASK_TYPE determineTaskType(String taskTypeString) {
 		if (taskTypeString == null) {
-			Output.showToUser("command type string cannot be null!");
+			Output.showToUser(MSG_COMMAND_NULL);
 			return null;
 		}
 
@@ -60,7 +63,7 @@ public class Search {
 				|| taskTypeString.equalsIgnoreCase("event")) {
 			return TASK_TYPE.TIMED_TASK;
 		} else {
-			Output.showToUser("command type string cannot be null!");
+			Output.showToUser(MSG_INCORRECT_FORMAT);
 			return null;
 		}
 	}
@@ -76,7 +79,6 @@ public class Search {
 	}
 
 	private Vector<Task> searchBeforeDate(LocalDate date) {
-		Output.showToUser("Search task type!");
 
 		Vector<Task> resultTaskList = new Vector<Task>();
 		Task t = null;
@@ -90,6 +92,8 @@ public class Search {
 					resultTaskList.add(TaskList.get(index - 1));
 				}
 			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task before "
+					+ date));
 			return resultTaskList;
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
@@ -112,6 +116,8 @@ public class Search {
 					}
 				}
 			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task on "
+					+ date));
 			return resultTaskList;
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
@@ -132,6 +138,8 @@ public class Search {
 
 				}
 			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task type "
+					+ type));
 			return resultTaskList;
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
@@ -149,7 +157,7 @@ public class Search {
 				resultTaskList.add(TaskList.get(index - 1));
 			}
 		}
-		Output.showToUser("keyword " + str + " searched");
+		Output.showToUser(String.format(MSG_SEARCH_COMMAND, "keyword " + str));
 		return resultTaskList;
 	}
 
