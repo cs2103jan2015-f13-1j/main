@@ -499,11 +499,11 @@ public class TaskDisplayController {
 				new EventHandler<KeyEvent>() {
 					String autoCompleteList[] = { "add ", "changedir",
 							"create ", "delete ", "edit ", "exit", "flag",
-							"mark ", "search ", "undo", "redo", "prioritise",
-							"quit", "search task ", "search before ",
-							"search date ", "search type ", "edit desc ",
-							"edit task ", "edit start", "edit end",
-							"edit starttime ", "edit startdate ",
+							"help", "mark ", "man", "search ", "undo", "redo",
+							"prioritise", "quit", "search task ",
+							"search before ", "search date ", "search type ",
+							"edit desc ", "edit task ", "edit start",
+							"edit end", "edit starttime ", "edit startdate ",
 							"edit endtime ", "edit enddate " };
 
 					public void handle(KeyEvent key) {

@@ -141,7 +141,16 @@ public class TaskBuilderTest {
 		}
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 
-		// case 11 failed case: from without to
+		// case 11 no date, 2 times, assume today
+		tb = new TaskBuilder("Meet professor 3pm 5.25pm");
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 0));
+		tb.run();
+		assertEquals("Meet professor", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 25));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 12 failed case: from without to
 		tb = new TaskBuilder("add P-P from jan 9 2015 23:20");
 		tb.run();
 		assertEquals(tb.t, null);
