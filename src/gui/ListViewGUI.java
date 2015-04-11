@@ -3,13 +3,10 @@ package gui;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -18,6 +15,8 @@ public class ListViewGUI extends Application {
 	private Stage primaryStage;
 	private BorderPane root;
 	private TaskDisplayController controller;
+	private double x;
+	private double y;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -27,11 +26,12 @@ public class ListViewGUI extends Application {
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
 		this.primaryStage.initStyle(StageStyle.UNDECORATED);	//removes default windows border
-		this.primaryStage.setTitle("Ontask");
-		this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
+		//this.primaryStage.setTitle("Ontask");
+		//this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
 
 		initRootLayout();
 		showTaskOverview();
+		
 	}
 	
 	private void initRootLayout() {

@@ -23,10 +23,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import logic.Logic;
@@ -117,7 +119,7 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
-	
+
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
@@ -178,15 +180,13 @@ public class TaskDisplayController {
 
 				if (t.getDone()) {
 					done.setSelected(true);
-					// setStyle("done");
-					//this.getStyleClass().add("done");
 					desc.getStyleClass().add("strikethrough");
 					details.getStyleClass().add("strikethrough");
 				} else {
 					done.setSelected(false);
 				}
 
-				hbox.setPrefWidth(400);
+				hbox.setPrefWidth(350);
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
@@ -233,8 +233,30 @@ public class TaskDisplayController {
 		}
 	}
 
+	//records x,y co-ordinates
+	class Delta {
+		double x;
+		double y;
+	}
+	
 	@FXML
 	private void initialize() {
+		
+		//customize toolBar to enable moving an undecorated application
+		final Delta dragDelta = new Delta();
+				toolBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override public void handle(MouseEvent mouseEvent) {
+			    // record a delta distance for the drag and drop operation.
+			    dragDelta.x = gui.getWindow().getX() - mouseEvent.getScreenX();
+			    dragDelta.y = gui.getWindow().getY() - mouseEvent.getScreenY();
+			  }
+			});
+			toolBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			  @Override public void handle(MouseEvent mouseEvent) {
+			    gui.getWindow().setX(mouseEvent.getScreenX() + dragDelta.x);
+			    gui.getWindow().setY(mouseEvent.getScreenY() + dragDelta.y);
+			  }
+			});
 		
 		//customize close and minimize buttons
 		closeApp.setOnAction(new EventHandler<ActionEvent>() {
