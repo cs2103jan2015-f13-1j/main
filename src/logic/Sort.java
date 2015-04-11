@@ -62,11 +62,11 @@ public class Sort {
 
 		// Sort task according to whether it is marked as done
 		private int compareDone(Task a, Task b) {
-			if (a.isDone() && b.isDone()) {
+			if (a.getDone() && b.getDone()) {
 				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
-			} else if (a.isDone()) {
+			} else if (a.getDone()) {
 				return 1;
-			} else if (b.isDone()) {
+			} else if (b.getDone()) {
 				return -1;
 			} else {
 				return compareType(a, b);

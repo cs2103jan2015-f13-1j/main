@@ -30,7 +30,7 @@ public class FileStream {
 			Unmarshaller um = context.createUnmarshaller();
 
 			//Read XML from file and unmarshal.
-			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);		
+			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);	
 			if(wrapper.getTasks() != null) {
 				tasks.addAll(wrapper.getTasks());
 			}
@@ -122,8 +122,8 @@ public class FileStream {
 			
 		}
 
-		System.out.println("Old path:" + oldPath + "/Ontask.xml");
-		System.out.println("New path:" + newPath + "/Ontask.xml");
+		//System.out.println("Old path:" + oldPath + "/Ontask.xml");
+		//System.out.println("New path:" + newPath + "/Ontask.xml");
 	}
 	
 	public static void changeDirWithString(String s) {
@@ -134,7 +134,7 @@ public class FileStream {
 		file = new File(s + "/Ontask.xml");
 		setFilePath(file);
 		
-		System.out.println(s + "/Ontask.xml");	
+		//System.out.println(s + "/Ontask.xml");	
 	}
 	
 	public static String getOldPath() {
@@ -148,7 +148,7 @@ public class FileStream {
 	/*
 	 * Preference API stores the value of File using a string key filePath
 	 */
-	private static File getFilePath() {
+	public static File getFilePath() {
 		Preferences prefs = Preferences.userNodeForPackage(FileStream.class);
 		String filePath = prefs.get("filePath", null);
 		if(filePath != null) {
