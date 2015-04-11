@@ -162,39 +162,14 @@ public class TaskDisplayController {
 
 
 			if (t != null) {
-
-				if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
-//					System.out.println(isDisplayedByDueDate(t));
-					if (isDisplayedByDueDate(t)) {
 						getStyleClass().add("full");
 						setGraphic(hbox);
-					}
-					
-				} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
-						&& isDeadlineOn) {
-//					System.out.println(isDisplayedByDueDate(t));
-					if (isDisplayedByDueDate(t)) {
-						getStyleClass().add("full");
-						setGraphic(hbox);
-					}
-				} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
-						&& isFloatingOn) {
-//					System.out.println(isDisplayedByDueDate(t));
-					if (isDisplayedByDueDate(t)) {
-						getStyleClass().add("full");
-						setGraphic(hbox);
-					}
-				}
 
-				else {
-//					DisplayTaskList.remove(t.getIndex());
-					setGraphic(null);
-					return;
-				}
-
-				if(t.isDone()){
+				if(t.isDone()) {
 					done.setSelected(true);
-				}else{
+				}
+				
+				else {
 					done.setSelected(false);
 				}
 				hbox.setPrefWidth(400);
@@ -203,8 +178,9 @@ public class TaskDisplayController {
 				details.setText(formatTask2(t));
 				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
-
-			} else {
+			}
+			
+			else {
 				setGraphic(null);
 			}
 		}
@@ -245,8 +221,7 @@ public class TaskDisplayController {
 	@FXML
 	private void initialize() {
 		VectorTaskList = l.initializeList();
-		DisplayTaskList = VectorTaskList;
-		setTaskList(DisplayTaskList);
+		resetDisplayTaskList();
 
 		commandHistory = new Vector<String>();
 		commandHistoryIndex = 0;
@@ -262,8 +237,11 @@ public class TaskDisplayController {
 		});
 
 		showTimed.setToggleGroup(timed);
+		showTimed.setSelected(true);
 		showDeadline.setToggleGroup(deadline);
+		showDeadline.setSelected(true);
 		showFloating.setToggleGroup(floating);
+		showFloating.setSelected(true);	
 		
 		dueToday.setToggleGroup(due);
 		dueToday.setUserData("dueToday");
@@ -290,8 +268,9 @@ public class TaskDisplayController {
 							isTimedOn = true;
 							inputBox.setText("Timed is on");
 						}
-
+						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
+						resetDisplayTaskList();
 					}
 				});
 
@@ -306,8 +285,9 @@ public class TaskDisplayController {
 							isDeadlineOn = true;
 							inputBox.setText("Deadline is on");
 						}
-
+						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
+						resetDisplayTaskList();
 					}
 				});
 
@@ -322,9 +302,9 @@ public class TaskDisplayController {
 							isFloatingOn = true;
 							inputBox.setText("Floating is on");
 						}
-
+						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
-
+						resetDisplayTaskList();
 					}
 				});
 		
@@ -339,9 +319,9 @@ public class TaskDisplayController {
 							checkDue = new_toggle.getUserData().toString();
 							inputBox.setText(new_toggle.getUserData().toString());
 						}
-
+						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
-
+						resetDisplayTaskList();
 					}
 				});
 
@@ -393,6 +373,14 @@ public class TaskDisplayController {
 
 		});
 
+	}
+
+	private void resetDisplayTaskList() {
+		DisplayTaskList = new Vector<Task>();
+		for(Task t:VectorTaskList) {
+			DisplayTaskList.add(t);
+		}
+		setTaskList(DisplayTaskList);
 	}
 
 	private void setAnimation() {
@@ -573,17 +561,40 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
-		DisplayTaskList = VectorTaskList;
+		resetDisplayTaskList();
 
 		// Comments on replacing listView.setItems with the following 2 lines:
 		// This theoretically works the same way, but the 2 lines will fix the
 		// way listView updates accordingly.
 		// listView.setItems(list);
-		setTaskList(DisplayTaskList);		
+		cleanDisplayTaskList();
+		setTaskList(DisplayTaskList);
+		resetDisplayTaskList();
 	}
 	
-	public void cleanTaskList(Vector<Task> taskList) {
-		
+	public void cleanDisplayTaskList() {
+		for (Task t: DisplayTaskList) {
+			if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
+				if (isDisplayedByDueDate(t)) {
+					//Do nothing
+				}
+				
+			} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
+					&& isDeadlineOn) {
+				if (isDisplayedByDueDate(t)) {
+					//Do nothing
+				}
+			} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
+					&& isFloatingOn) {
+				if (isDisplayedByDueDate(t)) {
+					//Do nothing
+				}
+			}
+
+			else {
+				DisplayTaskList.remove(t.getIndex());
+			}
+		}
 	}
 	
 	public boolean isDisplayedByDueDate(Task t) {
