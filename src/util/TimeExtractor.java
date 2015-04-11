@@ -7,6 +7,14 @@ import java.util.Locale;
 
 public class TimeExtractor {
 
+	public static String formatDate(LocalDate t) {
+		DateTimeFormatter formatter;
+
+		formatter = DateTimeFormatter.ofPattern("MMM.d uuuu").withLocale(
+				Locale.ENGLISH);
+		return t.format(formatter);
+	}
+
 	public static String formatDateTime(LocalDateTime t) {
 		DateTimeFormatter formatter;
 
@@ -82,13 +90,13 @@ public class TimeExtractor {
 			return null;
 		}
 	}
-	
+
 	private static LocalDate DateFormatter2(String str) {
 		try {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-			
+
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
@@ -111,7 +119,7 @@ public class TimeExtractor {
 			builder.parseCaseInsensitive();
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM uuuu"));			
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd.MM.uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d uuuu"));
