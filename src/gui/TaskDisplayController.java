@@ -129,11 +129,15 @@ public class TaskDisplayController {
 		Pane pane = new Pane();
 		VBox buttonVBox = new VBox();
 		VBox taskVBox = new VBox();
-		Button flag = new Button("Flag");
-		Button delete = new Button("Del");
+		Button flag = new Button();
+		Button delete = new Button();
 
 		public TaskCell() {
 			super();
+			
+			delete.getStyleClass().add("delete");
+//			flag.getStyleClass().add("flag");
+			
 			taskVBox.getChildren().addAll(desc, details);
 			buttonVBox.getChildren().addAll(flag, delete);
 			delete.setOnAction(new EventHandler<ActionEvent>() {
@@ -190,6 +194,12 @@ public class TaskDisplayController {
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
+				if (t.getFlag()) {
+					flag.getStyleClass().add("flag-selected");
+				}
+				else {
+					flag.getStyleClass().add("flag");
+				}
 				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
 			}
