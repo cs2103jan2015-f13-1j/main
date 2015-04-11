@@ -1,5 +1,8 @@
 package gui;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
@@ -165,7 +168,8 @@ public class TaskDisplayController {
 						getStyleClass().add("full");
 						setGraphic(hbox);
 
-				if(t.isDone()) {
+				if(t.getDone()){
+
 					done.setSelected(true);
 				}
 				
@@ -394,7 +398,7 @@ public class TaskDisplayController {
 		timelineDown = new Timeline();
 		timelineUp = new Timeline();
 
-		/* Animation for scroll down. */
+		/* Animation for scroll right. */
 		timelineDown.setCycleCount(1);
 		timelineDown.setAutoReverse(true);
 
@@ -451,6 +455,10 @@ public class TaskDisplayController {
 
 				}
 
+				if(key.getCode().equals(KeyCode.F1)) {
+					showHelpWindow();
+				}
+				
 				if (key.getCode().equals(KeyCode.F5)) {
 					FileStream.changeDir();
 				}
@@ -476,6 +484,8 @@ public class TaskDisplayController {
 				}
 
 			}
+
+
 		});
 
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
@@ -537,7 +547,6 @@ public class TaskDisplayController {
 	private void showPrevCommandDown() {
 		if (commandHistoryIndex == commandHistory.size() - 1) {
 			commandHistoryIndex = -1;
-			;
 		}
 
 		if (commandHistoryIndex < commandHistory.size()) {
@@ -670,6 +679,17 @@ public class TaskDisplayController {
 		@Override
 		public synchronized void write(int i) {
 			label.setText(String.valueOf((char) i));
+		}
+	}
+	
+	private void showHelpWindow() {
+		File helpFile = new File("HelpCommands.html");
+		try {
+			Desktop.getDesktop().browse(helpFile.toURI());
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
 		}
 	}
 
