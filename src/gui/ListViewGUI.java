@@ -30,22 +30,27 @@ public class ListViewGUI extends Application {
 	}
 
 	private void initRootLayout() {
-		
+
 		root = new BorderPane();
 		Scene scene = new Scene(root, 450, 600);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		primaryStage.setResizable(false);
 	}
-	
-	public void resetWindowWidth(){
+
+	public void resetWindowWidth() {
+		primaryStage.setResizable(true);
 		primaryStage.setWidth(700);
+		primaryStage.setResizable(false);
 	}
-	
-	public void setWindowWidth(){
+
+	public void setWindowWidth() {
+		primaryStage.setResizable(true);
 		primaryStage.setWidth(465);
+		primaryStage.setResizable(false);
 	}
-	
-	public Stage getWindow(){
+
+	public Stage getWindow() {
 		return primaryStage;
 	}
 

@@ -1,5 +1,8 @@
 package logic;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -31,7 +34,8 @@ public class Logic {
 	private static final String MSG_FLAG = "Task %d prioritised!\n";
 	private static final String MSG_UNFLAG = "Task %d unprioritised!\n";
 	private static final String MSG_BACK = "Back to main list.\n";
-	private static final String MSG_FORMAT = "Incorrect Format!\n";
+//	private static final String MSG_FORMAT = "Incorrect Format!\n";
+	private static final String MSG_WRONG_FILE = "Manual cannot be open!\n";
 	private static final String MSG_CMD_INCORRECT = "Unrecognized command type";
 
 	private void addTask(Task t) {
@@ -180,8 +184,14 @@ public class Logic {
 
 	private void man(String content) {
 		// TODO Auto-generated method stub
-		Manual m = new Manual();
-
+		File helpFile = new File("HelpCommands.html");
+		try {
+			Desktop.getDesktop().browse(helpFile.toURI());
+			
+		} catch (IOException e) {
+			Output.showToUser(MSG_WRONG_FILE);
+			//e.printStackTrace();
+		}
 	}
 
 	private void undoTask() {
