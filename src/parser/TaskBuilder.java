@@ -254,7 +254,7 @@ public class TaskBuilder {
 	private void dateFormat1() {
 
 		Matcher m = Pattern.compile(
-				"\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				"\\b\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		log.info("3:");
 		extractDate(m);
@@ -265,7 +265,7 @@ public class TaskBuilder {
 	private void dateFormat2() {
 
 		Matcher m = Pattern.compile(
-				"\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				"\\b\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		log.info("1:");
 		extractDate(m);
@@ -276,7 +276,7 @@ public class TaskBuilder {
 
 		Matcher m;
 		m = Pattern.compile(
-				"\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
+				"\\b\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		log.info("2:");
 		extractDate(m);
@@ -462,15 +462,15 @@ public class TaskBuilder {
 	public void run() {
 
 		// _input = "P-P by tdy 3pm";
-
-		Scanner sc = new Scanner(System.in);
-		_input = sc.nextLine();
-		while (!_input.contains(new String("exit"))) {
+		// clear list
+//		Scanner sc = new Scanner(System.in);
+//		_input = sc.nextLine();
+//		while (!_input.contains(new String("exit"))) {
 			Task t = extractAddCommand();
-			displayTask(t);
-			_input = sc.nextLine();
-		}
-		sc.close();
+		//	displayTask(t);
+//			_input = sc.nextLine();
+//		}
+//		sc.close();
 
 	}
 
