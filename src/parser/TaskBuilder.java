@@ -114,6 +114,9 @@ public class TaskBuilder {
 		} else if (d == 1 && tm == 0) {
 			StartTime = LocalDateTime.of(dateList.get(0), LocalTime.of(0, 0));
 			EndTime = LocalDateTime.of(dateList.get(0), LocalTime.of(23, 59));
+		} else if (d == 0 && tm == 2) {
+			StartTime = LocalDateTime.of(LocalDate.now(), timeList.get(0));
+			EndTime = LocalDateTime.of(LocalDate.now(), timeList.get(1));
 		} else if (d == 2 && tm == 2) {
 			StartTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
 			EndTime = LocalDateTime.of(dateList.get(1), timeList.get(1));
@@ -130,7 +133,7 @@ public class TaskBuilder {
 			}
 		} catch (Exception e) {
 			Output.showToUser(MSG_FORMAT);
-			log.info(e.getMessage());
+			log.info(MSG_FORMAT);
 		}
 	}
 
@@ -256,7 +259,7 @@ public class TaskBuilder {
 		Matcher m = Pattern.compile(
 				"\\b\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
-		log.info("3:");
+		log.info("1:");
 		extractDate(m);
 
 	}
@@ -267,7 +270,7 @@ public class TaskBuilder {
 		Matcher m = Pattern.compile(
 				"\\b\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
-		log.info("1:");
+		log.info("2:");
 		extractDate(m);
 	}
 
@@ -275,10 +278,11 @@ public class TaskBuilder {
 	private void dateFormat3() {
 
 		Matcher m;
-		m = Pattern.compile(
-				"\\b\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
-				Pattern.CASE_INSENSITIVE).matcher(_input);
-		log.info("2:");
+		m = Pattern
+				.compile(
+						"\\b\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
+						Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("3:");
 		extractDate(m);
 	}
 
@@ -461,16 +465,17 @@ public class TaskBuilder {
 
 	public void run() {
 
-		// _input = "P-P by tdy 3pm";
+		//_input = "Meet professor 3pm 5.25pm";
+		Task t = extractAddCommand();
 		// clear list
-//		Scanner sc = new Scanner(System.in);
-//		_input = sc.nextLine();
-//		while (!_input.contains(new String("exit"))) {
-			Task t = extractAddCommand();
-		//	displayTask(t);
-//			_input = sc.nextLine();
-//		}
-//		sc.close();
+		// Scanner sc = new Scanner(System.in);
+		// _input = sc.nextLine();
+		// while (!_input.contains(new String("exit"))) {
+		// Task t = extractAddCommand();
+		// displayTask(t);
+		// _input = sc.nextLine();
+		// }
+		// sc.close();
 
 	}
 
