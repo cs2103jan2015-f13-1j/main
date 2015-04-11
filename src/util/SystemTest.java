@@ -68,11 +68,6 @@ public class SystemTest {
 		//Testing special words: today, tomorrow
 		tdc.processUserInput("add timed task today 3.25pm tomorrow 5.00pm");
 		
-		/* Fail case
-		//Testing special words: tdy (FAILS), tmr (pass)
-		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
-		*/
-		
 		//Testing a date input in task description with " ", upper and lower case form
 		tdc.processUserInput("add FloAtinG task by \"3 aPr\"");
 		
@@ -80,15 +75,16 @@ public class SystemTest {
 		tdc.processUserInput("delete 4");
 		
 		//Testing edit for task description
-		tdc.processUserInput("edit 1 task new task description");
-		
-		// Fail Case: starttime and startdate, linked to endtime and enddate
+		tdc.processUserInput("edit task 1 new task description");
 		
 		//Testing edit for endtime
-		tdc.processUserInput("edit 1 endtime 5.00pm");
+		tdc.processUserInput("edit endtime 1 5.00pm");
 		
 		//Testing edit for enddate
-		tdc.processUserInput("edit 1 enddate 9 apr");
+		tdc.processUserInput("edit enddate 1 9 apr");
+		
+		//Testing special words: tdy (FAILS), tmr (pass)
+		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
 		
 		tdc.processUserInput("exit");
 		

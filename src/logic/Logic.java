@@ -123,7 +123,7 @@ public class Logic {
 	private void toggleMarkTask(int index) {
 		if (index > 0 && index <= TaskList.size()) {
 			Task t = TaskList.get(index - 1);
-			if (t.isDone()) {
+			if (t.getDone()) {
 				unmarkTask(index);
 			} else {
 				markTask(index);
