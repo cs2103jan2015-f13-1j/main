@@ -22,7 +22,7 @@ public class Parser {
 		case CHANGEDIR:
 			return changeDir(input);
 		case CLEAR:
-			return clearTask();
+			return clearTask(input);
 		case DONE:
 			return markTask(input);
 		case UNDONE:
@@ -42,11 +42,11 @@ public class Parser {
 		case MAN:
 			return man(input);
 		case UNDO:
-			return undo();
+			return undo(input);
 		case SEARCH_TASK:
 			return searchTask(input);
 		case REDO:
-			return redo();
+			return redo(input);
 		default:
 			return null;
 		}
@@ -66,9 +66,13 @@ public class Parser {
 		return clearcmd.createDirCommand(input);
 	}
 
-	private Command clearTask() {
-		CreateCmd clearcmd = new CreateCmd();
-		return clearcmd.createNewCommand("clear");
+	private Command clearTask(String input) {
+		if (input.trim().toLowerCase().equals("clear")) {
+			CreateCmd clearcmd = new CreateCmd();
+			return clearcmd.createNewCommand("clear");
+		} else {
+			return null;
+		}
 	}
 
 	private Command createBackCommand() {
@@ -77,97 +81,145 @@ public class Parser {
 	}
 
 	private Command deleteTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int index = Integer.parseInt(input);
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createDeleteCommand(index);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int index = Integer.parseInt(input);
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createDeleteCommand(index);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command editTask(String input) {
+
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		String editType, modifiedContent = "";
 
 		CreateCmd createCmd = new CreateCmd();
 
-		StringTokenizer st = new StringTokenizer(input);
-		editType = st.nextToken();
-		int index = Integer.parseInt(st.nextToken());
-		while (st.hasMoreTokens()) {
-			modifiedContent = modifiedContent.concat(" " + st.nextToken());
+		try {
+			StringTokenizer st = new StringTokenizer(input);
+			editType = st.nextToken();
+			int index = Integer.parseInt(st.nextToken());
+			while (st.hasMoreTokens()) {
+				modifiedContent = modifiedContent.concat(" " + st.nextToken());
+			}
+			return createCmd.createEditCommand(editType,
+					modifiedContent.trim(), index);
+		} catch (Exception e) {
+			return null;
 		}
-		return createCmd.createEditCommand(editType, modifiedContent.trim(),
-				index);
 	}
 
 	private Command flag(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd flagcmd = new CreateCmd();
-		return flagcmd.createFlagCommand(i);
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createFlagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command unflag(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd flagcmd = new CreateCmd();
-		return flagcmd.createUnflagCommand(i);
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createUnflagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command toggleflag(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd flagcmd = new CreateCmd();
-		return flagcmd.createToggleFlagCommand(i);
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createToggleFlagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command markTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createMarkCommand(i);
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createMarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 
 	}
 
 	private Command unmarkTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createUnmarkCommand(i);
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createUnmarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command toggledone(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		int i = Integer.parseInt(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
 
-		CreateCmd markcmd = new CreateCmd();
-		return markcmd.createToggleMarkCommand(i);
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createToggleMarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Command man(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		CreateCmd mancmd = new CreateCmd();
-		return mancmd.createManCommand(input);
+		if (input.trim().toLowerCase().equals("man")) {
+			CreateCmd mancmd = new CreateCmd();
+			return mancmd.createNewCommand("man");
+		} else {
+			return null;
+		}
 	}
 
 	private Command searchTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createSearchCommand(input);
+		try {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createSearchCommand(input);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
-	private Command undo() {
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createNewCommand("undo");
+	private Command undo(String input) {
+		if (input.trim().toLowerCase().equals("undo")) {
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createNewCommand("undo");
+		} else {
+			return null;
+		}
 	}
 
-	private Command redo() {
-		CreateCmd redocmd = new CreateCmd();
-		return redocmd.createNewCommand("redo");
+	private Command redo(String input) {
+		if (input.trim().toLowerCase().equals("redo")) {
+			CreateCmd redocmd = new CreateCmd();
+			return redocmd.createNewCommand("redo");
+		} else {
+			return null;
+		}
 	}
 
 	public static void main(String[] args) {

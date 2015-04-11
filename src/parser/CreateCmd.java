@@ -8,7 +8,8 @@ public class CreateCmd {
 	public Command createNewCommand(String str) {
 		assert str.equals(new String("clear")) || str.equals(new String(""))
 				|| str.equals(new String("undo"))
-				|| str.equals(new String("redo"));
+				|| str.equals(new String("redo"))
+				|| str.equals(new String("man"));
 		Command command = new Command(str);
 		return command;
 	}
@@ -57,12 +58,6 @@ public class CreateCmd {
 		Command flagCommand = new Command("toggleflag");
 		flagCommand.setIndex(i);
 		return flagCommand;
-	}
-	
-	public Command createManCommand(String str) {
-		Command manCommand = new Command("man");
-		manCommand.setContent(str);
-		return manCommand;
 	}
 
 	public Command createMarkCommand(int i) {

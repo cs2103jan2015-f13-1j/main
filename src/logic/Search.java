@@ -24,24 +24,29 @@ public class Search {
 
 	// @author A0105952H
 	public Vector<Task> searchTask(String str) {
-		LocalDate dt;
-		String searchtype = str.substring(0, str.indexOf(" "));
-		switch (searchtype.toLowerCase()) {
-		case "desc":
-			return searchDesc(str.substring(str.indexOf(" ")));
-		case "task":
-			return searchDesc(str.substring(str.indexOf(" ")));
-		case "before":
-			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
-			return searchBeforeDate(dt);
-		case "date":
-			dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
-			return searchOnDate(dt);
-		case "type":
-			Task.TASK_TYPE t = determineTaskType(str.substring(
-					str.indexOf(" ") + 1).trim());
-			return searchTaskType(t);
-		default:
+		try {
+			LocalDate dt;
+			String searchtype = str.substring(0, str.indexOf(" "));
+			switch (searchtype.toLowerCase()) {
+			case "desc":
+				return searchDesc(str.substring(str.indexOf(" ")));
+			case "task":
+				return searchDesc(str.substring(str.indexOf(" ")));
+			case "before":
+				dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+				return searchBeforeDate(dt);
+			case "date":
+				dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+				return searchOnDate(dt);
+			case "type":
+				Task.TASK_TYPE t = determineTaskType(str.substring(
+						str.indexOf(" ") + 1).trim());
+				return searchTaskType(t);
+			default:
+				Output.showToUser(MSG_COMMAND_FAILURE);
+				return TaskList;
+			}
+		} catch (Exception e) {
 			Output.showToUser(MSG_COMMAND_FAILURE);
 			return TaskList;
 		}
@@ -105,7 +110,7 @@ public class Search {
 		Vector<Task> resultTaskList = new Vector<Task>();
 		Task t = null;
 		LocalDate dl;
-		
+
 		if (date != null) {
 			for (int index = 1; index <= TaskList.size(); index++) {
 				t = TaskList.get(index - 1);
@@ -165,7 +170,7 @@ public class Search {
 	private boolean containsText(String taskcontent, String keyword) {
 		String[] keywords = keyword.split(" ");
 		for (String s : keywords) {
-			//search key case insensitive
+			// search key case insensitive
 			if (!taskcontent.toLowerCase().contains(s.toLowerCase())) {
 				return false;
 			}
