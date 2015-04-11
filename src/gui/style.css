@@ -59,3 +59,28 @@
         -fx-prompt-text-fill: grey;  
     
 }
+
+.delete {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/delete-sml.png');
+}
+
+.delete:hover {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/delete-sml-hover.png');
+}
+
+.flag {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/flag-sml.png');
+}
+
+.flag:hover {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/flag-sml-hover.png');
+}
+
+.flag-selected {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/flag-sml-flagged.png');
+}
