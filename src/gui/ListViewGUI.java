@@ -3,11 +3,16 @@ package gui;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ListViewGUI extends Application {
 	private Stage primaryStage;
@@ -21,35 +26,41 @@ public class ListViewGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
+		this.primaryStage.initStyle(StageStyle.UNDECORATED);	//removes default windows border
 		this.primaryStage.setTitle("Ontask");
 		this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
 
 		initRootLayout();
-
 		showTaskOverview();
 	}
-
+	
 	private void initRootLayout() {
 
 		root = new BorderPane();
-		Scene scene = new Scene(root, 450, 600);
+
+		Scene scene = new Scene(root, 450, 620);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setResizable(false);
+		
 	}
 
 	public void resetWindowWidth() {
 		primaryStage.setResizable(true);
-		primaryStage.setWidth(700);
+		primaryStage.setWidth(650);
 		primaryStage.setResizable(false);
 	}
 
 	public void setWindowWidth() {
 		primaryStage.setResizable(true);
-		primaryStage.setWidth(465);
+		primaryStage.setWidth(450);
 		primaryStage.setResizable(false);
 	}
 
+	public void minimizeWindow() {
+		primaryStage.setIconified(true);
+	}
+	
 	public Stage getWindow() {
 		return primaryStage;
 	}

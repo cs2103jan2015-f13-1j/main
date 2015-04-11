@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Vector;
+
 import fileIO.FileStream;
 import util.Output;
 import util.Task;
@@ -31,7 +32,7 @@ import javafx.util.Duration;
 import logic.Logic;
 
 public class TaskDisplayController {
-
+	
 	@FXML
 	private TextArea inputBox;
 
@@ -47,7 +48,7 @@ public class TaskDisplayController {
 	@FXML
 	private ToggleButton showTimed = new ToggleButton();
 
-	@FXML
+	@FXML	
 	private ToggleButton showDeadline = new ToggleButton();
 
 	@FXML
@@ -70,7 +71,16 @@ public class TaskDisplayController {
 
 	@FXML
 	private VBox sideBar = new VBox();
-
+	
+	@FXML
+	private ToolBar toolBar = new ToolBar();
+	
+	@FXML
+	private Button minimize = new Button();
+	
+	@FXML 
+	private Button closeApp = new Button();
+	
 	private Timeline timelineUp;
 	private Timeline timelineDown;
 	private static String previousKey;
@@ -107,7 +117,7 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
-
+	
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
@@ -169,7 +179,7 @@ public class TaskDisplayController {
 				if (t.getDone()) {
 					done.setSelected(true);
 					// setStyle("done");
-					this.getStyleClass().add("done");
+					//this.getStyleClass().add("done");
 					desc.getStyleClass().add("strikethrough");
 					details.getStyleClass().add("strikethrough");
 				} else {
@@ -225,6 +235,22 @@ public class TaskDisplayController {
 
 	@FXML
 	private void initialize() {
+		
+		//customize close and minimize buttons
+		closeApp.setOnAction(new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			Platform.exit();
+		}
+		});
+		
+		minimize.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				gui.minimizeWindow();
+			}
+			});
+		
 		VectorTaskList = l.initializeList();
 		setTaskList(VectorTaskList);
 
@@ -551,11 +577,6 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
-
-		// Comments on replacing listView.setItems with the following 2 lines:
-		// This theoretically works the same way, but the 2 lines will fix the
-		// way listView updates accordingly.
-		// listView.setItems(list);
 		cleanDisplayTaskList();
 		setTaskList(DisplayTaskList);
 	}
@@ -652,5 +673,5 @@ public class TaskDisplayController {
 			label.setText(String.valueOf((char) i));
 		}
 	}
-
+	
 }

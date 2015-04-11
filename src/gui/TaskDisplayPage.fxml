@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.chart.*?>
@@ -10,15 +11,41 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="700.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
+<AnchorPane prefHeight="620.0" prefWidth="700.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
       <SplitPane maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
          <items>
       
-            <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0">
+            <SplitPane dividerPositions="0.8, 0.5, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0">
               <items>
+                  <ToolBar fx:id="toolBar" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" SplitPane.resizableWithParent="false">
+                    <items>
+                        <Button fx:id="minimize" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="_" translateX="400.0">
+                           <font>
+                              <Font size="7.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="DEFAULT" />
+                           </cursor>
+                        </Button>
+                      <Button fx:id="closeApp" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="X" translateX="400.0">
+                           <font>
+                              <Font size="7.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="DEFAULT" />
+                           </cursor>
+                        </Button>
+                    </items>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </ToolBar>
                   <ListView fx:id="listView" prefHeight="350.0" prefWidth="300.0" stylesheets="@style.css" SplitPane.resizableWithParent="false" />
-                  <TextArea fx:id="inputBox" maxHeight="100.0" minHeight="100.0" onKeyPressed="#handleInput" prefHeight="100.0" prefWidth="430.0" />
+                  <TextArea fx:id="inputBox" maxHeight="100.0" minHeight="100.0" onKeyPressed="#handleInput" prefHeight="100.0" prefWidth="430.0">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor></TextArea>
                   <Label fx:id="label" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="10.0" prefWidth="430.0" text="Label" />
       
               </items>
@@ -83,6 +110,6 @@
             </GridPane>
          </children>
       </VBox>
-      <Label fx:id="slide" layoutX="426.0" layoutY="7.0" text="slide" />
+      <Label fx:id="slide" layoutX="210.0" layoutY="7.0" text="slide" />
    </children>
 </AnchorPane>
