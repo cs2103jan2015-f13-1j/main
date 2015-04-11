@@ -23,12 +23,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import logic.Logic;
@@ -44,9 +42,12 @@ public class TaskDisplayController {
 	@FXML
 	private Label label = new Label();
 
-	@FXML
-	private Label slide = new Label();
+//	@FXML
+//	private Label slide = new Label();
 
+	@FXML
+	private Button slideButton = new Button();
+	
 	@FXML
 	private ToggleButton showTimed = new ToggleButton();
 
@@ -87,14 +88,14 @@ public class TaskDisplayController {
 	private Timeline timelineDown;
 	private static String previousKey;
 
-	private StackPane rightArrow = StackPaneBuilder
-			.create()
-			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";")
-			.maxHeight(10).maxWidth(15).build();
-	private StackPane leftArrow = StackPaneBuilder
-			.create()
-			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";")
-			.maxHeight(10).maxWidth(15).build();
+//	private StackPane rightArrow = StackPaneBuilder
+//			.create()
+//			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";")
+//			.maxHeight(10).maxWidth(15).build();
+//	private StackPane leftArrow = StackPaneBuilder
+//			.create()
+//			.style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";")
+//			.maxHeight(10).maxWidth(15).build();
 	private SimpleBooleanProperty isExpanded = new SimpleBooleanProperty();
 
 	private ObservableList<Task> list;
@@ -381,11 +382,11 @@ public class TaskDisplayController {
 		System.setOut(feedback);
 		System.setErr(feedback);
 		label.setText("");
-		slide.setText("slide");
-		slide.setGraphic(rightArrow);
+		//slide.setText("slide");
+		//slide.setGraphic(rightArrow);
 		setAnimation();
 
-		slide.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		slideButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent paramT) {
 				togglePaneVisibility();
@@ -400,12 +401,12 @@ public class TaskDisplayController {
 				if (paramT2) {
 					// To expand
 					timelineDown.play();
-					slide.setGraphic(leftArrow);
+					//slide.setGraphic(leftArrow);
 					gui.resetWindowWidth();
 				} else {
 					// To close
 					timelineUp.play();
-					slide.setGraphic(rightArrow);
+					//slide.setGraphic(rightArrow);
 					gui.setWindowWidth();
 				}
 			}
@@ -419,7 +420,7 @@ public class TaskDisplayController {
 					Boolean paramT1, Boolean paramT2) {
 				if (paramT2) {
 					timelineDown.play();
-					slide.setGraphic(leftArrow);
+					//slide.setGraphic(leftArrow);
 				}
 			}
 
