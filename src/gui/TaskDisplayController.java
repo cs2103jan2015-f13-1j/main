@@ -309,33 +309,46 @@ public class TaskDisplayController {
 
 		showTimed.setToggleGroup(timed);
 		showTimed.setSelected(true);
+		showTimed.getStyleClass().add("selected");
 		showDeadline.setToggleGroup(deadline);
 		showDeadline.setSelected(true);
+		showDeadline.getStyleClass().add("selected");
 		showFloating.setToggleGroup(floating);
 		showFloating.setSelected(true);
+		showFloating.getStyleClass().add("selected");
 
 		dueToday.setToggleGroup(due);
 		dueToday.setUserData("dueToday");
+		dueToday.getStyleClass().add("radio");
 		dueTomorrow.setToggleGroup(due);
 		dueTomorrow.setUserData("dueTomorrow");
+		dueTomorrow.getStyleClass().add("radio");
 		dueThisWeek.setToggleGroup(due);
 		dueThisWeek.setUserData("dueThisWeek");
+		dueThisWeek.getStyleClass().add("radio");
 		dueThisMonth.setToggleGroup(due);
 		dueThisMonth.setUserData("dueThisMonth");
+		dueThisMonth.getStyleClass().add("radio");
 		dueAllTime.setToggleGroup(due);
 		dueAllTime.setUserData("dueAllTime");
+		dueAllTime.getStyleClass().add("radio");
 		dueAllTime.setSelected(true);
 
 		sideBar.toBack();
 
 		timed.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
+					@Override
 					public void changed(ObservableValue<? extends Toggle> ov,
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isTimedOn = false;
+							showTimed.getStyleClass().removeAll();
+//							showTimed.getStyleClass().add("deselected");
 						} else {
 							isTimedOn = true;
+							showTimed.getStyleClass().removeAll();
+//							showTimed.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						Output.showToUser(DisplayTaskList.size() + "");
@@ -346,12 +359,17 @@ public class TaskDisplayController {
 
 		deadline.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
+					@Override
 					public void changed(ObservableValue<? extends Toggle> ov,
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isDeadlineOn = false;
+							showDeadline.getStyleClass().removeAll();
+//							showDeadline.getStyleClass().add("deselected");
 						} else {
 							isDeadlineOn = true;
+							showDeadline.getStyleClass().removeAll();
+//							showDeadline.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						setTaskList(DisplayTaskList);
@@ -364,8 +382,12 @@ public class TaskDisplayController {
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isFloatingOn = false;
+							showFloating.getStyleClass().removeAll();
+//							showFloating.getStyleClass().add("deselected");
 						} else {
 							isFloatingOn = true;
+							showFloating.getStyleClass().removeAll();
+//							showFloating.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						setTaskList(DisplayTaskList);

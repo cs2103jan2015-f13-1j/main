@@ -1,16 +1,11 @@
 
 
+
 .full {
-	-fx-border-radius: 5.0 5.0 5.0 5.0;
-	-fx-border-width: 2.0;
-	-fx-border-insets: 2.0 0.0 2.0 0.0;
-	-fx-border-color: rgb(103.0,103.0,103.0);
-	-fx-background-color: rgb(192.0,192.0,192.0, 0.2); 
-	-fx-background-radius: 6.0 6.0 6.0 6.0;
-	-fx-background-insets: 2.0 0.0 2.0 0.0;    
-    -fx-font-family: "Helvetica";
-    -fx-font-size: 14.0px;
-    -fx-font-weight: bold;
+	-fx-background-color: rgb(192.0,192.0,192.0, 0.4); 
+	-fx-background-insets: 2.0 0.0 2.0 0.0;  
+    -fx-font-family: "Segoe UI Semilight";
+    -fx-font-size: 18.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(255.0,255.0,255.0,0.2) , 1.0, 0.0 , 0.0 , 1.0);
 }
 
@@ -40,7 +35,8 @@
 }
 
 .list-view {
-  	-fx-background-image: url("file:images/bg.jpg");
+	-fx-background-color: #061825;
+  	/*-fx-background-image: url("file:images/bg.jpg");*/
     -fx-padding: 7.5;
 }
 
@@ -83,4 +79,14 @@
 .flag-selected {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/flag-sml-flagged.png');
+}
+
+.selected:selected {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/selected-sml.png');
+}
+
+.selected {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/deselected-sml.png');
 }
