@@ -3,6 +3,7 @@ package gui;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -98,8 +99,7 @@ public class TaskDisplayController {
 	private ListViewGUI gui;
 
 	private Vector<Task> VectorTaskList;
-
-	Vector<Task> removed = new Vector<Task>();
+	private Vector<Task> DisplayTaskList = new Vector<Task>();
 
 	private Vector<String> commandHistory;
 	private int commandHistoryIndex;
@@ -160,6 +160,7 @@ public class TaskDisplayController {
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
 
+
 			if (t != null) {
 
 				if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
@@ -186,7 +187,7 @@ public class TaskDisplayController {
 				}
 
 				else {
-					getStyleClass().add("empty");
+//					DisplayTaskList.remove(t.getIndex());
 					setGraphic(null);
 					return;
 				}
@@ -244,7 +245,8 @@ public class TaskDisplayController {
 	@FXML
 	private void initialize() {
 		VectorTaskList = l.initializeList();
-		setTaskList(VectorTaskList);
+		DisplayTaskList = VectorTaskList;
+		setTaskList(DisplayTaskList);
 
 		commandHistory = new Vector<String>();
 		commandHistoryIndex = 0;
@@ -289,7 +291,7 @@ public class TaskDisplayController {
 							inputBox.setText("Timed is on");
 						}
 
-						setTaskList(VectorTaskList);
+						setTaskList(DisplayTaskList);
 					}
 				});
 
@@ -305,7 +307,7 @@ public class TaskDisplayController {
 							inputBox.setText("Deadline is on");
 						}
 
-						setTaskList(VectorTaskList);
+						setTaskList(DisplayTaskList);
 					}
 				});
 
@@ -321,7 +323,7 @@ public class TaskDisplayController {
 							inputBox.setText("Floating is on");
 						}
 
-						setTaskList(VectorTaskList);
+						setTaskList(DisplayTaskList);
 
 					}
 				});
@@ -338,27 +340,10 @@ public class TaskDisplayController {
 							inputBox.setText(new_toggle.getUserData().toString());
 						}
 
-						setTaskList(VectorTaskList);
+						setTaskList(DisplayTaskList);
 
 					}
 				});
-		
-//		due.selectedToggleProperty().addListener(
-//				new ChangeListener<Toggle>() {
-//					public void changed(ObservableValue<? extends Toggle> ov,
-//							Toggle toggle, Toggle new_toggle) {
-//						if (new_toggle == null) {
-//							CheckDue = "allTime";
-//							inputBox.setText("allTime");
-//						} else {
-////							new_toggle.getUserData().toString()
-//							inputBox.setText(new_toggle.getUserData().toString());
-//							System.out.println(new_toggle.getUserData().toString());
-//						}
-//
-//						setTaskList(VectorTaskList);
-//					}
-//				});
 
 		GUIMsg feedback = new GUIMsg(System.out, label);
 		System.setOut(feedback);
@@ -588,122 +573,73 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
+		DisplayTaskList = VectorTaskList;
 
 		// Comments on replacing listView.setItems with the following 2 lines:
 		// This theoretically works the same way, but the 2 lines will fix the
 		// way listView updates accordingly.
 		// listView.setItems(list);
-		setTaskList(VectorTaskList);		
+		setTaskList(DisplayTaskList);		
+	}
+	
+	public void cleanTaskList(Vector<Task> taskList) {
+		
 	}
 	
 	public boolean isDisplayedByDueDate(Task t) {
-
-		if(t.getEndTime()==null)
+		LocalDateTime end = t.getEndTime();
+		if(end==null) {
 			return true;
-		
-		//Date tDate = new SimpleDateFormat("")
-		Calendar taskC = Calendar.getInstance();
-		taskC.set(t.getEndTime().getYear(), t.getEndTime().getMonthValue(), t.getEndTime().getDayOfMonth());
-
-		Calendar curC = Calendar.getInstance();
-		
-		long daysBetween = (taskC.getTimeInMillis()-curC.getTimeInMillis()) / (1000 * 60 * 60 * 24);
-
-		inputBox.appendText("\nNow:"+curC.getTime()+"\n, "+"Time:"+taskC.getTime()+", dB = "+daysBetween+" , dOW = "+taskC.get(taskC.DAY_OF_WEEK));
-
-		if(daysBetween < 0) //it's overdue 
-		{
-			inputBox.appendText("\nThis is overdue");
-			return false;
 		}
 		
-		if((7 - taskC.get(taskC.DAY_OF_WEEK)) > daysBetween) { //It's this week
-			inputBox.appendText("\nThis week");
-			return (checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime");
-		}
-		
-		if(taskC.get(taskC.YEAR)==curC.get(curC.YEAR)) { //it's this year, check for shit
-			if(daysBetween < 2 && taskC.get(taskC.DAY_OF_YEAR)!=curC.get(curC.DAY_OF_YEAR)) {
-				//It's tomorrow
-				inputBox.appendText("\nThis tomorrow");
-				return (checkDue == "dueTomorrow" || checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime");
+		else {
+			LocalDate taskDate = LocalDate.of(end.getYear(), end.getMonthValue(), end.getDayOfMonth());
+			LocalDate nowDate = LocalDate.now();
+			
+			if (checkDue == "dueAllTime") { 
+				return true;	
 			}
-			if(taskC.get(taskC.DAY_OF_YEAR)==curC.get(curC.DAY_OF_YEAR)) {
-				//It's today
-				inputBox.appendText("\nThis today");
-				return (checkDue == "dueToday");
+			
+			else if (checkDue == "dueThisMonth") {
+				if (taskDate.isBefore(nowDate.plusDays(30))) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
-			if(taskC.get(taskC.MONTH)==curC.get(curC.MONTH)) {
-				//It's this month
-				inputBox.appendText("\nThis month");
-				return (checkDue == "dueThisMonth" || checkDue == "dueAllTime");
+			
+			else if (checkDue == "dueThisWeek") {
+				if (taskDate.isBefore(nowDate.plusDays(7))) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			
+			else if (checkDue == "dueTomorrow") {
+				if (taskDate.isBefore(nowDate.plusDays(2))) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			
+			else if (checkDue == "dueToday") {
+				if (taskDate.isBefore(nowDate.plusDays(1))) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 			else {
-				inputBox.appendText("\nThis all time");
-				return (checkDue=="dueAllTime");
+				return false;
 			}
 		}
-		else {
-			inputBox.appendText("\nThis all time");
-			return (checkDue=="dueAllTime");
-		}
 	}
-	
-//	public boolean isDisplayedByDueDate(Task t) {
-//		if (t.getEndTime()!=null) {
-//			int taskYear = t.getEndTime().getYear();
-//			int taskMonth = t.getEndTime().getMonthValue();
-//			int taskDay = t.getEndTime().getDayOfMonth();
-//			LocalDate task = LocalDate.of(taskYear,taskMonth,taskDay);
-//			
-//			int currentYear = LocalDate.now().getYear();
-//			int currentMonth = LocalDate.now().getMonthValue();
-//			int currentDay = LocalDate.now().getDayOfMonth();
-//			
-////			Check if task is due today 
-//			if(taskYear ==  currentYear && taskMonth == currentMonth && taskDay == currentDay) {					
-////				if(checkDue == "dueToday") {
-//					return true;
-////				} 
-//				//These tasks will be shown no matter which button is selected, so no need to check
-//			}
-//			
-////			Check if task is due tomorrow
-//			else if(task.isBefore(LocalDate.of(currentYear, currentMonth, (currentDay + 2)))) {
-//				if(checkDue == "dueTomorrow" || checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
-//					return true;
-//				}
-//			}
-////			Check if task is due within a week
-//			else if(task.isBefore(LocalDate.of(currentYear, currentMonth, (currentDay + 8)))) {
-//				if(checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
-//					return true;
-//				}
-//			}
-//			
-////			Check if task is due this month
-//			else if(taskMonth == currentMonth && taskYear == currentYear) {
-//				if(checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
-//					return true;
-//				}
-//			}
-//			
-//			else if(checkDue == "dueAllTime") {
-//				return true;
-//			}
-//			
-//			else {
-//				return false;
-//			}
-//		}
-//		
-//		else {
-//		 return true;
-//		}
-//	}
-	
-	
-
 	
 	public class GUIMsg extends PrintStream {
 		private Label label;
