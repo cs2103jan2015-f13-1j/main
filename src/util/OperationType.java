@@ -3,9 +3,10 @@ package util;
 public class OperationType {
 
 	public static enum COMMAND_TYPE {
-		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR, DONE, UNDONE, REDO, FLAG, UNFLAG, TOGGLEDONE, TOGGLEFLAG
+		ADD_TASK, EDIT_TASK, INVALID, SEARCH_TASK, DELETE_TASK, UNDO, BACK, CHANGEDIR, CLEAR, DONE, UNDONE, REDO, FLAG, UNFLAG, TOGGLEDONE, TOGGLEFLAG, MAN
 	};
 
+	// @author A0105952H
 	public static COMMAND_TYPE determineCommandType(String commandTypeString) {
 		if (commandTypeString == null)
 			throw new Error("command type string cannot be null!");
@@ -44,6 +45,10 @@ public class OperationType {
 			return COMMAND_TYPE.TOGGLEDONE;
 		} else if (commandTypeString.equalsIgnoreCase("toggleflag")) {
 			return COMMAND_TYPE.TOGGLEFLAG;
+		} else if (commandTypeString.equalsIgnoreCase("help")
+				|| commandTypeString.equalsIgnoreCase("?")
+				|| commandTypeString.equalsIgnoreCase("man")) {
+			return COMMAND_TYPE.MAN;
 		} else if (commandTypeString.isEmpty()) {
 			return COMMAND_TYPE.BACK;
 		} else {

@@ -9,6 +9,7 @@ public class Command {
 	private int _index;
 	private String _content, _modifiedString;
 
+	// @author A0105952H
 	public Command(String s) {
 		_commmandtype = s;
 	}

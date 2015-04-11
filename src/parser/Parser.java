@@ -17,38 +17,38 @@ public class Parser {
 		switch (commandType) {
 		case ADD_TASK:
 			return addTask(input);
-		case DELETE_TASK:
-			return deleteTask(input);
-		case EDIT_TASK:
-			return editTask(input);
-		case UNDO:
-			return undo();
-		case SEARCH_TASK:
-			return searchTask(input);
+		case BACK:
+			return createBackCommand();
 		case CHANGEDIR:
 			return changeDir(input);
 		case CLEAR:
 			return clearTask();
-		case BACK:
-			return createBackCommand();
 		case DONE:
 			return markTask(input);
 		case UNDONE:
 			return unmarkTask(input);
-		case REDO:
-			return redoTask();
+		case TOGGLEDONE:
+			return toggledone(input);
+		case DELETE_TASK:
+			return deleteTask(input);
+		case EDIT_TASK:
+			return editTask(input);
 		case FLAG:
 			return flag(input);
 		case UNFLAG:
 			return unflag(input);
 		case TOGGLEFLAG:
 			return toggleflag(input);
-		case TOGGLEDONE:
-			return toggledone(input);
+		case MAN:
+			return man(input);
+		case UNDO:
+			return undo();
+		case SEARCH_TASK:
+			return searchTask(input);
+		case REDO:
+			return redo();
 		default:
-			// TODO throw an error if the command is not recognized
 			return null;
-			// throw new Error("Unrecognized command type");
 		}
 	}
 
@@ -73,7 +73,7 @@ public class Parser {
 
 	private Command createBackCommand() {
 		CreateCmd backcmd = new CreateCmd();
-		return backcmd.createBackCommand();
+		return backcmd.createNewCommand("");
 	}
 
 	private Command deleteTask(String input) {
@@ -91,7 +91,7 @@ public class Parser {
 
 		StringTokenizer st = new StringTokenizer(input);
 		editType = st.nextToken();
-		int index = Integer.parseInt(st.nextToken());		
+		int index = Integer.parseInt(st.nextToken());
 		while (st.hasMoreTokens()) {
 			modifiedContent = modifiedContent.concat(" " + st.nextToken());
 		}
@@ -148,6 +148,12 @@ public class Parser {
 		return markcmd.createToggleMarkCommand(i);
 	}
 
+	private Command man(String input) {
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		CreateCmd mancmd = new CreateCmd();
+		return mancmd.createManCommand(input);
+	}
+
 	private Command searchTask(String input) {
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		CreateCmd createCmd = new CreateCmd();
@@ -156,24 +162,24 @@ public class Parser {
 
 	private Command undo() {
 		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createUndoCommand();
+		return createCmd.createNewCommand("undo");
 	}
 
-	private Command redoTask() {
+	private Command redo() {
 		CreateCmd redocmd = new CreateCmd();
 		return redocmd.createNewCommand("redo");
 	}
 
-	public void main() {
+	public static void main(String[] args) {
 		Parser pr = new Parser();
 		Scanner sc = new Scanner(System.in);
 		String str;
 		str = sc.next();
-		while (str.contains(new String("exit"))) {
+		while (!str.contains(new String("exit"))) {
 
 			pr.parseInputString(str);
 			str = sc.next();
 		}
+		sc.close();
 	}
-
 }

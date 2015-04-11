@@ -16,6 +16,7 @@ import org.junit.Test;
 
 public class TaskBuilderTest {
 
+	// @author A0105952H
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
 	@Before
@@ -36,7 +37,6 @@ public class TaskBuilderTest {
 		LocalDateTime tm = LocalDateTime.of(LocalDate.of(2015, 8, 14),
 				LocalTime.of(23, 59));
 		tb.run();
-		// assertEquals("2. b for boy", outContent.toString().trim());
 		assertEquals("Bank holiday", tb.t.getTaskDesc());
 		assertEquals(tm.toString(), tb.t.getEndTime().toString());
 

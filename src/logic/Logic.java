@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import fileIO.FileStream;
 import parser.*;
@@ -16,9 +17,8 @@ public class Logic {
 	private boolean inUndoState = false;
 	private String keyword = "";
 	public static UndoOps u = new UndoOps();
-
-	// private final static Logger log =
-	// Logger.getLogger(Logic.class.getName());
+	// TODO
+	private final static Logger log = Logger.getLogger(Logic.class.getName());
 
 	private static final String MSG_ADD = "Task added successfully!";
 	private static final String MSG_DELETE = "Task deleted successfully!";
@@ -32,6 +32,7 @@ public class Logic {
 	private static final String MSG_UNFLAG = "Task %d unprioritised!\n";
 	private static final String MSG_BACK = "Back to main list.\n";
 	private static final String MSG_FORMAT = "Incorrect Format!\n";
+	private static final String MSG_CMD_INCORRECT = "Unrecognized command type";
 
 	private void addTask(Task t) {
 		if (t != null) {
@@ -46,7 +47,7 @@ public class Logic {
 
 			Output.showToUser(MSG_ADD);
 		} else {
-			Output.showToUser(MSG_FORMAT);
+			//Output.showToUser(MSG_FORMAT);
 		}
 	}
 
@@ -89,12 +90,13 @@ public class Logic {
 			Task t = TaskList.get(i - 1);
 			t.markTaskAsDone();
 			isSuccessful = true;
+
 			Sort s = new Sort(TaskList);
 			s.sortList();
 			u.undoMark(t.getIndex());
 			u.redoMark(i);
-			Output.showToUser(String.format(MSG_MARK, i));
 
+			Output.showToUser(String.format(MSG_MARK, i));
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "mark"));
 		}
@@ -106,10 +108,12 @@ public class Logic {
 			Task t = TaskList.get(i - 1);
 			t.markTaskAsUndone();
 			isSuccessful = true;
+
 			Sort s = new Sort(TaskList);
 			s.sortList();
 			u.undoMark(t.getIndex());
 			u.redoUnmark(i);
+
 			Output.showToUser(String.format(MSG_UNMARK, i));
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unmark"));
@@ -133,12 +137,13 @@ public class Logic {
 			Task t = TaskList.get(i - 1);
 			t.markFlag();
 			isSuccessful = true;
+
 			Sort s = new Sort(TaskList);
 			s.sortList();
 			u.undoFlag(t.getIndex());
 			u.redoFlag(i);
-			Output.showToUser(String.format(MSG_FLAG, i));
 
+			Output.showToUser(String.format(MSG_FLAG, i));
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "flag"));
 		}
@@ -150,12 +155,13 @@ public class Logic {
 			Task t = TaskList.get(i - 1);
 			t.unmarkFlag();
 			isSuccessful = true;
+
 			Sort s = new Sort(TaskList);
 			s.sortList();
 			u.undoUnflag(t.getIndex());
 			u.redoUnflag(i);
-			Output.showToUser(String.format(MSG_UNFLAG, i));
 
+			Output.showToUser(String.format(MSG_UNFLAG, i));
 		} else {
 			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unflag"));
 		}
@@ -172,6 +178,12 @@ public class Logic {
 		}
 	}
 
+	private void man(String content) {
+		// TODO Auto-generated method stub
+		Manual m = new Manual();
+
+	}
+
 	private void undoTask() {
 		isSuccessful = u.undoOperation(TaskList);
 		inUndoState = true;
@@ -179,7 +191,6 @@ public class Logic {
 
 	private void redoTask() {
 		inUndoState = true;
-
 		isSuccessful = u.redoOperation(TaskList);
 	}
 
@@ -195,7 +206,7 @@ public class Logic {
 		inSearchState = true;
 	}
 
-	// clean unnecessary undo history
+	/** clean unnecessary undo history */
 	private void clearUndoHistory(COMMAND_TYPE commandType) {
 		if (inUndoState) {
 			if (commandType != COMMAND_TYPE.UNDO
@@ -221,25 +232,17 @@ public class Logic {
 	private void executeCommand(Command cmd) {
 
 		if (cmd == null) {
-			Output.showToUser(String.format("Unrecognized command type"));
+			Output.showToUser(MSG_CMD_INCORRECT);
 
 		} else {
 			String cmdDesc = cmd.getCommandType();
 			COMMAND_TYPE commandType = OperationType
 					.determineCommandType(cmdDesc);
 			isSuccessful = false;
-			Output.showToUser(cmdDesc);
 
 			switch (commandType) {
 			case ADD_TASK:
 				addTask(cmd.getTask());
-				break;
-			case DELETE_TASK:
-				deleteTask(cmd.getIndex());
-				break;
-			case EDIT_TASK:
-				EditTask edit = new EditTask(TaskList);
-				isSuccessful = edit.editTask(cmd);
 				break;
 			case BACK:
 				backToMain();
@@ -250,17 +253,27 @@ public class Logic {
 			case CLEAR:
 				clearTask();
 				break;
+			case DELETE_TASK:
+				deleteTask(cmd.getIndex());
+				break;
 			case DONE:
 				markTask(cmd.getIndex());
 				break;
 			case UNDONE:
 				unmarkTask(cmd.getIndex());
 				break;
+			case EDIT_TASK:
+				EditTask edit = new EditTask(TaskList);
+				isSuccessful = edit.editTask(cmd);
+				break;
 			case FLAG:
 				flagTask(cmd.getIndex());
 				break;
 			case UNFLAG:
 				unflagTask(cmd.getIndex());
+				break;
+			case MAN:
+				man(cmd.getContent());
 				break;
 			case SEARCH_TASK:
 				searchKey(cmd);
@@ -278,8 +291,7 @@ public class Logic {
 				toggleMarkTask(cmd.getIndex());
 				break;
 			default:
-				// throw an error if the command is not recognized
-				// throw new Error("Unrecognized command type");
+				Output.showToUser(MSG_CMD_INCORRECT);
 			}
 			clearUndoHistory(commandType);
 		}

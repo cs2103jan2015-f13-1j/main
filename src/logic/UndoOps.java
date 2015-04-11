@@ -168,7 +168,6 @@ public class UndoOps {
 	}
 
 	public void redoClear() {
-		// TODO Auto-generated method stub
 
 		RedoCommandList.push("clear");
 		RedoList.push(new Task());

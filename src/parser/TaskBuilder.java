@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
+import java.util.Scanner;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +28,10 @@ public class TaskBuilder {
 	private Vector<Integer> timeIndex = new Vector<Integer>();
 	private Vector<Integer> dateIndex = new Vector<Integer>();
 	private static final String MSG_FORMAT = "Incorrect Format!\n";
+	private static final String MSG_DESC = "Task Description cannot be empty!\n";
 	private final static Logger log = Logger.getLogger(Logic.class.getName());
 
+	// @author A0105952H
 	public TaskBuilder(String s) {
 		_input = s;
 		startOfTimeString = s.length();
@@ -40,7 +43,7 @@ public class TaskBuilder {
 		return t;
 	}
 
-	// switch to respective building methods
+	/** switch to respective task building methods */
 	private void extractTaskInfo(Task.TASK_TYPE type) {
 		switch (type) {
 		case TIMED_TASK:
@@ -58,8 +61,12 @@ public class TaskBuilder {
 	}
 
 	private void buildFloatingTask() {
-		_input = _input.replaceAll("\"", "");
-		t = new Task(_input.trim());
+		_input = _input.replaceAll("\"", "").trim();
+		if (!_input.isEmpty()) {
+			t = new Task(_input);
+		} else {
+			Output.showToUser(MSG_DESC);
+		}
 		// TODO
 		log.setLevel(Level.OFF);
 	}
@@ -83,7 +90,11 @@ public class TaskBuilder {
 				Output.showToUser(MSG_FORMAT);
 				return;
 			}
-			t = new Task(desc, EndTime);
+			if (!desc.isEmpty()) {
+				t = new Task(desc, EndTime);
+			} else {
+				Output.showToUser(MSG_DESC);
+			}
 		}
 
 	}
@@ -112,8 +123,13 @@ public class TaskBuilder {
 		}
 
 		try {
-			t = new Task(desc, StartTime, EndTime);
+			if (!desc.isEmpty()) {
+				t = new Task(desc, StartTime, EndTime);
+			} else {
+				Output.showToUser(MSG_DESC);
+			}
 		} catch (Exception e) {
+			Output.showToUser(MSG_FORMAT);
 			log.info(e.getMessage());
 		}
 	}
@@ -131,7 +147,6 @@ public class TaskBuilder {
 		}
 
 		extractDesc(startIndexOfDate, startIndexOfTime);
-		// TODO
 		log.info(startIndexOfDate + " " + startIndexOfTime);
 
 		int tm = timeList.size();
@@ -148,7 +163,7 @@ public class TaskBuilder {
 
 	}
 
-	// extract description of task from input string
+	/** extract description of task from input string */
 	private void extractDesc(int startIndexOfDate, int startIndexOfTime) {
 
 		int startIndex;
@@ -181,6 +196,7 @@ public class TaskBuilder {
 
 	}
 
+	/** check whether string starting from index i has been parsed */
 	private boolean checkDateIndex(int i) {
 		if (dateIndex.size() != 0)
 			for (int index : dateIndex) {
@@ -193,6 +209,7 @@ public class TaskBuilder {
 
 	private void extractDate(Matcher m) {
 		boolean isNew;
+		LocalDate date;
 		int i = 0, index = -1, k = 0;
 		try {
 			while (m.find(k)) {
@@ -208,8 +225,11 @@ public class TaskBuilder {
 				isNew = checkDateIndex(i);
 
 				if (isNew) {
-					LocalDate date = TimeExtractor.extractDate(dt);
-
+					if (_input.charAt(m.start() - 1) != '\"') {
+						date = TimeExtractor.extractDate(dt);
+					} else {
+						date = null;
+					}
 					if (date != null) {
 						if (index < 0 || i < index) {
 							dateList.add(0, date);
@@ -230,40 +250,39 @@ public class TaskBuilder {
 		}
 	}
 
-	// extract the date format mar 13 2015, mar-13-2015, mar/3/2015, March.2
+	/** extract the date format 13 mar 2015, 13-mar-2015, 3/mar/2015, 3 march */
 	private void dateFormat1() {
 
 		Matcher m = Pattern.compile(
-				"[^\"]\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
-				Pattern.CASE_INSENSITIVE).matcher(_input);
-		log.info("1:");
-		extractDate(m);
-	}
-
-	// extract date format 3-3-2015,3 3 2015,3/3/2015, 3.3.2015
-	private void dateFormat2() {
-
-		Matcher m;
-		m = Pattern
-				.compile(
-						"[^\"]\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
-						Pattern.CASE_INSENSITIVE).matcher(_input);
-		log.info("2:");
-		extractDate(m);
-	}
-
-	// extract the date format 13 mar 2015, 13-mar-2015, 3/mar/2015, 3 march
-	private void dateFormat3() {
-
-		Matcher m = Pattern.compile(
-				"[^\"]\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				"\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
 		log.info("3:");
 		extractDate(m);
 
 	}
 
-	// extract date format monday/ mon
+	/** extract the date format mar 13 2015, mar-13-2015, mar/3/2015, March.2 */
+	private void dateFormat2() {
+
+		Matcher m = Pattern.compile(
+				"\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("1:");
+		extractDate(m);
+	}
+
+	/** extract date format 3-3-2015,3 3 2015,3/3/2015, 3.3.2015 */
+	private void dateFormat3() {
+
+		Matcher m;
+		m = Pattern.compile(
+				"\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
+				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("2:");
+		extractDate(m);
+	}
+
+	/** extract date format Monday/Mon */
 	private void dateFormat4() {
 
 		String[] dayOfWeek = DateFormatSymbols.getInstance(Locale.ENGLISH)
@@ -276,9 +295,9 @@ public class TaskBuilder {
 
 	}
 
-	// extract tmr, tomorrow, today
+	/** extract date format tmr, tomorrow, today, tdy */
 	private void dateFormat5() {
-		int i, index = -1;
+		int i = -1, index = -1;
 
 		String s;
 		LocalDate date = null;
@@ -293,7 +312,7 @@ public class TaskBuilder {
 				date = LocalDate.now();
 			} else if (s.equalsIgnoreCase(spcdt[1])
 					|| s.equalsIgnoreCase(spcdt[0])) {
-				i = _input.indexOf(s);
+				i = _input.indexOf(" " + s);
 				date = LocalDate.now().plusDays(1);
 			} else {
 				i = -1;
@@ -328,7 +347,7 @@ public class TaskBuilder {
 					if (j > 1 && info[j - 1].equalsIgnoreCase("next")) {
 						i = _input.indexOf(info[j - 1]);
 					} else {
-						i = _input.indexOf(s);
+						i = _input.indexOf(" " + s);
 					}
 					if (dateIndex.size() != 0) {
 						index = dateIndex.get(0);
@@ -343,7 +362,7 @@ public class TaskBuilder {
 						dateIndex.add(i);
 					}
 					checkTimeIndicationWord(i, false);
-					log.info(date.toString());
+					log.info(s + " " + date.toString());
 				}
 			}
 		}
@@ -356,32 +375,38 @@ public class TaskBuilder {
 
 	}
 
-	// time format hh:mm, eg.12:00
+	/** extract time format hh:mm, eg.12:00 */
 	private void timePattern1() {
 
-		Matcher m = Pattern.compile("[^\"]\\b\\d{1,2}:\\d{2}\\b").matcher(
-				_input);
+		Matcher m = Pattern.compile("\\b\\d{1,2}:\\d{2}\\b").matcher(_input);
+		log.info("tm 1:");
 		extractTime(m);
 	}
 
-	// extract time pattern 3pm/2.15pm
+	/** extract time pattern h.m 3pm/2.15pm/3 pm */
 	private void timePattern2() {
 
 		Matcher m;
-		m = Pattern.compile("[^\"]\\b\\d{1,2}([.:]\\d{1,2})?\\s*[ap]m\\s*",
+		m = Pattern.compile("\\b\\d{1,2}([.:]\\d{1,2})?\\s*[ap]m\\s*",
 				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("tm 2:");
 		extractTime(m);
 	}
 
 	private void extractTime(Matcher m) {
 		int i, index = -1;
-
+		LocalTime time;
 		while (m.find()) {
-			LocalTime time = TimeExtractor.extractTime(m.group().replace(" ",
-					""));
+
+			if (_input.charAt(m.start() - 1) != '\"') {
+				time = TimeExtractor.extractTime(m.group().replace(" ", ""));
+				// if(time != null)
+			} else {
+				time = null;
+			}
+			log.info(m.group());
 			i = m.start();
 
-			log.info(m.group());
 			if (time != null) {
 				if (timeIndex.size() != 0) {
 					index = timeIndex.get(0);
@@ -400,6 +425,7 @@ public class TaskBuilder {
 		}
 	}
 
+	/** check for existence of time indication word */
 	private void checkTimeIndicationWord(int i, boolean isTime) {
 		int startIndex = _input.length();
 
@@ -435,18 +461,17 @@ public class TaskBuilder {
 
 	public void run() {
 
-		_input = "P-P by tdy 3pm";
-		Task t = extractAddCommand();
-		displayTask(t);
-		/*
-		 * Scanner sc = new Scanner(System.in);
-		 * 
-		 * _input = sc.nextLine(); while (!_input.contains(new String("exit")))
-		 * { _input = sc.nextLine(); } sc.close();
-		 * 
-		 * 
-		 * _input = "tennis 4.23pm"; timePattern2();
-		 */
+		// _input = "P-P by tdy 3pm";
+
+		Scanner sc = new Scanner(System.in);
+		_input = sc.nextLine();
+		while (!_input.contains(new String("exit"))) {
+			Task t = extractAddCommand();
+			displayTask(t);
+			_input = sc.nextLine();
+		}
+		sc.close();
+
 	}
 
 	private void displayTask(Task t) {

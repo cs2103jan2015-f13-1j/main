@@ -5,19 +5,39 @@ import java.time.format.*;
 import java.time.temporal.*;
 import java.util.Locale;
 
+import javax.swing.text.DateFormatter;
+
 public class TimeExtractor {
 
 	public static String formatDateTime(LocalDateTime t) {
 		DateTimeFormatter formatter;
 
-		if (t.getMinute() == 0) {
-			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu ha")
-					.withLocale(Locale.ENGLISH);
-		} else {
-			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu h.ma")
-					.withLocale(Locale.ENGLISH);
+		if (t != null) {
+			if (t.getMinute() == 0) {
+				formatter = DateTimeFormatter.ofPattern("MMM.d uuuu ha")
+						.withLocale(Locale.ENGLISH);
+			} else {
+				formatter = DateTimeFormatter.ofPattern("MMM.d uuuu h.ma")
+						.withLocale(Locale.ENGLISH);
+			}
+			return t.format(formatter);
 		}
-		return t.format(formatter);
+		else{
+			return null;
+		}
+	}
+
+	public static String formatDate(LocalDate date) {
+		DateTimeFormatter formatter;
+		
+		if(date != null){
+			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu")
+					.withLocale(Locale.ENGLISH);
+			
+			return date.format(formatter);
+		}
+		
+		return null;
 	}
 
 	public static LocalTime extractTime(String str) {
@@ -82,13 +102,13 @@ public class TimeExtractor {
 			return null;
 		}
 	}
-	
+
 	private static LocalDate DateFormatter2(String str) {
 		try {
 			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 			builder.parseCaseInsensitive();
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
-			
+
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
@@ -166,8 +186,8 @@ public class TimeExtractor {
 	}
 
 	public static void main(String[] args) {
-		String str = "apr 10 2359";
-		Output.showToUser(DateFormatter3(str).toString());
+		String str = "friday";
+		Output.showToUser(DateFormatter4(str).toString());
 
 	}
 }

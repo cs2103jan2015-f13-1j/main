@@ -3,12 +3,16 @@ package parser;
 import util.Task;
 
 public class CreateCmd {
-	public Command createNewCommand(String str){
-		assert str.equals(new String("clear")) || str.equals(new String(""));
-		Command backCommand = new Command(str);
-		return backCommand;
+
+	// @author A0105952H
+	public Command createNewCommand(String str) {
+		assert str.equals(new String("clear")) || str.equals(new String(""))
+				|| str.equals(new String("undo"))
+				|| str.equals(new String("redo"));
+		Command command = new Command(str);
+		return command;
 	}
-	
+
 	public Command createAddCommand(Task t) {
 		Command addCommand = new Command("add");
 		addCommand.setTask(t);
@@ -18,7 +22,7 @@ public class CreateCmd {
 	public Command createDeleteCommand(int i) {
 		Command deleteCommand = new Command("delete");
 		deleteCommand.setIndex(i);
-	
+
 		return deleteCommand;
 	}
 
@@ -27,52 +31,53 @@ public class CreateCmd {
 		editCommand.setIndex(i);
 		editCommand.setContent(f);
 		editCommand.setModifiedString(t);
-	
+
 		return editCommand;
 	}
 
-	public Command createBackCommand(){
-		Command backCommand = new Command("");
-		return backCommand;
-	}
-	
-	public Command createDirCommand(String str){
+	public Command createDirCommand(String str) {
 		Command dirCommand = new Command("changedir");
 		dirCommand.setContent(str);
 		return dirCommand;
 	}
-	
-	public Command createFlagCommand(int i){
+
+	public Command createFlagCommand(int i) {
 		Command flagCommand = new Command("flag");
 		flagCommand.setIndex(i);
 		return flagCommand;
 	}
-	
-	public Command createUnflagCommand(int i){
+
+	public Command createUnflagCommand(int i) {
 		Command unflagCommand = new Command("unflag");
 		unflagCommand.setIndex(i);
 		return unflagCommand;
 	}
-	
-	public Command createToggleFlagCommand(int i){
+
+	public Command createToggleFlagCommand(int i) {
 		Command flagCommand = new Command("toggleflag");
 		flagCommand.setIndex(i);
 		return flagCommand;
 	}
 	
-	public Command createMarkCommand(int i){
+	public Command createManCommand(String str) {
+		Command manCommand = new Command("man");
+		manCommand.setContent(str);
+		return manCommand;
+	}
+
+	public Command createMarkCommand(int i) {
 		Command markCommand = new Command("mark");
 		markCommand.setIndex(i);
 		return markCommand;
 	}
-	
-	public Command createUnmarkCommand(int i){
+
+	public Command createUnmarkCommand(int i) {
 		Command markCommand = new Command("unmark");
 		markCommand.setIndex(i);
 		return markCommand;
 	}
-	
-	public Command createToggleMarkCommand(int i){
+
+	public Command createToggleMarkCommand(int i) {
 		Command markCommand = new Command("togglemark");
 		markCommand.setIndex(i);
 		return markCommand;
@@ -83,11 +88,5 @@ public class CreateCmd {
 		searchCommand.setContent(s);
 
 		return searchCommand;
-	}
-
-	public Command createUndoCommand() {
-		Command undoCommand = new Command("undo");
-
-		return undoCommand;
 	}
 }

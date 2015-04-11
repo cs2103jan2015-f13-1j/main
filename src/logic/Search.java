@@ -15,7 +15,7 @@ public class Search {
 
 	private static final String MSG_SEARCH_COMMAND = "%s searched!\n";
 	private static final String MSG_COMMAND_FAILURE = "Search format incorrect!\n";
-	private static final String MSG_COMMAND_NULL = "command type string cannot be null!";
+	private static final String MSG_COMMAND_NULL = "command string cannot be null!";
 	private static final String MSG_INCORRECT_FORMAT = "search command with incorrect format!";
 
 	public Search(Vector<Task> TaskList) {
@@ -84,7 +84,7 @@ public class Search {
 		Task t = null;
 		LocalDateTime dl = LocalDateTime.of(date, LocalTime.of(23, 59));
 
-		if (dl != null) {
+		if (date != null) {
 			for (int index = 1; index <= TaskList.size(); index++) {
 				t = TaskList.get(index - 1);
 				if (t.getTaskType() != Task.TASK_TYPE.FLOATING_TASK
@@ -93,7 +93,7 @@ public class Search {
 				}
 			}
 			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task before "
-					+ date));
+					+ TimeExtractor.formatDate(date)));
 			return resultTaskList;
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
@@ -105,6 +105,7 @@ public class Search {
 		Vector<Task> resultTaskList = new Vector<Task>();
 		Task t = null;
 		LocalDate dl;
+		
 		if (date != null) {
 			for (int index = 1; index <= TaskList.size(); index++) {
 				t = TaskList.get(index - 1);
@@ -117,7 +118,7 @@ public class Search {
 				}
 			}
 			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task on "
-					+ date));
+					+ TimeExtractor.formatDate(date)));
 			return resultTaskList;
 		} else {
 			Output.showToUser(MSG_COMMAND_FAILURE);
@@ -164,7 +165,8 @@ public class Search {
 	private boolean containsText(String taskcontent, String keyword) {
 		String[] keywords = keyword.split(" ");
 		for (String s : keywords) {
-			if (!taskcontent.contains(s)) {
+			//search key case insensitive
+			if (!taskcontent.toLowerCase().contains(s.toLowerCase())) {
 				return false;
 			}
 		}
