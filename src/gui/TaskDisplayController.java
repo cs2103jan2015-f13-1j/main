@@ -62,10 +62,10 @@ public class TaskDisplayController {
 
 	@FXML
 	private ToggleButton showFloating = new ToggleButton();
-	
+
 	@FXML
 	private RadioButton dueToday = new RadioButton("Due Today");
-	
+
 	@FXML
 	private RadioButton dueTomorrow = new RadioButton("Due Tomorrow");
 
@@ -150,7 +150,7 @@ public class TaskDisplayController {
 			done.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					processUserInput(("togglemark "+index));
+					processUserInput(("togglemark " + index));
 				}
 			});
 
@@ -163,19 +163,29 @@ public class TaskDisplayController {
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
 
-
 			if (t != null) {
-						getStyleClass().add("full");
-						setGraphic(hbox);
+				getStyleClass().add("full");
+				setGraphic(hbox);
 
-				if(t.getDone()){
+				if (t.getDone()) {
 
 					done.setSelected(true);
 				}
-				
+
 				else {
 					done.setSelected(false);
 				}
+
+				if (t.getDone()) {
+					done.setSelected(true);
+					// setStyle("done");
+					this.getStyleClass().add("done");
+					desc.getStyleClass().add("strikethrough");
+					details.getStyleClass().add("strikethrough");
+				} else {
+					done.setSelected(false);
+				}
+
 				hbox.setPrefWidth(400);
 				desc.setText(formatTask1(t));
 				desc.setWrappingWidth(listView.getPrefWidth());
@@ -183,10 +193,11 @@ public class TaskDisplayController {
 				details.setWrappingWidth(listView.getPrefWidth());
 				index = t.getIndex();
 			}
-			
+
 			else {
 				setGraphic(null);
 			}
+
 		}
 	}
 
@@ -245,8 +256,8 @@ public class TaskDisplayController {
 		showDeadline.setToggleGroup(deadline);
 		showDeadline.setSelected(true);
 		showFloating.setToggleGroup(floating);
-		showFloating.setSelected(true);	
-		
+		showFloating.setSelected(true);
+
 		dueToday.setToggleGroup(due);
 		dueToday.setUserData("dueToday");
 		dueTomorrow.setToggleGroup(due);
@@ -258,7 +269,7 @@ public class TaskDisplayController {
 		dueAllTime.setToggleGroup(due);
 		dueAllTime.setUserData("dueAllTime");
 		dueAllTime.setSelected(true);
-		
+
 		sideBar.toBack();
 
 		timed.selectedToggleProperty().addListener(
@@ -311,23 +322,22 @@ public class TaskDisplayController {
 						resetDisplayTaskList();
 					}
 				});
-		
-		due.selectedToggleProperty().addListener(
-				new ChangeListener<Toggle>(){
-					public void changed(ObservableValue<? extends Toggle> ov,
-							Toggle toggle, Toggle new_toggle) {
-						if (new_toggle == null) {
-							checkDue = "dueAllTime";
-							inputBox.setText(new_toggle.getUserData().toString());
-						} else {
-							checkDue = new_toggle.getUserData().toString();
-							inputBox.setText(new_toggle.getUserData().toString());
-						}
-						cleanDisplayTaskList();
-						setTaskList(DisplayTaskList);
-						resetDisplayTaskList();
-					}
-				});
+
+		due.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov,
+					Toggle toggle, Toggle new_toggle) {
+				if (new_toggle == null) {
+					checkDue = "dueAllTime";
+					inputBox.setText(new_toggle.getUserData().toString());
+				} else {
+					checkDue = new_toggle.getUserData().toString();
+					inputBox.setText(new_toggle.getUserData().toString());
+				}
+				cleanDisplayTaskList();
+				setTaskList(DisplayTaskList);
+				resetDisplayTaskList();
+			}
+		});
 
 		GUIMsg feedback = new GUIMsg(System.out, label);
 		System.setOut(feedback);
@@ -381,7 +391,7 @@ public class TaskDisplayController {
 
 	private void resetDisplayTaskList() {
 		DisplayTaskList = new Vector<Task>();
-		for(Task t:VectorTaskList) {
+		for (Task t : VectorTaskList) {
 			DisplayTaskList.add(t);
 		}
 		setTaskList(DisplayTaskList);
@@ -455,10 +465,10 @@ public class TaskDisplayController {
 
 				}
 
-				if(key.getCode().equals(KeyCode.F1)) {
+				if (key.getCode().equals(KeyCode.F1)) {
 					showHelpWindow();
 				}
-				
+
 				if (key.getCode().equals(KeyCode.F5)) {
 					FileStream.changeDir();
 				}
@@ -484,7 +494,6 @@ public class TaskDisplayController {
 				}
 
 			}
-
 
 		});
 
@@ -580,23 +589,23 @@ public class TaskDisplayController {
 		setTaskList(DisplayTaskList);
 		resetDisplayTaskList();
 	}
-	
+
 	public void cleanDisplayTaskList() {
-		for (Task t: DisplayTaskList) {
+		for (Task t : DisplayTaskList) {
 			if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
 				if (isDisplayedByDueDate(t)) {
-					//Do nothing
+					// Do nothing
 				}
-				
+
 			} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
 					&& isDeadlineOn) {
 				if (isDisplayedByDueDate(t)) {
-					//Do nothing
+					// Do nothing
 				}
 			} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
 					&& isFloatingOn) {
 				if (isDisplayedByDueDate(t)) {
-					//Do nothing
+					// Do nothing
 				}
 			}
 
@@ -605,62 +614,58 @@ public class TaskDisplayController {
 			}
 		}
 	}
-	
+
 	public boolean isDisplayedByDueDate(Task t) {
 		LocalDateTime end = t.getEndTime();
-		if(end==null) {
+		if (end == null) {
 			return true;
 		}
-		
+
 		else {
-			LocalDate taskDate = LocalDate.of(end.getYear(), end.getMonthValue(), end.getDayOfMonth());
+			LocalDate taskDate = LocalDate.of(end.getYear(),
+					end.getMonthValue(), end.getDayOfMonth());
 			LocalDate nowDate = LocalDate.now();
-			
-			if (checkDue == "dueAllTime") { 
-				return true;	
+
+			if (checkDue == "dueAllTime") {
+				return true;
 			}
-			
+
 			else if (checkDue == "dueThisMonth") {
 				if (taskDate.isBefore(nowDate.plusDays(30))) {
 					return true;
-				}
-				else {
+				} else {
 					return false;
 				}
 			}
-			
+
 			else if (checkDue == "dueThisWeek") {
 				if (taskDate.isBefore(nowDate.plusDays(7))) {
 					return true;
-				}
-				else {
+				} else {
 					return false;
 				}
 			}
-			
+
 			else if (checkDue == "dueTomorrow") {
 				if (taskDate.isBefore(nowDate.plusDays(2))) {
 					return true;
-				}
-				else {
+				} else {
 					return false;
 				}
 			}
-			
+
 			else if (checkDue == "dueToday") {
 				if (taskDate.isBefore(nowDate.plusDays(1))) {
 					return true;
-				}
-				else {
+				} else {
 					return false;
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
 	}
-	
+
 	public class GUIMsg extends PrintStream {
 		private Label label;
 
@@ -681,14 +686,14 @@ public class TaskDisplayController {
 			label.setText(String.valueOf((char) i));
 		}
 	}
-	
+
 	private void showHelpWindow() {
 		File helpFile = new File("HelpCommands.html");
 		try {
 			Desktop.getDesktop().browse(helpFile.toURI());
-			
+
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
