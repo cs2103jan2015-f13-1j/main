@@ -1,16 +1,10 @@
 package gui;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Vector;
-
 import fileIO.FileStream;
 import util.Output;
 import util.Task;
@@ -28,14 +22,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import logic.Logic;
@@ -236,7 +226,7 @@ public class TaskDisplayController {
 	@FXML
 	private void initialize() {
 		VectorTaskList = l.initializeList();
-		resetDisplayTaskList();
+		setTaskList(VectorTaskList);
 
 		commandHistory = new Vector<String>();
 		commandHistoryIndex = 0;
@@ -278,14 +268,13 @@ public class TaskDisplayController {
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isTimedOn = false;
-							inputBox.setText("Timed is off");
 						} else {
 							isTimedOn = true;
-							inputBox.setText("Timed is on");
 						}
 						cleanDisplayTaskList();
+						Output.showToUser(DisplayTaskList.size() + "");
+
 						setTaskList(DisplayTaskList);
-						resetDisplayTaskList();
 					}
 				});
 
@@ -295,14 +284,11 @@ public class TaskDisplayController {
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isDeadlineOn = false;
-							inputBox.setText("Deadline is off");
 						} else {
 							isDeadlineOn = true;
-							inputBox.setText("Deadline is on");
 						}
 						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
-						resetDisplayTaskList();
 					}
 				});
 
@@ -312,14 +298,11 @@ public class TaskDisplayController {
 							Toggle toggle, Toggle new_toggle) {
 						if (new_toggle == null) {
 							isFloatingOn = false;
-							inputBox.setText("Floating is off");
 						} else {
 							isFloatingOn = true;
-							inputBox.setText("Floating is on");
 						}
 						cleanDisplayTaskList();
 						setTaskList(DisplayTaskList);
-						resetDisplayTaskList();
 					}
 				});
 
@@ -328,14 +311,11 @@ public class TaskDisplayController {
 					Toggle toggle, Toggle new_toggle) {
 				if (new_toggle == null) {
 					checkDue = "dueAllTime";
-					inputBox.setText(new_toggle.getUserData().toString());
 				} else {
 					checkDue = new_toggle.getUserData().toString();
-					inputBox.setText(new_toggle.getUserData().toString());
 				}
 				cleanDisplayTaskList();
 				setTaskList(DisplayTaskList);
-				resetDisplayTaskList();
 			}
 		});
 
@@ -387,14 +367,6 @@ public class TaskDisplayController {
 
 		});
 
-	}
-
-	private void resetDisplayTaskList() {
-		DisplayTaskList = new Vector<Task>();
-		for (Task t : VectorTaskList) {
-			DisplayTaskList.add(t);
-		}
-		setTaskList(DisplayTaskList);
 	}
 
 	private void setAnimation() {
@@ -466,7 +438,7 @@ public class TaskDisplayController {
 				}
 
 				if (key.getCode().equals(KeyCode.F1)) {
-					showHelpWindow();
+					processUserInput("help");
 				}
 
 				if (key.getCode().equals(KeyCode.F5)) {
@@ -579,7 +551,6 @@ public class TaskDisplayController {
 
 	public void processUserInput(String str) {
 		VectorTaskList = l.run(str);
-		resetDisplayTaskList();
 
 		// Comments on replacing listView.setItems with the following 2 lines:
 		// This theoretically works the same way, but the 2 lines will fix the
@@ -587,30 +558,25 @@ public class TaskDisplayController {
 		// listView.setItems(list);
 		cleanDisplayTaskList();
 		setTaskList(DisplayTaskList);
-		resetDisplayTaskList();
 	}
 
 	public void cleanDisplayTaskList() {
-		for (Task t : DisplayTaskList) {
+		DisplayTaskList.clear();
+		for (Task t : VectorTaskList) {
 			if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
 				if (isDisplayedByDueDate(t)) {
-					// Do nothing
+					DisplayTaskList.add(t);
 				}
-
 			} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
 					&& isDeadlineOn) {
 				if (isDisplayedByDueDate(t)) {
-					// Do nothing
+					DisplayTaskList.add(t);
 				}
 			} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
 					&& isFloatingOn) {
 				if (isDisplayedByDueDate(t)) {
-					// Do nothing
+					DisplayTaskList.add(t);
 				}
-			}
-
-			else {
-				DisplayTaskList.remove(t.getIndex());
 			}
 		}
 	}
@@ -684,17 +650,6 @@ public class TaskDisplayController {
 		@Override
 		public synchronized void write(int i) {
 			label.setText(String.valueOf((char) i));
-		}
-	}
-
-	private void showHelpWindow() {
-		File helpFile = new File("HelpCommands.html");
-		try {
-			Desktop.getDesktop().browse(helpFile.toURI());
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
 		}
 	}
 
