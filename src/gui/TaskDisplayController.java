@@ -2,6 +2,9 @@ package gui;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 import fileIO.FileStream;
@@ -55,6 +58,21 @@ public class TaskDisplayController {
 
 	@FXML
 	private ToggleButton showFloating = new ToggleButton();
+	
+	@FXML
+	private RadioButton dueToday = new RadioButton("Due Today");
+	
+	@FXML
+	private RadioButton dueTomorrow = new RadioButton("Due Tomorrow");
+
+	@FXML
+	private RadioButton dueThisWeek = new RadioButton("Due This Week");
+
+	@FXML
+	private RadioButton dueThisMonth = new RadioButton("Due This Month");
+
+	@FXML
+	private RadioButton dueAllTime = new RadioButton("All Time");
 
 	@FXML
 	private VBox sideBar = new VBox();
@@ -90,10 +108,12 @@ public class TaskDisplayController {
 	private boolean isTimedOn = true;
 	private boolean isDeadlineOn = true;
 	private boolean isFloatingOn = true;
+	private String checkDue = "dueAllTime";
 
 	final ToggleGroup timed = new ToggleGroup();
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
+	final ToggleGroup due = new ToggleGroup();
 
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
@@ -143,16 +163,26 @@ public class TaskDisplayController {
 			if (t != null) {
 
 				if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
-					getStyleClass().add("full");
-					setGraphic(hbox);
+//					System.out.println(isDisplayedByDueDate(t));
+					if (isDisplayedByDueDate(t)) {
+						getStyleClass().add("full");
+						setGraphic(hbox);
+					}
+					
 				} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
 						&& isDeadlineOn) {
-					getStyleClass().add("full");
-					setGraphic(hbox);
+//					System.out.println(isDisplayedByDueDate(t));
+					if (isDisplayedByDueDate(t)) {
+						getStyleClass().add("full");
+						setGraphic(hbox);
+					}
 				} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
 						&& isFloatingOn) {
-					getStyleClass().add("full");
-					setGraphic(hbox);
+//					System.out.println(isDisplayedByDueDate(t));
+					if (isDisplayedByDueDate(t)) {
+						getStyleClass().add("full");
+						setGraphic(hbox);
+					}
 				}
 
 				else {
@@ -232,6 +262,19 @@ public class TaskDisplayController {
 		showTimed.setToggleGroup(timed);
 		showDeadline.setToggleGroup(deadline);
 		showFloating.setToggleGroup(floating);
+		
+		dueToday.setToggleGroup(due);
+		dueToday.setUserData("dueToday");
+		dueTomorrow.setToggleGroup(due);
+		dueTomorrow.setUserData("dueTomorrow");
+		dueThisWeek.setToggleGroup(due);
+		dueThisWeek.setUserData("dueThisWeek");
+		dueThisMonth.setToggleGroup(due);
+		dueThisMonth.setUserData("dueThisMonth");
+		dueAllTime.setToggleGroup(due);
+		dueAllTime.setUserData("dueAllTime");
+		dueAllTime.setSelected(true);
+		
 		sideBar.toBack();
 
 		timed.selectedToggleProperty().addListener(
@@ -282,8 +325,40 @@ public class TaskDisplayController {
 
 					}
 				});
+		
+		due.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>(){
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							checkDue = "dueAllTime";
+							inputBox.setText(new_toggle.getUserData().toString());
+						} else {
+							checkDue = new_toggle.getUserData().toString();
+							inputBox.setText(new_toggle.getUserData().toString());
+						}
 
-		System.out.println("handler set");
+						setTaskList(VectorTaskList);
+
+					}
+				});
+		
+//		due.selectedToggleProperty().addListener(
+//				new ChangeListener<Toggle>() {
+//					public void changed(ObservableValue<? extends Toggle> ov,
+//							Toggle toggle, Toggle new_toggle) {
+//						if (new_toggle == null) {
+//							CheckDue = "allTime";
+//							inputBox.setText("allTime");
+//						} else {
+////							new_toggle.getUserData().toString()
+//							inputBox.setText(new_toggle.getUserData().toString());
+//							System.out.println(new_toggle.getUserData().toString());
+//						}
+//
+//						setTaskList(VectorTaskList);
+//					}
+//				});
 
 		GUIMsg feedback = new GUIMsg(System.out, label);
 		System.setOut(feedback);
@@ -520,7 +595,116 @@ public class TaskDisplayController {
 		// listView.setItems(list);
 		setTaskList(VectorTaskList);		
 	}
+	
+	public boolean isDisplayedByDueDate(Task t) {
 
+		if(t.getEndTime()==null)
+			return true;
+		
+		//Date tDate = new SimpleDateFormat("")
+		Calendar taskC = Calendar.getInstance();
+		taskC.set(t.getEndTime().getYear(), t.getEndTime().getMonthValue(), t.getEndTime().getDayOfMonth());
+
+		Calendar curC = Calendar.getInstance();
+		
+		long daysBetween = (taskC.getTimeInMillis()-curC.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+
+		inputBox.appendText("\nNow:"+curC.getTime()+"\n, "+"Time:"+taskC.getTime()+", dB = "+daysBetween+" , dOW = "+taskC.get(taskC.DAY_OF_WEEK));
+
+		if(daysBetween < 0) //it's overdue 
+		{
+			inputBox.appendText("\nThis is overdue");
+			return false;
+		}
+		
+		if((7 - taskC.get(taskC.DAY_OF_WEEK)) > daysBetween) { //It's this week
+			inputBox.appendText("\nThis week");
+			return (checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime");
+		}
+		
+		if(taskC.get(taskC.YEAR)==curC.get(curC.YEAR)) { //it's this year, check for shit
+			if(daysBetween < 2 && taskC.get(taskC.DAY_OF_YEAR)!=curC.get(curC.DAY_OF_YEAR)) {
+				//It's tomorrow
+				inputBox.appendText("\nThis tomorrow");
+				return (checkDue == "dueTomorrow" || checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime");
+			}
+			if(taskC.get(taskC.DAY_OF_YEAR)==curC.get(curC.DAY_OF_YEAR)) {
+				//It's today
+				inputBox.appendText("\nThis today");
+				return (checkDue == "dueToday");
+			}
+			if(taskC.get(taskC.MONTH)==curC.get(curC.MONTH)) {
+				//It's this month
+				inputBox.appendText("\nThis month");
+				return (checkDue == "dueThisMonth" || checkDue == "dueAllTime");
+			}
+			else {
+				inputBox.appendText("\nThis all time");
+				return (checkDue=="dueAllTime");
+			}
+		}
+		else {
+			inputBox.appendText("\nThis all time");
+			return (checkDue=="dueAllTime");
+		}
+	}
+	
+//	public boolean isDisplayedByDueDate(Task t) {
+//		if (t.getEndTime()!=null) {
+//			int taskYear = t.getEndTime().getYear();
+//			int taskMonth = t.getEndTime().getMonthValue();
+//			int taskDay = t.getEndTime().getDayOfMonth();
+//			LocalDate task = LocalDate.of(taskYear,taskMonth,taskDay);
+//			
+//			int currentYear = LocalDate.now().getYear();
+//			int currentMonth = LocalDate.now().getMonthValue();
+//			int currentDay = LocalDate.now().getDayOfMonth();
+//			
+////			Check if task is due today 
+//			if(taskYear ==  currentYear && taskMonth == currentMonth && taskDay == currentDay) {					
+////				if(checkDue == "dueToday") {
+//					return true;
+////				} 
+//				//These tasks will be shown no matter which button is selected, so no need to check
+//			}
+//			
+////			Check if task is due tomorrow
+//			else if(task.isBefore(LocalDate.of(currentYear, currentMonth, (currentDay + 2)))) {
+//				if(checkDue == "dueTomorrow" || checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
+//					return true;
+//				}
+//			}
+////			Check if task is due within a week
+//			else if(task.isBefore(LocalDate.of(currentYear, currentMonth, (currentDay + 8)))) {
+//				if(checkDue == "dueThisWeek" || checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
+//					return true;
+//				}
+//			}
+//			
+////			Check if task is due this month
+//			else if(taskMonth == currentMonth && taskYear == currentYear) {
+//				if(checkDue == "dueThisMonth" || checkDue == "dueAllTime") {
+//					return true;
+//				}
+//			}
+//			
+//			else if(checkDue == "dueAllTime") {
+//				return true;
+//			}
+//			
+//			else {
+//				return false;
+//			}
+//		}
+//		
+//		else {
+//		 return true;
+//		}
+//	}
+	
+	
+
+	
 	public class GUIMsg extends PrintStream {
 		private Label label;
 

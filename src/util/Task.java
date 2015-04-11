@@ -131,7 +131,7 @@ public class Task {
 	}
 
 	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
-	@XmlSchemaType(name = "endTimee")
+	@XmlSchemaType(name = "endTime")
 	public LocalDateTime getEndTime() {
 		return endTime;
 	}
