@@ -38,7 +38,7 @@ public class ListViewGUI extends Application {
 
 		root = new BorderPane();
 
-		Scene scene = new Scene(root, 450, 620);
+		Scene scene = new Scene(root, 450, 700);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setResizable(false);
@@ -47,7 +47,7 @@ public class ListViewGUI extends Application {
 
 	public void resetWindowWidth() {
 		primaryStage.setResizable(true);
-		primaryStage.setWidth(650);
+		primaryStage.setWidth(700);
 		primaryStage.setResizable(false);
 	}
 

@@ -25,6 +25,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.input.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -186,17 +187,25 @@ public class TaskDisplayController {
 				if (t.getDone()) {
 					done.setSelected(true);
 					desc.getStyleClass().add("strikethrough");
+					desc.setFill(Color.GREY);
 					details.getStyleClass().add("strikethrough");
+					details.setFill(Color.GREY);
 				} else {
 					done.setSelected(false);
 					desc.getStyleClass().remove("strikethrough");
+					desc.setFill(Color.WHITE);
 					details.getStyleClass().remove("strikethrough");
+					details.setFill(Color.WHITE);
 				}
 
 				hbox.setPrefWidth(350);
 				desc.setText(formatTask1(t));
+				desc.getStyleClass().add("desc");
+				
 				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
+				details.getStyleClass().add("details");
+				
 
 				flag.getStyleClass().remove("flag-selected");
 				flag.getStyleClass().remove("flag");
