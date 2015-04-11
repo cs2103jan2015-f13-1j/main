@@ -39,7 +39,7 @@ public class SystemTest {
 	@Test
 	public void test() throws Exception {
 		TaskDisplayController tdc = new TaskDisplayController();
-		//Testing command: clear
+		//Testing command: clear, at the same time, initializes a new clean task for the following test
 		tdc.processUserInput("add Start test");
 		tdc.processUserInput("clear");
 		checkCurrentAgainstExpectedXML("Ontask.xml", "Empty.xml");
@@ -53,7 +53,7 @@ public class SystemTest {
 		//Testing date formatings DD MMM T(with suffix)
 		tdc.processUserInput("add timed task from 30 may 3pm to 1 jun 5pm");
 
-		//Testing date formatings MM DD TTTT, represents June 15 3pm to June 16 5pm
+		//Testing date formatings MM DD with both time formats, represents June 15 3pm to June 16 5pm
 		tdc.processUserInput("add timed task from 6 15 15:00 to 6 16 5pm");
 		
 		//Testing a past date, should reflect 2016 automatically
@@ -71,6 +71,9 @@ public class SystemTest {
 		//Testing a date input in task description with " ", upper and lower case form
 		tdc.processUserInput("add FloAtinG task by \"3 aPr\"");
 		
+		//Testing a date input in task description for due task
+		tdc.processUserInput("add WATCH-movie, 'Day after \"tmr\"' by tmr");
+		
 		//Check command: delete
 		tdc.processUserInput("delete 4");
 		
@@ -80,13 +83,38 @@ public class SystemTest {
 		//Testing edit for endtime
 		tdc.processUserInput("edit endtime 1 5.00pm");
 		
-		//Testing edit for enddate
+		//Testing edit for enddate 
+		//**check this case, where input apr 12, apr 15, then edit enddate to apr 9, turns enddate into apr 9 2016
 		tdc.processUserInput("edit enddate 1 9 apr");
 		
-		//Testing special words: tdy (FAILS), tmr (pass)
+		//Testing edit for starttime, should not read as due task do not have a start time
+		tdc.processUserInput("edit starttime 1");
+		
+		//Test edit starttime and startdate
+		tdc.processUserInput("edit starttime 3 1.25am");
+		tdc.processUserInput("edit startdate 3 apr 25");
+		
+		//Testing special words: tdy , tmr 
 		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
 		
+		//Test marking task as done
+		tdc.processUserInput("mark 2");
+		
+		//Test flagging task to prioritize
+		tdc.processUserInput("flag 3");
+		
+		//Test undo function
+		tdc.processUserInput("add task to be undo-ed, should not appear");
+		tdc.processUserInput("undo");
+		
+		//Test final command exit
 		tdc.processUserInput("exit");
+		
+		//Weird cases which fail: 
+		//add friday, add 3pm
+		//add i want to do this TODAY!
+		//add
+		//auto complete for edit bugs
 		
 		checkCurrentAgainstExpectedXML("Ontask.xml", "Expected.xml");
 	}
@@ -95,7 +123,7 @@ public class SystemTest {
 		File current = new File(currentS);
 		File expected = new File(expectedS);
 		
-		//Imported JUnit-addons version 1.4 in order to use FileAssert class under junitx.framework.*;
+		//Import JUnit-addons version 1.4 in order to use FileAssert under junitx.framework.*;
 		FileAssert.assertEquals(expected, current);
 	}
 }
