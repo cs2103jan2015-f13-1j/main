@@ -46,6 +46,7 @@ public class FileStream {
 	 * @param tasks
 	 */
 	public static void writeTasksToXML(Vector<Task> tasks) {
+		
 		try {
 			JAXBContext context = JAXBContext.newInstance(TaskListWrapper.class);
 			Marshaller m = context.createMarshaller();
@@ -67,9 +68,11 @@ public class FileStream {
 
 	public static void initializeDir() {
 
-		//If else statement to catch two cases: 
-		//1) If preference has already been initialized but cannot locate Ontask.xml, treat as first-time user. file = null
-		//2) If preference is not initialized (real first-time users), file = null
+		/*
+		 * If else statement to catch two cases: 
+		 * 1) If preference has already been initialized but cannot locate Ontask.xml, treat as first-time user. file = null
+		 * 2) If preference is not initialized (real first-time users), file = null
+		 */
 		if(getFilePath().exists() && getFilePath() != null) {	
 			file = getFilePath();
 		} else {
@@ -77,8 +80,6 @@ public class FileStream {
 		}
 
 		if(file == null) {
-			System.out.println("First timer");
-
 			//Ask user for directory to save Ontask.xml
 			DirectoryChooser dirChooser = new DirectoryChooser();
 			File selectedDirectory = dirChooser.showDialog(null);
@@ -102,45 +103,43 @@ public class FileStream {
 	 */
 	public static void changeDir() {
 		oldPath = getFilePath().getParentFile().getAbsolutePath();
-	
+
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		File selectedDirectory = dirChooser.showDialog(null);
 
 		//If user did not select a directory, this method will not make any changes.
 		if(selectedDirectory == null) {
-			//newPath = oldPath;
 			return;
 		} else {
 			newPath = selectedDirectory.getAbsolutePath();
-			
+
 			//Copy old Ontask.xml to new
 			file.renameTo(new File(newPath + "/Ontask.xml"));
-			
+
 			//Update file references
 			file = new File(newPath + "/Ontask.xml");
 			setFilePath(file);
-			
+
 		}
 
-		//System.out.println("Old path:" + oldPath + "/Ontask.xml");
-		//System.out.println("New path:" + newPath + "/Ontask.xml");
 	}
-	
+
 	public static void changeDirWithString(String s) {
+		
+		assert s != null : "String is null!";
+
 		//Copy old Ontask.xml to new
 		file.renameTo(new File(s + "/Ontask.xml"));
-	
+
 		//Update file references
 		file = new File(s + "/Ontask.xml");
 		setFilePath(file);
-		
-		//System.out.println(s + "/Ontask.xml");	
 	}
-	
+
 	public static String getOldPath() {
 		return oldPath;
 	}
-	
+
 	public static String getNewPath() {
 		return newPath;
 	}
@@ -162,6 +161,9 @@ public class FileStream {
 	 * Updates preference to store new value for File with the same string key filePath
 	 */
 	private static void setFilePath(File file) {
+
+		assert file != null : "File is null!";
+		
 		Preferences prefs = Preferences.userNodeForPackage(FileStream.class);
 		if(file != null) {
 			prefs.put("filePath", file.getPath());

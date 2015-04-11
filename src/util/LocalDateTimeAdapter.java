@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-
+//This adapter class allows the convertion of LocalDateTime object into a readable XML element
 public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime>{
 	
 	@Override

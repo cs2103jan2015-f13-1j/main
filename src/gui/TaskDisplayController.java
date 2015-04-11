@@ -43,9 +43,6 @@ public class TaskDisplayController {
 	@FXML
 	private Label label = new Label();
 
-	// @FXML
-	// private Label slide = new Label();
-
 	@FXML
 	private Button slideButton = new Button();
 
@@ -89,14 +86,6 @@ public class TaskDisplayController {
 	private Timeline timelineIn;
 	private static String previousKey;
 
-	// private StackPane rightArrow = StackPaneBuilder
-	// .create()
-	// .style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M1 0 L1 1 L0 .5 Z\";")
-	// .maxHeight(10).maxWidth(15).build();
-	// private StackPane leftArrow = StackPaneBuilder
-	// .create()
-	// .style("-fx-padding: 8px 5px 0px 5px;-fx-background-color: black;-fx-shape: \"M0 0 L0 1 L1 .5 Z\";")
-	// .maxHeight(10).maxWidth(15).build();
 	private SimpleBooleanProperty isExpanded = new SimpleBooleanProperty();
 
 	private ObservableList<Task> list;
@@ -176,7 +165,6 @@ public class TaskDisplayController {
 				setGraphic(hbox);
 
 				if (t.getDone()) {
-
 					done.setSelected(true);
 				}
 
@@ -258,15 +246,14 @@ public class TaskDisplayController {
 		}
 	}
 
-	// records x,y co-ordinates
-	class Delta {
+	// This class records x,y co-ordinates as an object
+	private class Delta {
 		double x;
 		double y;
 	}
 
 	@FXML
 	private void initialize() {
-
 		// customize toolBar to enable moving an undecorated application
 		final Delta dragDelta = new Delta();
 		toolBar.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -285,7 +272,7 @@ public class TaskDisplayController {
 			}
 		});
 
-		// customize close and minimize buttons
+		// close and minimize buttons for customized window border
 		closeApp.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -420,8 +407,6 @@ public class TaskDisplayController {
 		System.setOut(feedback);
 		System.setErr(feedback);
 		label.setText("");
-		// slide.setText("slide");
-		// slide.setGraphic(rightArrow);
 		setAnimation();
 
 		slideButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -437,14 +422,12 @@ public class TaskDisplayController {
 					ObservableValue<? extends Boolean> paramObservableValue,
 					Boolean paramT1, Boolean paramT2) {
 				if (paramT2) {
-					// To expand
+					// To expand sidebar
 					timelineIn.play();
-					// slide.setGraphic(leftArrow);
 					gui.resetWindowWidth();
 				} else {
-					// To close
+					// To close sidebar
 					timelineOut.play();
-					// slide.setGraphic(rightArrow);
 					gui.setWindowWidth();
 				}
 			}
@@ -458,7 +441,6 @@ public class TaskDisplayController {
 					Boolean paramT1, Boolean paramT2) {
 				if (paramT2) {
 					timelineIn.play();
-					// slide.setGraphic(leftArrow);
 				}
 			}
 
@@ -477,7 +459,7 @@ public class TaskDisplayController {
 		timelineIn = new Timeline();
 		timelineOut = new Timeline();
 
-		/* Animation for scroll right. */
+		/* Animation for sidebar to scroll right. */
 		timelineIn.setCycleCount(1);
 		timelineIn.setAutoReverse(true);
 
@@ -486,7 +468,7 @@ public class TaskDisplayController {
 				kvDwn1);
 		timelineIn.getKeyFrames().add(kfDwn);
 
-		/* Animation for scroll up. */
+		/* Animation for sidebar to scroll left. */
 		timelineOut.setCycleCount(1);
 		timelineOut.setAutoReverse(true);
 		final KeyValue kvUp1 = new KeyValue(sideBar.translateXProperty(), -250);
@@ -514,7 +496,6 @@ public class TaskDisplayController {
 			@Override
 			public void handle(KeyEvent key) {
 				if (key.getCode().equals(KeyCode.ENTER)) {
-					// Prevents the enter key from doing a newline
 					key.consume();
 
 					String text = inputBox.getText();
@@ -526,7 +507,7 @@ public class TaskDisplayController {
 							&& !text.toLowerCase().equals("quit")) {
 						processUserInput(text);
 
-						// clear text
+						// clear text area after each input
 						inputBox.setText("");
 					} else {
 						System.exit(0);
@@ -568,48 +549,48 @@ public class TaskDisplayController {
 
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
 				new EventHandler<KeyEvent>() {
-					String autoCompleteList[] = { "add", "changedir", "clear",
-							"create", "delete", "edit", "exit", "flag", "help",
-							"mark ", "man", "search", "undo", "redo",
-							"prioritise", "quit", "search task",
-							"search before", "search date", "search type",
-							"edit desc ", "edit task", "edit start",
-							"edit end", "edit starttime", "edit startdate",
-							"edit endtime", "edit enddate" };
+			String autoCompleteList[] = { "add", "changedir", "clear",
+					"create", "delete", "edit", "exit", "flag", "help",
+					"mark ", "man", "search", "undo", "redo",
+					"prioritise", "quit", "search task",
+					"search before", "search date", "search type",
+					"edit desc ", "edit task", "edit start",
+					"edit end", "edit starttime", "edit startdate",
+					"edit endtime", "edit enddate" };
 
-					public void handle(KeyEvent key) {
-						boolean isPartOfWord = false;
-						String input = inputBox.getText();
+			public void handle(KeyEvent key) {
+				boolean isPartOfWord = false;
+				String input = inputBox.getText();
 
-						for (String s : autoCompleteList) {
-							input = input.replaceAll("\\s+", " ");
-							if (!input.isEmpty()
-									&& s.toLowerCase().startsWith(input)) {
-								Output.showToUser("Enter space to autocomplete");
-								previousKey = s;
-								isPartOfWord = true;
-								break;
-							}
-						}
-						if (key.getCode().equals(KeyCode.SPACE)) {
-							if (previousKey != null) {
-								inputBox.setText(previousKey + " ");
-								inputBox.end();
-								previousKey = null;
-								Output.showToUser(" ");
-							}
-						}
-						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
-							Output.showToUser(" ");
-							previousKey = null;
-						} else if (!isPartOfWord
-								&& !key.getCode().equals(KeyCode.ENTER)) {
-							Output.showToUser(" ");
-							previousKey = null;
-						}
-
+				for (String s : autoCompleteList) {
+					input = input.replaceAll("\\s+", " ");
+					if (!input.isEmpty()
+							&& s.toLowerCase().startsWith(input)) {
+						Output.showToUser("Enter space to autocomplete");
+						previousKey = s;
+						isPartOfWord = true;
+						break;
 					}
-				});
+				}
+				if (key.getCode().equals(KeyCode.SPACE)) {
+					if (previousKey != null) {
+						inputBox.setText(previousKey + " ");
+						inputBox.end();
+						previousKey = null;
+						Output.showToUser(" ");
+					}
+				}
+				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+					Output.showToUser(" ");
+					previousKey = null;
+				} else if (!isPartOfWord
+						&& !key.getCode().equals(KeyCode.ENTER)) {
+					Output.showToUser(" ");
+					previousKey = null;
+				}
+
+			}
+		});
 	}
 
 	private void showPrevCommandUp() {
@@ -652,6 +633,9 @@ public class TaskDisplayController {
 	}
 
 	public void processUserInput(String str) {
+
+		assert str != null : "String is null!";
+		
 		VectorTaskList = l.run(str);
 		createDisplayTaskList();
 		setTaskList(DisplayTaskList);
