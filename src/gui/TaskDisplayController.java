@@ -616,6 +616,10 @@ public class TaskDisplayController {
 	}
 
 	private void showPrevCommandDown() {
+		if(commandHistoryIndex == commandHistory.size()) {
+			return;
+		}
+		
 		if (commandHistoryIndex == commandHistory.size() - 1) {
 			commandHistoryIndex = -1;
 		}
