@@ -1,22 +1,39 @@
+.text {
+	-fx-text-fill: white;
+}
 
+.label {
+	-fx-text-fill: white;
+}
+
+.radiobutton {
+	-fx-text-fill: white;
+}
 
 .full {
-	-fx-border-radius: 5.0 5.0 5.0 5.0;
-	-fx-border-width: 2.0;
-	-fx-border-insets: 2.0 0.0 2.0 0.0;
-	-fx-border-color: rgb(103.0,103.0,103.0);
 	-fx-background-color: rgb(192.0,192.0,192.0, 0.2); 
-	-fx-background-radius: 6.0 6.0 6.0 6.0;
-	-fx-background-insets: 2.0 0.0 2.0 0.0;    
-    -fx-font-family: "Helvetica";
-    -fx-font-size: 14.0px;
-    -fx-font-weight: bold;
+	-fx-background-insets: 2.0 0.0 2.0 0.0; 
     -fx-effect: dropshadow( three-pass-box , rgba(255.0,255.0,255.0,0.2) , 1.0, 0.0 , 0.0 , 1.0);
+    -fx-padding: 10 0 10 10;
 }
 
 .empty {
 	-fx-background-color: transparent;
 	 visibility: collapse;
+}
+
+.desc {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 18.0px;
+    -fx-padding: 0 0 0 0;
+    -fx-background-color: white;
+}
+
+.details {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 15.0px;
+    -fx-padding: 0 0 0 0;
+    -fx-alignment: top-left;
 }
 
 .done{
@@ -40,7 +57,8 @@
 }
 
 .list-view {
-  	-fx-background-image: url("file:images/bg.jpg");
+	/*-fx-background-color: #061825;*/
+  	-fx-background-image: url("file:images/bg-sml.jpg");
     -fx-padding: 7.5;
 }
 
@@ -63,24 +81,39 @@
 .delete {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/delete-sml.png');
+	-fx-opacity: 0.3;
 }
 
 .delete:hover {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/delete-sml-hover.png');
+	-fx-opacity: 1.0;
 }
 
 .flag {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/flag-sml.png');
+	-fx-opacity: 0.3;
 }
 
 .flag:hover {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/flag-sml-hover.png');
+	-fx-opacity: 1.0;
 }
 
 .flag-selected {
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/flag-sml-flagged.png');
+	-fx-opacity: 1.0;
+}
+
+.selected:selected {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/selected-sml.png');
+}
+
+.selected {
+	-fx-background-color: transparent;
+	-fx-graphic: url('file:images/deselected-sml.png');
 }

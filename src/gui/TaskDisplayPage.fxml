@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="620.0" prefWidth="700.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
+<AnchorPane prefHeight="700.0" prefWidth="750.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
       <SplitPane maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
          <items>
@@ -20,7 +20,7 @@
               <items>
                   <ToolBar fx:id="toolBar" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" SplitPane.resizableWithParent="false">
                     <items>
-                        <Button fx:id="slideButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="S" translateX="380.0">
+                        <Button fx:id="slideButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="&gt;" translateX="375.0">
                            <cursor>
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
@@ -28,7 +28,7 @@
                               <Font size="7.0" />
                            </font>
                         </Button>
-                        <Button fx:id="minimize" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="_" translateX="380.0">
+                        <Button fx:id="minimize" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="_" translateX="375.0">
                            <font>
                               <Font size="7.0" />
                            </font>
@@ -36,7 +36,7 @@
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
                         </Button>
-                      <Button fx:id="closeApp" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="X" translateX="380.0">
+                      <Button fx:id="closeApp" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="X" translateX="375.0">
                            <font>
                               <Font size="7.0" />
                            </font>
@@ -60,16 +60,19 @@
             </SplitPane>
          </items>
       </SplitPane>
-      <VBox fx:id="sideBar" layoutX="451.0" prefHeight="600.0" prefWidth="250.0" style="-fx-background-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="sideBar" layoutX="451.0" prefHeight="600.0" prefWidth="250.0" style="-fx-background-image: url('file:images/bg-sb.jpg');" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" text="DISPLAY TASKS">
                <VBox.margin>
                   <Insets bottom="20.0" top="20.0" />
                </VBox.margin>
+               <font>
+                  <Font name="Segoe UI Bold" size="15.0" />
+               </font>
             </Label>
-            <GridPane vgap="5.0">
+            <GridPane prefHeight="100.0" prefWidth="187.0" style="-fx-text-fill: white;" vgap="5.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="61.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="61.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="149.0" />
               </columnConstraints>
               <rowConstraints>
@@ -78,12 +81,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ToggleButton fx:id="showTimed" mnemonicParsing="false" text="Show" />
-                  <ToggleButton fx:id="showDeadline" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="1" />
-                  <ToggleButton fx:id="showFloating" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Show" GridPane.rowIndex="2" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="  Timed Tasks" GridPane.columnIndex="1" />
-                  <Text layoutX="94.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  Deadline Tasks" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Text layoutX="122.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  Floating Tasks" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ToggleButton fx:id="showTimed" mnemonicParsing="false" />
+                  <ToggleButton fx:id="showDeadline" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" GridPane.rowIndex="1" />
+                  <ToggleButton fx:id="showFloating" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" GridPane.rowIndex="2" />
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-fill: white;" text="  Timed Tasks" GridPane.columnIndex="1" />
+                  <Text fill="WHITE" layoutX="94.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-fill: white;" text="  Deadline Tasks" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Text fill="WHITE" layoutX="122.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-fill: white;" text="  Floating Tasks" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
                <VBox.margin>
                   <Insets left="20.0" right="20.0" />
@@ -93,14 +96,17 @@
                <padding>
                   <Insets bottom="20.0" top="20.0" />
                </padding>
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
             </Label>
             <GridPane layoutX="30.0" layoutY="71.0" vgap="5.0">
                <children>
-                  <RadioButton fx:id="dueToday" mnemonicParsing="false" prefHeight="21.0" prefWidth="141.0" text="     Due Today" />
-                  <RadioButton fx:id="dueTomorrow" mnemonicParsing="false" text="     Due Tomorrow" GridPane.rowIndex="1" />
-                  <RadioButton fx:id="dueThisWeek" mnemonicParsing="false" text="     Due This Week" GridPane.rowIndex="2" />
-                  <RadioButton fx:id="dueThisMonth" mnemonicParsing="false" text="     Due This Month" GridPane.rowIndex="3" />
-                  <RadioButton fx:id="dueAllTime" mnemonicParsing="false" text="     All Time" GridPane.rowIndex="4" />
+                  <RadioButton fx:id="dueToday" mnemonicParsing="false" prefHeight="21.0" prefWidth="141.0" style="-fx-text-fill: white;" text="     Due Today" />
+                  <RadioButton fx:id="dueTomorrow" mnemonicParsing="false" style="-fx-text-fill: white;" text="     Due Tomorrow" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="dueThisWeek" mnemonicParsing="false" style="-fx-text-fill: white;" text="     Due in a Week" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="dueThisMonth" mnemonicParsing="false" style="-fx-text-fill: white;" text="     Due in a Month" GridPane.rowIndex="3" />
+                  <RadioButton fx:id="dueAllTime" mnemonicParsing="false" style="-fx-text-fill: white;" text="     All Time" GridPane.rowIndex="4" />
                </children>
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
