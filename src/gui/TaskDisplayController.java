@@ -323,7 +323,11 @@ public class TaskDisplayController {
 				inputBox.requestFocus();
 			}
 		});
-
+		
+		slideButton.getStyleClass().add("sld");
+		minimize.getStyleClass().add("min");
+		closeApp.getStyleClass().add("cls");
+		
 		showTimed.setToggleGroup(timed);
 		showTimed.setSelected(true);
 		showTimed.getStyleClass().add("selected");

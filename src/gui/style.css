@@ -1,3 +1,11 @@
+.label {
+	-fx-text-fill: white;
+}
+
+.split-pane *.split-pane-divider {
+    -fx-background-color: #333;
+}
+
 .radiobutton {
 	-fx-text-fill: white;
 }
@@ -78,7 +86,7 @@
 }
 
 .text-area {
-	-fx-background-color: transparent;
+	-fx-background-color: black;
     -fx-padding: 3.0 3.0 3.0 3.0;
     -fx-display-caret: true;
     -fx-font: 12.0pt "Helvetica";    
@@ -105,10 +113,16 @@
 
 .text-area:focused {
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-color: black;
     -fx-background-insets: -0.4, 1.0, 2.0;
     -fx-background-radius: 3.4, 2.0, 2.0;
-        -fx-prompt-text-fill: grey;  
+    -fx-prompt-text-fill: grey;  
+	-fx-text-fill: white;
     
+}
+
+.text-area .content {
+	-fx-background-color: black;
 }
 
 .delete {
@@ -159,4 +173,28 @@
 
 .floating {
 	-fx-translate-y: 17px;
+}
+
+.min {
+	-fx-background-image: url('file:images/min.png');
+}
+
+.min:hover {
+	-fx-background-image: url('file:images/min-hover.png');
+}
+
+.cls {
+	-fx-background-image: url('file:images/cls.png');
+}
+
+.cls:hover {
+	-fx-background-image: url('file:images/cls-hover.png');
+}
+
+.sld {
+	-fx-background-image: url('file:images/sld.png');
+}
+
+.sld:hover {
+	-fx-background-image: url('file:images/sld-hover.png');
 }

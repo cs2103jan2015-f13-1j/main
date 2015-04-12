@@ -11,16 +11,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="700.0" prefWidth="750.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
+<AnchorPane prefHeight="700.0" prefWidth="750.0" style="-fx-background-color: #555; -fx-border-color: #555;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TaskDisplayController">
    <children>
       <SplitPane maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="0.0">
          <items>
       
-            <SplitPane dividerPositions="0.8, 0.5, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0">
+            <SplitPane dividerPositions="0.8, 0.5, 0.5" orientation="VERTICAL" prefHeight="450.0" prefWidth="300.0" style="-fx-background-color: #333; -fx-border-color: #555;">
               <items>
-                  <ToolBar fx:id="toolBar" maxHeight="22.0" minHeight="22.0" prefHeight="22.0" SplitPane.resizableWithParent="false">
+                  <ToolBar fx:id="toolBar" maxHeight="22.0" minHeight="22.0" prefHeight="22.0" style="-fx-background-color: #333;" SplitPane.resizableWithParent="false">
                     <items>
-                        <Button fx:id="slideButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="&gt;" translateX="375.0">
+                        <Button fx:id="slideButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" translateX="372.0" translateY="2.0">
                            <cursor>
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
@@ -28,7 +28,7 @@
                               <Font size="7.0" />
                            </font>
                         </Button>
-                        <Button fx:id="minimize" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="_" translateX="375.0">
+                        <Button fx:id="minimize" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" translateX="372.0" translateY="2.0">
                            <font>
                               <Font size="7.0" />
                            </font>
@@ -36,7 +36,7 @@
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
                         </Button>
-                      <Button fx:id="closeApp" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" text="X" translateX="375.0">
+                      <Button fx:id="closeApp" alignment="CENTER" contentDisplay="CENTER" maxHeight="18.0" maxWidth="18.0" minHeight="18.0" minWidth="18.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="18.0" translateX="372.0" translateY="2.0">
                            <font>
                               <Font size="7.0" />
                            </font>
@@ -54,7 +54,7 @@
                      <cursor>
                         <Cursor fx:constant="DEFAULT" />
                      </cursor></TextArea>
-                  <Label fx:id="label" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="10.0" prefWidth="430.0" text="Label" />
+                  <Label fx:id="label" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="10.0" prefWidth="430.0" text="Label" style="-fx-translate-y: -4px;"/>
       
               </items>
             </SplitPane>
