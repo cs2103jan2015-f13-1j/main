@@ -257,7 +257,7 @@ public class TaskDisplayController {
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			if(t.getStartTime().getMinute() == 0) {
+			if(t.getStartTime().getMinute() == 0 || t.getStartTime().getHour()> 9) {
 				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
 						+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));
 	
