@@ -20,7 +20,7 @@
               <items>
                   <ToolBar fx:id="toolBar" maxHeight="22.0" minHeight="22.0" prefHeight="22.0" style="-fx-background-color: #333;" SplitPane.resizableWithParent="false">
                     <items>
-                        <Label alignment="CENTER" text="ONTASK" textAlignment="CENTER">
+                        <Label alignment="CENTER" text="ONTASK" textAlignment="CENTER" style="-fx-translate-y: 3px;">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
