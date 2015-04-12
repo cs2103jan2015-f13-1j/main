@@ -607,6 +607,8 @@ public class TaskDisplayController {
 								&& !key.getCode().equals(KeyCode.ENTER)) {
 							Output.showToUser(" ");
 							previousKey = null;
+						} else if(key.getCode().equals(KeyCode.ENTER)) {
+							previousKey = null;
 						}
 
 					}
