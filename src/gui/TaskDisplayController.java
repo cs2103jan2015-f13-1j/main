@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Vector;
-
 import fileIO.FileStream;
 import util.Output;
 import util.Task;
@@ -369,7 +368,6 @@ public class TaskDisplayController {
 							// showTimed.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
-						Output.showToUser(DisplayTaskList.size() + "");
 
 						setTaskList(DisplayTaskList);
 					}
@@ -511,7 +509,7 @@ public class TaskDisplayController {
 
 		final KeyCombination keyComb1 = new KeyCodeCombination(KeyCode.Z,
 				KeyCombination.CONTROL_DOWN);
-		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.R,
+		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.Y,
 				KeyCombination.CONTROL_DOWN);
 
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {

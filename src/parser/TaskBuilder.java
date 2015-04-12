@@ -232,11 +232,12 @@ public class TaskBuilder {
 				isNew = checkDateIndex(i);
 
 				if (isNew) {
-					if (_input.charAt(m.start() - 1) != '\"') {
+					if (i == 0 || _input.charAt(i - 1) != '\"') {
 						date = TimeExtractor.extractDate(dt);
 					} else {
 						date = null;
 					}
+
 					if (date != null) {
 						if (index < 0 || i < index) {
 							dateList.add(0, date);
@@ -323,6 +324,9 @@ public class TaskBuilder {
 			} else if (s.equalsIgnoreCase(spcdt[1])
 					|| s.equalsIgnoreCase(spcdt[0])) {
 				i = _input.indexOf(" " + s);
+				if (i == -1) {
+					i = 0;
+				}
 				date = LocalDate.now().plusDays(1);
 			} else {
 				i = -1;
@@ -413,36 +417,39 @@ public class TaskBuilder {
 	}
 
 	private void extractTime(Matcher m) {
-		int i, index = -1;
-		LocalTime time;
-		while (m.find()) {
-
-			if (_input.charAt(m.start() - 1) != '\"') {
-				time = TimeExtractor.extractTime(m.group().replace(" ", ""));
-				// if(time != null)
-			} else {
-				time = null;
-			}
-			log.info(m.group());
-			i = m.start();
-
-			if (time != null) {
-				if (timeIndex.size() != 0) {
-					index = timeIndex.get(0);
-				}
-				if (index < 0 || i < index) {
-					timeList.add(0, time);
-					timeIndex.add(0, i);
+		try {
+			int i, index = -1;
+			LocalTime time;
+			while (m.find()) {
+				i = m.start();
+				if (i == 0 || _input.charAt(i - 1) != '\"') {
+					time = TimeExtractor
+							.extractTime(m.group().replace(" ", ""));
 				} else {
-					timeList.add(time);
-					timeIndex.add(i);
+					time = null;
 				}
-				log.info(time.toString());
-				if (i > 0) {
-					checkTimeIndicationWord(i, true);
-				}
-			}
+				log.info(m.group());
 
+				if (time != null) {
+					if (timeIndex.size() != 0) {
+						index = timeIndex.get(0);
+					}
+					if (index < 0 || i < index) {
+						timeList.add(0, time);
+						timeIndex.add(0, i);
+					} else {
+						timeList.add(time);
+						timeIndex.add(i);
+					}
+					log.info(time.toString());
+					if (i > 0) {
+						checkTimeIndicationWord(i, true);
+					}
+				}
+
+			}
+		} catch (Exception e) {
+			Output.showToUser(MSG_DESC);
 		}
 	}
 
@@ -482,14 +489,14 @@ public class TaskBuilder {
 
 	public void run() {
 
-		//_input = "friday";
+		_input = "mar 3";
 		Task t = extractAddCommand();
 		// clear list
 		// Scanner sc = new Scanner(System.in);
 		// _input = sc.nextLine();
 		// while (!_input.contains(new String("exit"))) {
 		// Task t = extractAddCommand();
-		//displayTask(t);
+		displayTask(t);
 		// _input = sc.nextLine();
 		// }
 		// sc.close();

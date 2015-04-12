@@ -219,7 +219,9 @@ public class Parser {
 	}
 
 	private Command man(String input) {
-		if (input.trim().toLowerCase().equals("man")) {
+		if (input.trim().toLowerCase().equals("man")
+				|| input.trim().toLowerCase().equals("help")
+				|| input.trim().toLowerCase().equals("?")) {
 			CreateCmd mancmd = new CreateCmd();
 			return mancmd.createNewCommand("man");
 		} else {

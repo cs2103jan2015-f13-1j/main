@@ -184,7 +184,7 @@ public class Logic {
 		}
 	}
 
-	private void man(String content) {
+	private void man() {
 		// TODO Auto-generated method stub
 		File helpFile = new File("HelpCommands.html");
 		try {
@@ -285,7 +285,7 @@ public class Logic {
 				unflagTask(cmd.getIndex());
 				break;
 			case MAN:
-				man(cmd.getContent());
+				man();
 				break;
 			case SEARCH_TASK:
 				searchKey(cmd);
