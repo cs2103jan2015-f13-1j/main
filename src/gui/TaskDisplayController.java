@@ -31,6 +31,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import logic.Logic;
 
+//@author A0093906X
 public class TaskDisplayController {
 
 	@FXML
@@ -110,15 +111,8 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
-
-	/**
-	 * Class TaskCell helps wrap the various elements that go into making the GUI
-	 * element that is fed into the list cell
-	 * 
-	 * @author Parag Bhatnagar
-	 *
-	 */
-
+	
+	//@author A0093906X
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
@@ -130,7 +124,8 @@ public class TaskDisplayController {
 		VBox taskVBox = new VBox();
 		Button flag = new Button();
 		Button delete = new Button();
-
+		
+		//@author A0093906X
 		public TaskCell() {
 			super();
 
@@ -164,7 +159,7 @@ public class TaskDisplayController {
 			HBox.setHgrow(pane, Priority.ALWAYS);
 
 		}
-
+		//@author A0093906X
 		@Override
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
@@ -255,27 +250,12 @@ public class TaskDisplayController {
 
 	}
 
-	/**
-	 * 
-	 * @param Task t to be displayed
-	 * @return Formatted string to display in TaskCell
-	 * 
-	 * @author Parag Bhatnagar
-	 * 
-	 */
-
+	//@author A0093906X
 	private static String formatTask1(Task t) {
 		return (t.getIndex() + ": " + t.getTaskDesc());
 	}
 
-	/**
-	 * 
-	 * @param Task t to be displayed
-	 * @return Formatted string to display in TaskCell
-	 * 
-	 * @author Parag Bhatnagar
-	 * 
-	 */
+	//@author A0093906X
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
@@ -303,7 +283,7 @@ public class TaskDisplayController {
 		double x;
 		double y;
 	}
-
+	//@author A0093906X
 	@FXML
 	private void initialize() {
 		// customize toolBar to enable moving an undecorated application
@@ -347,10 +327,7 @@ public class TaskDisplayController {
 
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
-		
-		/**
-		 * @author Parag Bhatnagar
-		 */
+
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -390,11 +367,6 @@ public class TaskDisplayController {
 		dueAllTime.setSelected(true);
 
 		sideBar.toBack();
-
-		/**
-		 * Listeners for GUI buttons
-		 * @author Parag Bhatnagar
-		 */
 
 		timed.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
@@ -731,7 +703,7 @@ public class TaskDisplayController {
 	public void updateLabel(String s) {
 		label.setText(s);
 	}
-
+	//@author A0093906X
 	public void processUserInput(String str) {
 
 		assert str != null : "String is null!";
@@ -740,7 +712,7 @@ public class TaskDisplayController {
 		createDisplayTaskList();
 		setTaskList(DisplayTaskList);
 	}
-
+	//@author A0093906X
 	public void createDisplayTaskList() {
 		DisplayTaskList.clear();
 		for (Task t : VectorTaskList) {
@@ -761,14 +733,7 @@ public class TaskDisplayController {
 			}
 		}
 	}
-	/**
-	 * 
-	 * @param Task t to be displayed
-	 * @return boolean value determining whether the task should be displayed
-	 * based on the current selected state of the radioButton group due
-	 * 
-	 * @author Parag Bhatnagar
-	 */
+	//@author A0093906X
 	public boolean isDisplayedByDueDate(Task t) {
 		LocalDateTime end = t.getEndTime();
 		if (end == null) {
