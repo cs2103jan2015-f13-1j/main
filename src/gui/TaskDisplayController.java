@@ -491,8 +491,8 @@ public class TaskDisplayController {
 					commandHistoryIndex = commandHistory.size();
 
 					// Terminates program if exit, else refresh list
-					if (!text.toLowerCase().equals("exit")
-							&& !text.toLowerCase().equals("quit")) {
+					if (!text.trim().toLowerCase().equals("exit")
+							&& !text.trim().toLowerCase().equals("quit")) {
 						processUserInput(text);
 
 						// clear text
