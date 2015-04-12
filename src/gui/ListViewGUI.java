@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+//@author A0111855J
 public class ListViewGUI extends Application {
 	private Stage primaryStage;
 	private BorderPane root;
@@ -27,8 +28,7 @@ public class ListViewGUI extends Application {
         this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
 
 		initRootLayout();
-		showTaskOverview();
-		
+		showTaskOverview();	
 	}
 	
 	private void initRootLayout() {
@@ -54,6 +54,7 @@ public class ListViewGUI extends Application {
 		primaryStage.setResizable(false);
 	}
 
+	//@author A0111855J
 	public void minimizeWindow() {
 		primaryStage.setIconified(true);
 	}

@@ -110,7 +110,7 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
-	
+
 	/**
 	 * Class TaskCell helps wrap the various elements that go into making the GUI
 	 * element that is fed into the list cell
@@ -172,10 +172,6 @@ public class TaskDisplayController {
 			if (t != null) {
 				getStyleClass().add("full");
 				if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
-					// if(!((isTimedOn == false && isDeadlineOn == false) &&
-					// isFloatingOn)) {
-					// getStyleClass().add("floating");
-					// }
 					desc.getStyleClass().add("floating");
 				}
 				setGraphic(hbox);
@@ -243,6 +239,7 @@ public class TaskDisplayController {
 		}
 	}
 
+	//@author A0111855J
 	public void setTaskList(Vector<Task> TaskList) {
 
 		list = FXCollections.observableList(TaskList);
@@ -257,7 +254,7 @@ public class TaskDisplayController {
 		});
 
 	}
-	
+
 	/**
 	 * 
 	 * @param Task t to be displayed
@@ -266,11 +263,11 @@ public class TaskDisplayController {
 	 * @author Parag Bhatnagar
 	 * 
 	 */
-	
+
 	private static String formatTask1(Task t) {
 		return (t.getIndex() + ": " + t.getTaskDesc());
 	}
-	
+
 	/**
 	 * 
 	 * @param Task t to be displayed
@@ -282,19 +279,17 @@ public class TaskDisplayController {
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			if(t.getStartTime().getMinute() == 0 && !(
-					(t.getStartTime().getHour()> 9 && t.getStartTime().getHour()< 13) ||
-					t.getStartTime().getHour()> 21)) {
+			if(t.getStartTime().getMinute() == 0) { 
+//					!((t.getStartTime().getHour()> 9 && t.getStartTime().getHour()< 13) ||
+//							(t.getStartTime().getHour()> 21))) {
 				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
 						+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));
-	
-			}
-			
-			else {
+
+			} else {
 				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
 						+ "\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));	
 			}
-			
+
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
 			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {
@@ -302,6 +297,7 @@ public class TaskDisplayController {
 		}
 	}
 
+	//@author A0111855J
 	// This class records x,y co-ordinates as an object
 	private class Delta {
 		double x;
@@ -351,17 +347,17 @@ public class TaskDisplayController {
 
 		inputBox.setPromptText("Enter Command:");
 		inputBox.setWrapText(true);
-
+		
+		/**
+		 * @author Parag Bhatnagar
+		 */
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				inputBox.requestFocus();
 			}
 		});
-		/**
-		 * @author Parag Bhatnagar
-		 */
-		
+
 		slideButton.getStyleClass().add("sld");
 		minimize.getStyleClass().add("min");
 		closeApp.getStyleClass().add("cls");
@@ -394,12 +390,12 @@ public class TaskDisplayController {
 		dueAllTime.setSelected(true);
 
 		sideBar.toBack();
-		
+
 		/**
 		 * Listeners for GUI buttons
 		 * @author Parag Bhatnagar
 		 */
-		
+
 		timed.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					@Override
@@ -559,6 +555,7 @@ public class TaskDisplayController {
 		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.Y,
 				KeyCombination.CONTROL_DOWN);
 
+		//@author A0111855J
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent key) {
@@ -625,58 +622,59 @@ public class TaskDisplayController {
 
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
 				new EventHandler<KeyEvent>() {
-					String autoCompleteList[] = { "add ", "clear", "changedir",
-							"create ", "delete ", "edit ", "exit", "flag ",
-							"help", "mark ", "man", "search ", "undo", "redo",
-							"prioritise ", "quit", "search task ",
-							"search before ", "search date ", "search desc ",
-							"search type ", "edit desc ", "edit task ",
-							"edit start", "edit end", "edit starttime ",
-							"edit startdate ", "edit endtime ", "edit enddate " };
+			String autoCompleteList[] = { "add ", "clear", "changedir",
+					"create ", "delete ", "edit ", "exit", "flag ",
+					"help", "mark ", "man", "search ", "undo", "redo",
+					"prioritise ", "quit", "search task ",
+					"search before ", "search date ", "search desc ",
+					"search type ", "edit desc ", "edit task ",
+					"edit start", "edit end", "edit starttime ",
+					"edit startdate ", "edit endtime ", "edit enddate " };
 
-					public void handle(KeyEvent key) {
+			public void handle(KeyEvent key) {
 
-						if (!autoCompleteState) {
-							return;
-						}
-						boolean isPartOfWord = false;
-						String input = inputBox.getText();
+				if (!autoCompleteState) {
+					return;
+				}
+				boolean isPartOfWord = false;
+				String input = inputBox.getText();
 
-						for (String s : autoCompleteList) {
-							input = input.replaceAll("\\s+", " ");
-							if (!input.isEmpty()
-									&& s.toLowerCase().startsWith(
-											input.toLowerCase())) {
-								Output.showToUser("Enter space to autocomplete");
-								previousKey = s;
-								isPartOfWord = true;
-								break;
-							}
-						}
-						if (key.getCode().equals(KeyCode.SPACE)) {
-							if (previousKey != null) {
-								inputBox.setText(previousKey);
-								inputBox.end();
-								previousKey = null;
-								Output.showToUser(" ");
-							}
-						}
-						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
-							Output.showToUser(" ");
-							previousKey = null;
-						} else if (!isPartOfWord
-								&& !key.getCode().equals(KeyCode.ENTER)
-								&& !key.getCode().equals(KeyCode.ALT)) {
-							Output.showToUser(" ");
-							previousKey = null;
-						} else if (key.getCode().equals(KeyCode.ENTER)) {
-							previousKey = null;
-						}
-
+				for (String s : autoCompleteList) {
+					input = input.replaceAll("\\s+", " ");
+					if (!input.isEmpty()
+							&& s.toLowerCase().startsWith(
+									input.toLowerCase())) {
+						Output.showToUser("Enter space to autocomplete");
+						previousKey = s;
+						isPartOfWord = true;
+						break;
 					}
-				});
+				}
+				if (key.getCode().equals(KeyCode.SPACE)) {
+					if (previousKey != null) {
+						inputBox.setText(previousKey);
+						inputBox.end();
+						previousKey = null;
+						Output.showToUser(" ");
+					}
+				}
+				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+					Output.showToUser(" ");
+					previousKey = null;
+				} else if (!isPartOfWord
+						&& !key.getCode().equals(KeyCode.ENTER)
+						&& !key.getCode().equals(KeyCode.ALT)) {
+					Output.showToUser(" ");
+					previousKey = null;
+				} else if (key.getCode().equals(KeyCode.ENTER)) {
+					previousKey = null;
+				}
+
+			}
+		});
 	}
 
+	//@author A0111855J
 	private void showPrevCommandUp() {
 		if (commandHistory.size() == 0) {
 			return;
@@ -696,16 +694,6 @@ public class TaskDisplayController {
 
 	}
 
-	private void turnOnAutoComplete() {
-		autoCompleteState = true;
-		Output.showToUser("Auto-Complete On");
-	}
-
-	private void turnOffAutoComplete() {
-		autoCompleteState = false;
-		Output.showToUser("Auto-Complete Off");
-	}
-
 	private void showPrevCommandDown() {
 		if (commandHistoryIndex == commandHistory.size()) {
 			return;
@@ -723,6 +711,16 @@ public class TaskDisplayController {
 		inputBox.setText(text);
 		inputBox.positionCaret(text.length());
 
+	}
+	
+	private void turnOnAutoComplete() {
+		autoCompleteState = true;
+		Output.showToUser("Auto-Complete On");
+	}
+
+	private void turnOffAutoComplete() {
+		autoCompleteState = false;
+		Output.showToUser("Auto-Complete Off");
 	}
 
 	public void setGUI(ListViewGUI listViewGUI) {

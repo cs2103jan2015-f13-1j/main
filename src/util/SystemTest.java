@@ -1,3 +1,4 @@
+//@author A0111855J
 package util;
 
 import gui.TaskDisplayController;
@@ -68,14 +69,18 @@ public class SystemTest {
 		//Testing special words: today, tomorrow
 		tdc.processUserInput("add timed task today 3.25pm tomorrow 5.00pm");
 		
+		//Testing special words: tdy , tmr 
+		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
+		
+		//Check command: delete, should delete 1, update indexes, and delete task 1 again
+		tdc.processUserInput("delete 1");
+		tdc.processUserInput("delete 1");
+		
 		//Testing a date input in task description with " ", upper and lower case form
 		tdc.processUserInput("add FloAtinG task by \"3 aPr\"");
 		
 		//Testing a date input in task description for due task
-		tdc.processUserInput("add WATCH-movie, 'Day after \"tmr\"' by tmr");
-		
-		//Check command: delete
-		tdc.processUserInput("delete 4");
+		tdc.processUserInput("add WATCH-movie, 'Day after \"tmr\"' by 20 MAY");
 		
 		//Testing edit for task description
 		tdc.processUserInput("edit task 1 new task description");
@@ -84,18 +89,14 @@ public class SystemTest {
 		tdc.processUserInput("edit endtime 1 5.00pm");
 		
 		//Testing edit for enddate 
-		//**check this case, where input apr 12, apr 15, then edit enddate to apr 9, turns enddate into apr 9 2016
 		tdc.processUserInput("edit enddate 1 9 apr");
 		
-		//Testing edit for starttime, should not read as due task do not have a start time
+		//Testing edit for starttime, should not display error because due task do not have a start time
 		tdc.processUserInput("edit starttime 1");
 		
 		//Test edit starttime and startdate
 		tdc.processUserInput("edit starttime 3 1.25am");
 		tdc.processUserInput("edit startdate 3 apr 25");
-		
-		//Testing special words: tdy , tmr 
-		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
 		
 		//Test marking task as done
 		tdc.processUserInput("mark 2");

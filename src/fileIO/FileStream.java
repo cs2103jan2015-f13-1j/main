@@ -1,3 +1,4 @@
+//@author A0111855J
 package fileIO;
 
 import java.io.File;
@@ -93,8 +94,8 @@ public class FileStream {
 			file = new File(newPath + "/Ontask.xml");
 			setFilePath(file);
 			writeTasksToXML(new Vector<Task>());
-			System.out.println(newPath + "/Ontask.xml");
-			System.out.println("end of initializeDir()");
+			//System.out.println(newPath + "/Ontask.xml");
+			//System.out.println("end of initializeDir()");
 		}
 	}
 

@@ -73,6 +73,7 @@ public class Logic {
 		}
 	}
 
+	//@author A0111855J
 	private void changeDir() {
 		FileStream.changeDir();
 		if (!FileStream.getOldPath().equals(FileStream.getNewPath())) {
@@ -84,6 +85,7 @@ public class Logic {
 		}
 	}
 
+	//@author A0105952H
 	private void clearTask() {
 		u.undoClear(TaskList);
 		u.redoClear();

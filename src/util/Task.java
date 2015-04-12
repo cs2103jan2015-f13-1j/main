@@ -57,6 +57,7 @@ public class Task {
 		this.flag = false;
 	}
 
+	//@author A0111855J
 	@XmlSchemaType(name = "flag")
 	public boolean getFlag() {
 		return flag;
@@ -131,8 +132,7 @@ public class Task {
 		type = t;
 	}
 	
-
-
+	//@author A0111855J
 	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
 	@XmlSchemaType(name = "startTime")
 	public LocalDateTime getStartTime() {
