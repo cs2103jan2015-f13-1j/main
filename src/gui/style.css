@@ -117,3 +117,13 @@
 	-fx-background-color: transparent;
 	-fx-graphic: url('file:images/deselected-sml.png');
 }
+
+.done {
+	-fx-translate-y: 15px;
+	-fx-translate-x: -5px;
+	-fx-padding:0 5 0 5;
+}
+
+.floating {
+	-fx-translate-y: 17px;
+}
