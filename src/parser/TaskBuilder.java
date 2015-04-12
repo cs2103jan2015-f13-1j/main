@@ -489,14 +489,14 @@ public class TaskBuilder {
 
 	public void run() {
 
-		_input = "mar 3";
+		//_input = "mar 3";
 		Task t = extractAddCommand();
 		// clear list
 		// Scanner sc = new Scanner(System.in);
 		// _input = sc.nextLine();
 		// while (!_input.contains(new String("exit"))) {
 		// Task t = extractAddCommand();
-		displayTask(t);
+		//displayTask(t);
 		// _input = sc.nextLine();
 		// }
 		// sc.close();
