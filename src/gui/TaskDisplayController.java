@@ -251,15 +251,23 @@ public class TaskDisplayController {
 	}
 
 	private static String formatTask1(Task t) {
-		return (t.getIndex() + ". " + t.getTaskDesc());
+		return (t.getIndex() + ": " + t.getTaskDesc());
 	}
 
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-					+ " To: " + TimeExtractor.formatDateTime(t.getEndTime()));
-
+			if(t.getStartTime().getMinute() == 0) {
+				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
+						+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));
+	
+			}
+			
+			else {
+				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
+						+ "\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));	
+			}
+			
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
 			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
 		} else {

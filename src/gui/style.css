@@ -198,3 +198,52 @@
 .sld:hover {
 	-fx-background-image: url('file:images/sld-hover.png');
 }
+
+.radio-button .radio { 
+    -fx-background-repeat: no-repeat;
+	-fx-opacity: 0.2;
+}
+
+.radio-button:selected .radio { 
+    -fx-background-image: url('file:images/selected-sml.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+    -fx-opacity: 1;
+}
+
+.radio-button:selected {
+    -fx-font-family: "Segoe UI Bold";
+}
+
+.radio-button:selected .radio .dot { 
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+}
+
+.button:focused {
+    -fx-focus-color: transparent; 
+    -fx-background-insets: -1.4, 0, 1, 2;
+}
+
+.check-box>.box {
+  -fx-background-color: transparent;
+  -fx-background-image: url('file:images/done.png');
+}
+
+.check-box:hover>.box {
+  -fx-background-color: transparent;
+  -fx-background-image: url('file:images/done-hover.png');
+}
+
+.check-box:selected>.box {
+  -fx-background-color: transparent;
+  -fx-background-image: url('file:images/done-selected.png');
+}
+
+.check-box>.box>.mark {
+  -fx-background-color: transparent;
+}
+
+.check-box:selected>.box>.mark{
+  -fx-background-color: transparent;
+}

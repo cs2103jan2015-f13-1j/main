@@ -1,2 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Tasks/>
+<Tasks>
+    <Task>
+        <done>false</done>
+        <endTime>2015-04-13T16:00:00</endTime>
+        <flag>false</flag>
+        <index>1</index>
+        <startTime>2015-04-13T15:00:00</startTime>
+        <taskDesc>a</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-04-13T19:30:00</endTime>
+        <flag>false</flag>
+        <index>2</index>
+        <startTime>2015-04-13T15:25:00</startTime>
+        <taskDesc>bleh</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <flag>false</flag>
+        <index>3</index>
+        <taskDesc>a</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <flag>false</flag>
+        <index>4</index>
+        <taskDesc>b</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+</Tasks>
