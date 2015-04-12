@@ -200,13 +200,11 @@
 }
 
 .radio-button .radio { 
-    -fx-background-repeat: no-repeat;
 	-fx-opacity: 0.2;
 }
 
 .radio-button:selected .radio { 
     -fx-background-image: url('file:images/selected-sml.png');
-    -fx-background-repeat: no-repeat;
     -fx-background-color: transparent;
     -fx-opacity: 1;
 }
@@ -216,7 +214,6 @@
 }
 
 .radio-button:selected .radio .dot { 
-    -fx-background-repeat: no-repeat;
     -fx-background-color: transparent;
 }
 
