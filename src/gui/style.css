@@ -1,3 +1,9 @@
+/**
+ * Styling for the GUI
+ * 
+ * @author Parag Bhatnagar
+ */
+
 .label {
 	-fx-text-fill: white;
 }

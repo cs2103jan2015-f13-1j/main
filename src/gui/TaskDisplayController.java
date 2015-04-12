@@ -110,6 +110,14 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
+	
+	/**
+	 * Class TaskCell helps wrap the various elements that go into making the GUI
+	 * element that is fed into the list cell
+	 * 
+	 * @author Parag Bhatnagar
+	 *
+	 */
 
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
@@ -249,11 +257,28 @@ public class TaskDisplayController {
 		});
 
 	}
-
+	
+	/**
+	 * 
+	 * @param Task t to be displayed
+	 * @return Formatted string to display in TaskCell
+	 * 
+	 * @author Parag Bhatnagar
+	 * 
+	 */
+	
 	private static String formatTask1(Task t) {
 		return (t.getIndex() + ": " + t.getTaskDesc());
 	}
-
+	
+	/**
+	 * 
+	 * @param Task t to be displayed
+	 * @return Formatted string to display in TaskCell
+	 * 
+	 * @author Parag Bhatnagar
+	 * 
+	 */
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
@@ -333,7 +358,10 @@ public class TaskDisplayController {
 				inputBox.requestFocus();
 			}
 		});
-
+		/**
+		 * @author Parag Bhatnagar
+		 */
+		
 		slideButton.getStyleClass().add("sld");
 		minimize.getStyleClass().add("min");
 		closeApp.getStyleClass().add("cls");
@@ -366,7 +394,12 @@ public class TaskDisplayController {
 		dueAllTime.setSelected(true);
 
 		sideBar.toBack();
-
+		
+		/**
+		 * Listeners for GUI buttons
+		 * @author Parag Bhatnagar
+		 */
+		
 		timed.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					@Override
@@ -730,7 +763,14 @@ public class TaskDisplayController {
 			}
 		}
 	}
-
+	/**
+	 * 
+	 * @param Task t to be displayed
+	 * @return boolean value determining whether the task should be displayed
+	 * based on the current selected state of the radioButton group due
+	 * 
+	 * @author Parag Bhatnagar
+	 */
 	public boolean isDisplayedByDueDate(Task t) {
 		LocalDateTime end = t.getEndTime();
 		if (end == null) {

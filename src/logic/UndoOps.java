@@ -8,6 +8,15 @@ import fileIO.FileStream;
 import util.Output;
 import util.Task;
 
+/**
+ * The UndoOps class basically stores a version of the history
+ * of operations performed, allowing multiple undos and redos
+ * of previously performed user actions
+ * 
+ * @author Wang Minwei
+ * @author Parag Bhatnagar
+ * 
+ */
 public class UndoOps {
 
 	private Stack<Task> UndoList = new Stack<Task>();
