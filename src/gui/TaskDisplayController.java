@@ -164,9 +164,9 @@ public class TaskDisplayController {
 			if (t != null) {
 				getStyleClass().add("full");
 				if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
-					if(!((isTimedOn == false && isDeadlineOn == false) && isFloatingOn)) {
-						getStyleClass().add("floating");
-					}
+//					if(!((isTimedOn == false && isDeadlineOn == false) && isFloatingOn)) {
+//						getStyleClass().add("floating");
+//					}
 					desc.getStyleClass().add("floating");
 				}
 				setGraphic(hbox);
