@@ -186,7 +186,17 @@ public class TaskDisplayController {
 					desc.setFill(Color.GREY);
 					details.getStyleClass().add("strikethrough");
 					details.setFill(Color.GREY);
-				} else {
+				} 
+				
+				else if (t.isDue()) {
+					done.setSelected(false);
+					desc.getStyleClass().remove("strikethrough");
+					desc.setFill(Color.FIREBRICK);
+					details.getStyleClass().remove("strikethrough");
+					details.setFill(Color.FIREBRICK);
+				} 
+				
+				else {
 					done.setSelected(false);
 					desc.getStyleClass().remove("strikethrough");
 					desc.setFill(Color.WHITE);
@@ -195,7 +205,12 @@ public class TaskDisplayController {
 				}
 
 				hbox.setPrefWidth(350);
-				desc.setText(formatTask1(t));
+				if (t.isDue()) {
+					desc.setText(formatTask1(t) + " (Overdue!)");
+				}
+				else {
+					desc.setText(formatTask1(t));
+				}
 				desc.getStyleClass().add("desc");
 
 				desc.setWrappingWidth(listView.getPrefWidth());
@@ -601,6 +616,10 @@ public class TaskDisplayController {
 	}
 
 	private void showPrevCommandUp() {
+		if(commandHistory.size() == 0) {
+			return;
+		}
+		
 		if (commandHistoryIndex == 0) {
 			commandHistoryIndex = commandHistory.size();
 		}
@@ -616,6 +635,10 @@ public class TaskDisplayController {
 	}
 
 	private void showPrevCommandDown() {
+		if(commandHistoryIndex == commandHistory.size()) {
+			return;
+		}
+		
 		if (commandHistoryIndex == commandHistory.size() - 1) {
 			commandHistoryIndex = -1;
 		}
