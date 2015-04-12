@@ -23,9 +23,10 @@ public class Logic {
 	// TODO
 	private final static Logger log = Logger.getLogger(Logic.class.getName());
 
-	private static final String MSG_ADD = "Task added successfully!";
-	private static final String MSG_DELETE = "Task deleted successfully!";
-	private static final String MSG_DELETE_FAILURE = "Task %s does not exist!\n";
+	private static final String MSG_ADD = "Task added successfully!\n";
+	private static final String MSG_DELETE = "Task deleted successfully!\n";
+	private static final String MSG_DELETE_FAILURE = "Task %s does not exist! Delete failed.\n";
+	private static final String MSG_INDEX_NOT_EXIST = "Task %s does not exist! %s failed.\n";
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	private static final String MSG_CHGDIR = "Directory changed!\n";
 	private static final String MSG_CLEAR = "List cleared!\n";
@@ -37,7 +38,7 @@ public class Logic {
 	private static final String MSG_MAN = "Displaying help commands.\n";
 	// private static final String MSG_FORMAT = "Incorrect Format!\n";
 	private static final String MSG_WRONG_FILE = "Manual cannot be open!\n";
-	private static final String MSG_CMD_INCORRECT = "Unrecognized command type";
+	private static final String MSG_CMD_INCORRECT = "Unrecognized command type\n";
 
 	private void addTask(Task t) {
 		if (t != null) {
@@ -105,7 +106,7 @@ public class Logic {
 
 			Output.showToUser(String.format(MSG_MARK, i));
 		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "mark"));
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Mark"));
 		}
 	}
 
@@ -123,7 +124,7 @@ public class Logic {
 
 			Output.showToUser(String.format(MSG_UNMARK, i));
 		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unmark"));
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Unmark"));
 		}
 	}
 
@@ -152,7 +153,7 @@ public class Logic {
 
 			Output.showToUser(String.format(MSG_FLAG, i));
 		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "flag"));
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Flag"));
 		}
 	}
 
@@ -170,7 +171,7 @@ public class Logic {
 
 			Output.showToUser(String.format(MSG_UNFLAG, i));
 		} else {
-			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "unflag"));
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Unflag"));
 		}
 	}
 

@@ -20,8 +20,8 @@ public class UndoOps {
 	private Stack<String> RedoCommandListAfterUndo = new Stack<String>();
 	private Stack<Vector<Task>> backUpList = new Stack<Vector<Task>>();
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
-	private static final String MSG_UNDO = "Undo successful!";
-	private static final String MSG_REDO = "Redo successful!";
+	private static final String MSG_UNDO = "Undo successful!\n";
+	private static final String MSG_REDO = "Redo successful!\n";
 
 	public boolean undoOperation(Vector<Task> TaskList) {
 		if (!UndoList.isEmpty()) {

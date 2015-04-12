@@ -13,8 +13,8 @@ import util.TimeExtractor;
 public class EditTask {
 	boolean isSuccessful;
 	private Vector<Task> TaskList = new Vector<Task>();
-	private static final String MSG_EDIT = "Task edited successfully";
-	private static final String MSG_TASK_FAILURE = "Task %s does not exist!\n";
+	private static final String MSG_EDIT = "Task edited successfully.\n";
+	private static final String MSG_TASK_FAILURE = "Task %s does not exist! Edit Failed.\n";
 	private static final String MSG_EDIT_FAILURE = "Edit %d %s failed!\n";
 	private static final String MSG_TIME_FAILURE = "End time cannot be earlier than start time!\n";
 	private static final String MSG_DESC_FAILURE = "Task Description cannot be empty!\n";
