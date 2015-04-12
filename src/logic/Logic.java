@@ -51,7 +51,7 @@ public class Logic {
 
 			Output.showToUser(MSG_ADD);
 		} else {
-			// Output.showToUser(MSG_FORMAT);
+			Output.showToUser(MSG_CMD_INCORRECT);
 		}
 	}
 

@@ -26,6 +26,7 @@ public class EditTask {
 
 	/**
 	 * switch to different types of editing according to command
+	 * 
 	 * @param cmd
 	 * @return
 	 */
@@ -38,6 +39,9 @@ public class EditTask {
 		if (index > 0 && index <= TaskList.size()) {
 			switch (editType.toLowerCase()) {
 			case "task":
+				isSuccessful = editTaskDesc(index, modifiedContent);
+				break;
+			case "desc":
 				isSuccessful = editTaskDesc(index, modifiedContent);
 				break;
 			case "starttime":
@@ -207,7 +211,7 @@ public class EditTask {
 				Logic.u.redoEditTaskDesc(index, modifiedContent);
 				return true;
 			}
-			Output.showToUser(String.format(MSG_DESC_FAILURE, index));		
+			Output.showToUser(String.format(MSG_DESC_FAILURE, index));
 			return false;
 		} catch (IndexOutOfBoundsException e) {
 			Output.showToUser(String.format(MSG_TASK_FAILURE, index));

@@ -38,9 +38,13 @@ public class TaskBuilder {
 	}
 
 	public Task extractAddCommand() {
-		Task.TASK_TYPE type = checkTaskType();
-		extractTaskInfo(type);
-		return t;
+		if (!_input.isEmpty()) {
+			Task.TASK_TYPE type = checkTaskType();
+			extractTaskInfo(type);
+			return t;
+		} else {
+			return null;
+		}
 	}
 
 	/** switch to respective task building methods */
@@ -132,6 +136,7 @@ public class TaskBuilder {
 				Output.showToUser(MSG_DESC);
 			}
 		} catch (Exception e) {
+			// TODO
 			Output.showToUser(MSG_FORMAT);
 			log.info(MSG_FORMAT);
 		}
@@ -172,8 +177,7 @@ public class TaskBuilder {
 		int startIndex;
 
 		if (startIndexOfDate < 0 && startIndexOfTime < 0) {
-			buildFloatingTask();
-			return;
+			desc = _input;
 		} else if (startIndexOfDate < 0) {
 			startIndex = Math.min(startOfTimeString, startIndexOfTime);
 			desc = _input.substring(0, startIndex).trim();
@@ -241,7 +245,9 @@ public class TaskBuilder {
 							dateList.add(date);
 							dateIndex.add(i);
 						}
-						checkTimeIndicationWord(i, false);
+						if (i > 0) {
+							checkTimeIndicationWord(i, false);
+						}
 						i = m.end() - 1;
 						log.info(date.toString());
 					}
@@ -334,7 +340,9 @@ public class TaskBuilder {
 					dateIndex.add(i);
 				}
 				log.info(date.toString());
-				checkTimeIndicationWord(i, false);
+				if (i > 0) {
+					checkTimeIndicationWord(i, false);
+				}
 			}
 		}
 	}
@@ -358,6 +366,11 @@ public class TaskBuilder {
 					}
 
 					LocalDate date = TimeExtractor.extractDate(s);
+					// TODO
+					if (i < 0) {
+						i = 0;
+					}
+
 					if (index < 0 || i < index) {
 						dateList.add(0, date);
 						dateIndex.add(0, i);
@@ -365,7 +378,9 @@ public class TaskBuilder {
 						dateList.add(date);
 						dateIndex.add(i);
 					}
-					checkTimeIndicationWord(i, false);
+					if (i > 0) {
+						checkTimeIndicationWord(i, false);
+					}
 					log.info(s + " " + date.toString());
 				}
 			}
@@ -423,7 +438,9 @@ public class TaskBuilder {
 					timeIndex.add(i);
 				}
 				log.info(time.toString());
-				checkTimeIndicationWord(i, true);
+				if (i > 0) {
+					checkTimeIndicationWord(i, true);
+				}
 			}
 
 		}
@@ -465,14 +482,14 @@ public class TaskBuilder {
 
 	public void run() {
 
-		//_input = "Meet professor 3pm 5.25pm";
+		//_input = "friday";
 		Task t = extractAddCommand();
 		// clear list
 		// Scanner sc = new Scanner(System.in);
 		// _input = sc.nextLine();
 		// while (!_input.contains(new String("exit"))) {
 		// Task t = extractAddCommand();
-		// displayTask(t);
+		//displayTask(t);
 		// _input = sc.nextLine();
 		// }
 		// sc.close();

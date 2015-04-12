@@ -164,9 +164,10 @@ public class TaskDisplayController {
 			if (t != null) {
 				getStyleClass().add("full");
 				if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
-//					if(!((isTimedOn == false && isDeadlineOn == false) && isFloatingOn)) {
-//						getStyleClass().add("floating");
-//					}
+					// if(!((isTimedOn == false && isDeadlineOn == false) &&
+					// isFloatingOn)) {
+					// getStyleClass().add("floating");
+					// }
 					desc.getStyleClass().add("floating");
 				}
 				setGraphic(hbox);
@@ -196,11 +197,10 @@ public class TaskDisplayController {
 				hbox.setPrefWidth(350);
 				desc.setText(formatTask1(t));
 				desc.getStyleClass().add("desc");
-				
+
 				desc.setWrappingWidth(listView.getPrefWidth());
 				details.setText(formatTask2(t));
 				details.getStyleClass().add("details");
-				
 
 				flag.getStyleClass().remove("flag-selected");
 				flag.getStyleClass().remove("flag");
@@ -347,11 +347,11 @@ public class TaskDisplayController {
 						if (new_toggle == null) {
 							isTimedOn = false;
 							showTimed.getStyleClass().removeAll();
-//							showTimed.getStyleClass().add("deselected");
+							// showTimed.getStyleClass().add("deselected");
 						} else {
 							isTimedOn = true;
 							showTimed.getStyleClass().removeAll();
-//							showTimed.getStyleClass().add("selected");
+							// showTimed.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						Output.showToUser(DisplayTaskList.size() + "");
@@ -368,11 +368,11 @@ public class TaskDisplayController {
 						if (new_toggle == null) {
 							isDeadlineOn = false;
 							showDeadline.getStyleClass().removeAll();
-//							showDeadline.getStyleClass().add("deselected");
+							// showDeadline.getStyleClass().add("deselected");
 						} else {
 							isDeadlineOn = true;
 							showDeadline.getStyleClass().removeAll();
-//							showDeadline.getStyleClass().add("selected");
+							// showDeadline.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						setTaskList(DisplayTaskList);
@@ -386,11 +386,11 @@ public class TaskDisplayController {
 						if (new_toggle == null) {
 							isFloatingOn = false;
 							showFloating.getStyleClass().removeAll();
-//							showFloating.getStyleClass().add("deselected");
+							// showFloating.getStyleClass().add("deselected");
 						} else {
 							isFloatingOn = true;
 							showFloating.getStyleClass().removeAll();
-//							showFloating.getStyleClass().add("selected");
+							// showFloating.getStyleClass().add("selected");
 						}
 						createDisplayTaskList();
 						setTaskList(DisplayTaskList);
@@ -556,48 +556,48 @@ public class TaskDisplayController {
 
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
 				new EventHandler<KeyEvent>() {
-			String autoCompleteList[] = { "add", "changedir", "clear",
-					"create", "delete", "edit", "exit", "flag", "help",
-					"mark ", "man", "search", "undo", "redo",
-					"prioritise", "quit", "search task",
-					"search before", "search date", "search type",
-					"edit desc ", "edit task", "edit start",
-					"edit end", "edit starttime", "edit startdate",
-					"edit endtime", "edit enddate" };
+					String autoCompleteList[] = { "add ", "clear", "changedir",
+							"create ", "delete ", "edit ", "exit", "flag ",
+							"help", "mark ", "man", "search ", "undo", "redo",
+							"prioritise ", "quit", "search task ",
+							"search before ", "search date ", "search desc ",
+							"search type ", "edit desc ", "edit task ",
+							"edit start", "edit end", "edit starttime ",
+							"edit startdate ", "edit endtime ", "edit enddate " };
 
-			public void handle(KeyEvent key) {
-				boolean isPartOfWord = false;
-				String input = inputBox.getText();
+					public void handle(KeyEvent key) {
+						boolean isPartOfWord = false;
+						String input = inputBox.getText();
 
-				for (String s : autoCompleteList) {
-					input = input.replaceAll("\\s+", " ");
-					if (!input.isEmpty()
-							&& s.toLowerCase().startsWith(input)) {
-						Output.showToUser("Enter space to autocomplete");
-						previousKey = s;
-						isPartOfWord = true;
-						break;
+						for (String s : autoCompleteList) {
+							input = input.replaceAll("\\s+", " ");
+							if (!input.isEmpty()
+									&& s.toLowerCase().startsWith(input.toLowerCase())) {
+								Output.showToUser("Enter space to autocomplete");
+								previousKey = s;
+								isPartOfWord = true;
+								break;
+							}
+						}
+						if (key.getCode().equals(KeyCode.SPACE)) {
+							if (previousKey != null) {
+								inputBox.setText(previousKey);
+								inputBox.end();
+								previousKey = null;
+								Output.showToUser(" ");
+							}
+						}
+						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						} else if (!isPartOfWord
+								&& !key.getCode().equals(KeyCode.ENTER)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						}
+
 					}
-				}
-				if (key.getCode().equals(KeyCode.SPACE)) {
-					if (previousKey != null) {
-						inputBox.setText(previousKey + " ");
-						inputBox.end();
-						previousKey = null;
-						Output.showToUser(" ");
-					}
-				}
-				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
-					Output.showToUser(" ");
-					previousKey = null;
-				} else if (!isPartOfWord
-						&& !key.getCode().equals(KeyCode.ENTER)) {
-					Output.showToUser(" ");
-					previousKey = null;
-				}
-
-			}
-		});
+				});
 	}
 
 	private void showPrevCommandUp() {
@@ -642,7 +642,7 @@ public class TaskDisplayController {
 	public void processUserInput(String str) {
 
 		assert str != null : "String is null!";
-		
+
 		VectorTaskList = l.run(str);
 		createDisplayTaskList();
 		setTaskList(DisplayTaskList);

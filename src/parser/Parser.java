@@ -53,17 +53,25 @@ public class Parser {
 	}
 
 	private Command addTask(String input) {
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		TaskBuilder extractor = new TaskBuilder(input);
-		Task t = extractor.extractAddCommand();
-		CreateCmd createCmd = new CreateCmd();
-		return createCmd.createAddCommand(t);
+		if (input.contains(" ")) {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			TaskBuilder extractor = new TaskBuilder(input);
+			Task t = extractor.extractAddCommand();
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createAddCommand(t);
+		} else {
+			return null;
+		}
 	}
 
 	private Command changeDir(String input) {
-		CreateCmd clearcmd = new CreateCmd();
-		input = input.substring(input.indexOf(" ") + 1).trim();
-		return clearcmd.createDirCommand(input);
+		if (input.contains(" ")) {
+			CreateCmd clearcmd = new CreateCmd();
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			return clearcmd.createDirCommand(input);
+		} else {
+			return null;
+		}
 	}
 
 	private Command clearTask(String input) {
@@ -82,16 +90,23 @@ public class Parser {
 
 	private Command deleteTask(String input) {
 		try {
-			input = input.substring(input.indexOf(" ") + 1).trim();
-			int index = Integer.parseInt(input);
-			CreateCmd createCmd = new CreateCmd();
-			return createCmd.createDeleteCommand(index);
+			if (input.contains(" ")) {
+				input = input.substring(input.indexOf(" ") + 1).trim();
+				int index = Integer.parseInt(input);
+				CreateCmd createCmd = new CreateCmd();
+				return createCmd.createDeleteCommand(index);
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	private Command editTask(String input) {
+		if (!input.contains(" ")) {
+			return null;
+		}
 
 		input = input.substring(input.indexOf(" ") + 1).trim();
 		String editType, modifiedContent = "";
@@ -114,6 +129,9 @@ public class Parser {
 
 	private Command flag(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -126,6 +144,9 @@ public class Parser {
 
 	private Command unflag(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -138,6 +159,9 @@ public class Parser {
 
 	private Command toggleflag(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -150,6 +174,9 @@ public class Parser {
 
 	private Command markTask(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -163,6 +190,9 @@ public class Parser {
 
 	private Command unmarkTask(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -175,6 +205,9 @@ public class Parser {
 
 	private Command toggledone(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			int i = Integer.parseInt(input);
 
@@ -196,6 +229,9 @@ public class Parser {
 
 	private Command searchTask(String input) {
 		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			CreateCmd createCmd = new CreateCmd();
 			return createCmd.createSearchCommand(input);
