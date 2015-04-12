@@ -65,7 +65,7 @@ public class Parser {
 	}
 
 	private Command changeDir(String input) {
-		if (input.contains(" ")) {
+		if (input.trim().toLowerCase().equals("changedir")) {
 			CreateCmd clearcmd = new CreateCmd();
 			input = input.substring(input.indexOf(" ") + 1).trim();
 			return clearcmd.createDirCommand(input);

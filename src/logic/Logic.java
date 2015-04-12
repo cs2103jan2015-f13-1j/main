@@ -25,7 +25,7 @@ public class Logic {
 
 	private static final String MSG_ADD = "Task added successfully!";
 	private static final String MSG_DELETE = "Task deleted successfully!";
-	private static final String MSG_DELETE_FAILURE = "%s does not exist!\n";
+	private static final String MSG_DELETE_FAILURE = "Task %s does not exist!\n";
 	private static final String MSG_COMMAND_FAILURE = "Command: %s failed!\n";
 	private static final String MSG_CHGDIR = "Directory changed!\n";
 	private static final String MSG_CLEAR = "List cleared!\n";
@@ -65,10 +65,10 @@ public class Logic {
 				Output.showToUser(MSG_DELETE);
 				isSuccessful = true;
 			} else {
-				Output.showToUser(String.format(MSG_COMMAND_FAILURE, "delete"));
+				Output.showToUser(String.format(MSG_DELETE_FAILURE, index));
 			}
 		} catch (IndexOutOfBoundsException e) {
-			Output.showToUser(String.format(MSG_DELETE_FAILURE, index));
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "delete"));
 		}
 	}
 

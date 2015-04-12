@@ -10,7 +10,7 @@ public class TimeExtractor {
 	public static String formatDate(LocalDate t) {
 		DateTimeFormatter formatter;
 
-		formatter = DateTimeFormatter.ofPattern("MMM.d uuuu").withLocale(
+		formatter = DateTimeFormatter.ofPattern("d MMM uuuu").withLocale(
 				Locale.ENGLISH);
 		return t.format(formatter);
 	}
@@ -19,10 +19,10 @@ public class TimeExtractor {
 		DateTimeFormatter formatter;
 
 		if (t.getMinute() == 0) {
-			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu ha")
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu ha")
 					.withLocale(Locale.ENGLISH);
 		} else {
-			formatter = DateTimeFormatter.ofPattern("MMM.d uuuu h.ma")
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu h.ma")
 					.withLocale(Locale.ENGLISH);
 		}
 		return t.format(formatter);
