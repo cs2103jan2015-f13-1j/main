@@ -98,6 +98,7 @@ public class TaskDisplayController {
 
 	private Vector<String> commandHistory;
 	private int commandHistoryIndex;
+	private boolean autoCompleteState = true;
 
 	// Selection Criteria for togglebuttons
 	private boolean isTimedOn = true;
@@ -185,16 +186,16 @@ public class TaskDisplayController {
 					desc.setFill(Color.GREY);
 					details.getStyleClass().add("strikethrough");
 					details.setFill(Color.GREY);
-				} 
-				
+				}
+
 				else if (t.isDue()) {
 					done.setSelected(false);
 					desc.getStyleClass().remove("strikethrough");
 					desc.setFill(Color.FIREBRICK);
 					details.getStyleClass().remove("strikethrough");
 					details.setFill(Color.FIREBRICK);
-				} 
-				
+				}
+
 				else {
 					done.setSelected(false);
 					desc.getStyleClass().remove("strikethrough");
@@ -206,8 +207,7 @@ public class TaskDisplayController {
 				hbox.setPrefWidth(350);
 				if (t.isDue()) {
 					desc.setText(formatTask1(t) + " (Overdue!)");
-				}
-				else {
+				} else {
 					desc.setText(formatTask1(t));
 				}
 				desc.getStyleClass().add("desc");
@@ -323,11 +323,11 @@ public class TaskDisplayController {
 				inputBox.requestFocus();
 			}
 		});
-		
+
 		slideButton.getStyleClass().add("sld");
 		minimize.getStyleClass().add("min");
 		closeApp.getStyleClass().add("cls");
-		
+
 		showTimed.setToggleGroup(timed);
 		showTimed.setSelected(true);
 		showTimed.getStyleClass().add("selected");
@@ -555,6 +555,15 @@ public class TaskDisplayController {
 					showPrevCommandDown();
 				}
 
+				if (key.getCode().equals(KeyCode.ALT) && autoCompleteState) {
+					turnOffAutoComplete();
+				}
+
+				else if (key.getCode().equals(KeyCode.ALT)
+						&& !autoCompleteState) {
+					turnOnAutoComplete();
+				}
+
 				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
 					commandHistoryIndex = commandHistory.size();
 				}
@@ -583,13 +592,18 @@ public class TaskDisplayController {
 							"edit startdate ", "edit endtime ", "edit enddate " };
 
 					public void handle(KeyEvent key) {
+
+						if (!autoCompleteState) {
+							return;
+						}
 						boolean isPartOfWord = false;
 						String input = inputBox.getText();
 
 						for (String s : autoCompleteList) {
 							input = input.replaceAll("\\s+", " ");
 							if (!input.isEmpty()
-									&& s.toLowerCase().startsWith(input.toLowerCase())) {
+									&& s.toLowerCase().startsWith(
+											input.toLowerCase())) {
 								Output.showToUser("Enter space to autocomplete");
 								previousKey = s;
 								isPartOfWord = true;
@@ -608,10 +622,11 @@ public class TaskDisplayController {
 							Output.showToUser(" ");
 							previousKey = null;
 						} else if (!isPartOfWord
-								&& !key.getCode().equals(KeyCode.ENTER)) {
+								&& !key.getCode().equals(KeyCode.ENTER)
+								&& !key.getCode().equals(KeyCode.ALT)) {
 							Output.showToUser(" ");
 							previousKey = null;
-						} else if(key.getCode().equals(KeyCode.ENTER)) {
+						} else if (key.getCode().equals(KeyCode.ENTER)) {
 							previousKey = null;
 						}
 
@@ -620,10 +635,10 @@ public class TaskDisplayController {
 	}
 
 	private void showPrevCommandUp() {
-		if(commandHistory.size() == 0) {
+		if (commandHistory.size() == 0) {
 			return;
 		}
-		
+
 		if (commandHistoryIndex == 0) {
 			commandHistoryIndex = commandHistory.size();
 		}
@@ -638,11 +653,21 @@ public class TaskDisplayController {
 
 	}
 
+	private void turnOnAutoComplete() {
+		autoCompleteState = true;
+		Output.showToUser("Auto-Complete On");
+	}
+
+	private void turnOffAutoComplete() {
+		autoCompleteState = false;
+		Output.showToUser("Auto-Complete Off");
+	}
+
 	private void showPrevCommandDown() {
-		if(commandHistoryIndex == commandHistory.size()) {
+		if (commandHistoryIndex == commandHistory.size()) {
 			return;
 		}
-		
+
 		if (commandHistoryIndex == commandHistory.size() - 1) {
 			commandHistoryIndex = -1;
 		}
