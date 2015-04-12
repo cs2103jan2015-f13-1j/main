@@ -15,17 +15,18 @@
 }
 
 .desc {
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 18.0px;
+    -fx-font-family: "Segoe UI Bold";
+    -fx-font-size: 15.0px;
     -fx-padding: 0 0 0 0;
     -fx-background-color: white;
+    -fx-translate-y: 5px;
 }
 
 .details {
     -fx-font-family: "Segoe UI";
-    -fx-font-size: 15.0px;
+    -fx-font-size: 12.0px;
     -fx-padding: 0 0 0 0;
-    -fx-alignment: top-left;
+	-fx-translate-y:-5px;
 }
 
 .done{
