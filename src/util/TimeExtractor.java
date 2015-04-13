@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class TimeExtractor {
 
-	//@author A0105952H
+	// @author A0105952H
 	public static String formatDate(LocalDate t) {
 		DateTimeFormatter formatter;
 
@@ -41,7 +41,6 @@ public class TimeExtractor {
 			builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("h:ma"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
 			LocalTime time = LocalTime.parse(str, dtf);
@@ -77,11 +76,10 @@ public class TimeExtractor {
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("d.M"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("d-M"));
 
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
 			LocalDate date = LocalDate.parse(str, dtf);
 			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
 				date = date.plusYears(1);
@@ -99,11 +97,11 @@ public class TimeExtractor {
 			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
 
 			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("M.d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
 			LocalDate date = LocalDate.parse(str, dtf);
 			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
 				date = date.plusYears(1);
@@ -121,11 +119,10 @@ public class TimeExtractor {
 			builder.appendOptional(DateTimeFormatter.ofPattern("d M uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM uuuu"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("dd.MM.uuuu"));
-			builder.appendOptional(DateTimeFormatter.ofPattern("dd-MM-uuuu"));
 			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d uuuu"));
 			DateTimeFormatter dtf = builder.toFormatter().withLocale(
 					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
 			LocalDate date = LocalDate.parse(str, dtf);
 			return date;
 		} catch (Exception e) {
@@ -175,10 +172,10 @@ public class TimeExtractor {
 		return date;
 	}
 
-	/** for testing purpose*/
+	/** for testing purpose */
 	public static void main(String[] args) {
-		//String str = "03 03 2015";
-		//Output.showToUser(DateFormatter3(str).toString());
+		// String str = "03 03 2015";
+		// Output.showToUser(DateFormatter3(str).toString());
 
 	}
 }
