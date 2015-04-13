@@ -285,7 +285,7 @@ public class TaskDisplayController {
 		double x;
 		double y;
 	}
-	
+
 	public void moveUndercoratedBorder() {
 
 		// customize toolBar to enable moving an undecorated application
@@ -307,7 +307,7 @@ public class TaskDisplayController {
 		});
 	}
 
-	/** exit buttons for customized window border*/
+	/** exit buttons for customized window border */
 	public void exitWindow() {
 		closeApp.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -327,8 +327,7 @@ public class TaskDisplayController {
 		});
 	}
 
-	
-	//@author A0093906X
+	// @author A0093906X
 	@FXML
 	private void initialize() {
 		moveUndercoratedBorder();
@@ -499,7 +498,7 @@ public class TaskDisplayController {
 
 	}
 
-	//@author A0105952H
+	// @author A0105952H
 	private void setAnimation() {
 
 		sideBar.translateXProperty().set(-250);
@@ -528,7 +527,7 @@ public class TaskDisplayController {
 		timelineOut.getKeyFrames().add(kfUp);
 	}
 
-	//@author A0105952H
+	// @author A0105952H
 	private void togglePaneVisibility() {
 		if (isExpanded.get()) {
 			isExpanded.set(false);
@@ -610,7 +609,7 @@ public class TaskDisplayController {
 
 		});
 
-		//@author A0105952H
+		// @author A0105952H
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
 				new EventHandler<KeyEvent>() {
 					String autoCompleteList[] = { "add ", "clear", "changedir",
@@ -665,7 +664,7 @@ public class TaskDisplayController {
 				});
 	}
 
-	//@author A0111855J
+	// @author A0111855J
 	private void showPrevCommandUp() {
 		if (commandHistory.size() == 0) {
 			return;
@@ -807,7 +806,7 @@ public class TaskDisplayController {
 		}
 	}
 
-	//@author A0105952H
+	// @author A0105952H
 	public class GUIMsg extends PrintStream {
 		private Label label;
 

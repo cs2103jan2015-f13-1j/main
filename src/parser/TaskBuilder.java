@@ -310,7 +310,7 @@ public class TaskBuilder {
 		LocalDate date = null;
 		String[] spcdt = { "tomorrow", "tmr", "today", "tdy" };
 
-		String[] info = _input.split(" ");
+		String[] info = _input.split("\\s+");
 
 		for (int j = 0; j < info.length; j++) {
 			s = info[j];
@@ -349,7 +349,7 @@ public class TaskBuilder {
 
 	private void extractDayOfWeek(String[] dayOfWeek) {
 		String s;
-		String[] info = _input.split(" ");
+		String[] info = _input.split("\\s+");
 		int i, index = -1;
 		for (String d : dayOfWeek) {
 
