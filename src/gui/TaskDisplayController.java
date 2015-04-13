@@ -260,6 +260,7 @@ public class TaskDisplayController {
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+
 			return (String
 					.format("%-35s%s",
 							"\nFrom: "
@@ -268,8 +269,8 @@ public class TaskDisplayController {
 							"To: "
 									+ TimeExtractor.formatDateTime(t
 											.getEndTime())));
-
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+
 			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
 		}
 
