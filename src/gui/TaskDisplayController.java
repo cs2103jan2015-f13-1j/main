@@ -285,10 +285,9 @@ public class TaskDisplayController {
 		double x;
 		double y;
 	}
+	
+	public void moveUndercoratedBorder() {
 
-	// @author A0093906X
-	@FXML
-	private void initialize() {
 		// customize toolBar to enable moving an undecorated application
 		final Delta dragDelta = new Delta();
 		toolBar.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -306,21 +305,35 @@ public class TaskDisplayController {
 				gui.getWindow().setY(mouseEvent.getScreenY() + dragDelta.y);
 			}
 		});
+	}
 
-		// close and minimize buttons for customized window border
+	// exit buttons for customized window border
+	public void exitWindow() {
 		closeApp.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				Platform.exit();
 			}
 		});
+	}
 
+	// close buttons for customized window border
+	public void minimizeWindow() {
 		minimize.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				gui.minimizeWindow();
 			}
 		});
+	}
+
+	
+	//@author A0093906X
+	@FXML
+	private void initialize() {
+		moveUndercoratedBorder();
+		exitWindow();
+		minimizeWindow();
 
 		VectorTaskList = l.initializeList();
 		setTaskList(VectorTaskList);

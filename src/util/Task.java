@@ -19,17 +19,11 @@ public class Task {
 		TIMED_TASK, FLOATING_TASK, DEADLINE, RECURRING_TASK, NULL;
 	}
 
-	private void setTimeFormat() {
-		// TODO Auto-generated method stub
-	}
-
 	public Task() {
 		this.type = TASK_TYPE.NULL;
 	}
 
 	public Task(String desc) {
-
-		setTimeFormat();
 		this.taskDesc = desc;
 		this.type = TASK_TYPE.FLOATING_TASK;
 		this.done = false;
