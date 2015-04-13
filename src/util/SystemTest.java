@@ -3,12 +3,9 @@ package util;
 
 import gui.TaskDisplayController;
 import junitx.framework.*;
-
 import java.io.File;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 

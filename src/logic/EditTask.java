@@ -76,7 +76,7 @@ public class EditTask {
 
 	/**
 	 * 
-	 
+	 Change start date of task if new start time is earlier than end time
 	 */
 	private boolean editTaskStartDate(int index, String modifiedContent) {
 		try {

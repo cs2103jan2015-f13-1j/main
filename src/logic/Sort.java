@@ -15,7 +15,7 @@ public class Sort {
 		this.TaskList = TaskList;
 	}
 
-	//@author A0105952H
+	// @author A0105952H
 	public void sortList() {
 		if (!TaskList.isEmpty()) {
 			checkDue();
@@ -29,7 +29,6 @@ public class Sort {
 			}
 		}
 	}
-
 
 	private void checkDue() {
 		for (Task t : TaskList) {
@@ -46,7 +45,7 @@ public class Sort {
 
 	class listComparator implements Comparator<Task> {
 
-		// Sort task according to flag
+		/** Sort task according to flag, marked property and task type */
 		@Override
 		public int compare(Task a, Task b) {
 			if (a.getFlag() && b.getFlag()) {
@@ -60,7 +59,7 @@ public class Sort {
 			}
 		}
 
-		// Sort task according to whether it is marked as done
+		/** Sort task according to whether it is marked as done */
 		private int compareDone(Task a, Task b) {
 			if (a.getDone() && b.getDone()) {
 				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
@@ -73,7 +72,10 @@ public class Sort {
 			}
 		}
 
-		// Sort task according to task type, end time if non-floating and alphabetical order if floating
+		/**
+		 * Sort task according to task type, end time if non-floating and
+		 * alphabetical order if floating
+		 */
 		private int compareType(Task a, Task b) {
 
 			Task.TASK_TYPE typeA = a.getTaskType();

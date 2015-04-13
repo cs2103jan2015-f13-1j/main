@@ -42,6 +42,7 @@ public class ListViewGUI extends Application {
 		
 	}
 
+	//@author A0105952H
 	public void resetWindowWidth() {
 		primaryStage.setResizable(true);
 		primaryStage.setWidth(700);
@@ -54,13 +55,13 @@ public class ListViewGUI extends Application {
 		primaryStage.setResizable(false);
 	}
 
+	public Stage getWindow() {
+		return primaryStage;
+	}
+	
 	//@author A0111855J
 	public void minimizeWindow() {
 		primaryStage.setIconified(true);
-	}
-	
-	public Stage getWindow() {
-		return primaryStage;
 	}
 
 	private void showTaskOverview() throws IOException {

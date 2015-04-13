@@ -12,6 +12,7 @@ public class Output {
 	private static int count = 0;
 	private static Logger log;
 
+	// @author A0105952H
 	public static void showToUser(String text) {
 
 		if (count == 0) {
@@ -25,26 +26,19 @@ public class Output {
 				log.setLevel(Level.INFO);
 				log.removeHandler(log.getHandlers()[0]);
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		//System.out.println(log.getHandlers().length);
-
 		log.log(Level.INFO, text);
 
 		count++;
-		// TaskDisplayController.updateLabel(text);
 	}
 
 	private static class outputFormatter extends Formatter {
 
 		@Override
 		public String format(LogRecord record) {
-			// StringBuffer sb = new StringBuffer();
-
-			// sb.append(record.getMessage());
 			return record.getMessage();
 		}
 	}

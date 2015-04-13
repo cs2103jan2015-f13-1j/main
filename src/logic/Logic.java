@@ -4,8 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
-
 import fileIO.FileStream;
 import parser.*;
 import util.*;
@@ -20,8 +18,6 @@ public class Logic {
 	private boolean inUndoState = false;
 	private String keyword = "";
 	public static UndoOps u = new UndoOps();
-	// TODO
-	private final static Logger log = Logger.getLogger(Logic.class.getName());
 
 	private static final String MSG_ADD = "Task added successfully!\n";
 	private static final String MSG_DELETE = "Task deleted successfully!\n";
@@ -36,10 +32,10 @@ public class Logic {
 	private static final String MSG_UNFLAG = "Task %d unprioritised!\n";
 	private static final String MSG_BACK = "Back to main list.\n";
 	private static final String MSG_MAN = "Displaying help commands.\n";
-	// private static final String MSG_FORMAT = "Incorrect Format!\n";
 	private static final String MSG_WRONG_FILE = "Manual cannot be open!\n";
 	private static final String MSG_CMD_INCORRECT = "Unrecognized command type\n";
 
+	// @author A0105952H
 	private void addTask(Task t) {
 		if (t != null) {
 			isSuccessful = true;
@@ -73,7 +69,7 @@ public class Logic {
 		}
 	}
 
-	//@author A0111855J
+	// @author A0111855J
 	private void changeDir() {
 		FileStream.changeDir();
 		if (!FileStream.getOldPath().equals(FileStream.getNewPath())) {
@@ -85,7 +81,7 @@ public class Logic {
 		}
 	}
 
-	//@author A0105952H
+	// @author A0105952H
 	private void clearTask() {
 		u.undoClear(TaskList);
 		u.redoClear();
@@ -188,18 +184,18 @@ public class Logic {
 		}
 	}
 
+	// @author A0111855J
 	private void man() {
-		// TODO Auto-generated method stub
 		File helpFile = new File("HelpCommands.html");
 		try {
 			Desktop.getDesktop().browse(helpFile.toURI());
 			Output.showToUser(MSG_MAN);
 		} catch (IOException e) {
 			Output.showToUser(MSG_WRONG_FILE);
-			// e.printStackTrace();
 		}
 	}
 
+	// @author A0105952H
 	private void undoTask() {
 		isSuccessful = u.undoOperation(TaskList);
 		inUndoState = true;

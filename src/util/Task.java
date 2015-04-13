@@ -14,15 +14,16 @@ public class Task {
 	private boolean flag;
 	private boolean isDue;
 	private int index;
-
+	
+	
 	public static enum TASK_TYPE {
-		TIMED_TASK, FLOATING_TASK, DEADLINE, RECURRING_TASK, NULL;
+		TIMED_TASK, FLOATING_TASK, DEADLINE, NULL;
 	}
-
+	//@author A0105952H
 	public Task() {
 		this.type = TASK_TYPE.NULL;
 	}
-
+	
 	public Task(String desc) {
 		this.taskDesc = desc;
 		this.type = TASK_TYPE.FLOATING_TASK;

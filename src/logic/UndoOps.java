@@ -9,12 +9,9 @@ import util.Output;
 import util.Task;
 
 /**
- * The UndoOps class basically stores a version of the history
- * of operations performed, allowing multiple undos and redos
- * of previously performed user actions
- * 
- * @author Wang Minwei
- * @author Parag Bhatnagar
+ * The UndoOps class basically stores a version of the history of operations
+ * performed, allowing multiple undos and redos of previously performed user
+ * actions
  * 
  */
 public class UndoOps {
@@ -32,6 +29,11 @@ public class UndoOps {
 	private static final String MSG_UNDO = "Undo successful!\n";
 	private static final String MSG_REDO = "Redo successful!\n";
 
+	// @author A0105952H
+	// @author A0093906X -unused
+	// The code written is unused largely because it was written at an early
+	// stage of product development, and after the redo function was combined
+	// into this class, the code was modified greatly
 	public boolean undoOperation(Vector<Task> TaskList) {
 		if (!UndoList.isEmpty()) {
 			Task u = UndoList.peek();
@@ -150,7 +152,8 @@ public class UndoOps {
 		RedoCommandListAfterUndo.clear();
 		CommandListAfterUndo.clear();
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoAdd(int index) {
 		Task u = new Task();
 		u.setIndex(index);
@@ -158,6 +161,7 @@ public class UndoOps {
 		UndoList.push(u);
 	}
 
+	// @author A0105952H
 	public void redoAdd(Task t) {
 
 		RedoCommandList.add(new String("add"));
@@ -197,12 +201,14 @@ public class UndoOps {
 		u.setTaskDesc(desc);
 		RedoList.push(u);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoDelete(Task u) {
 		CommandList.push(new String("add"));
 		UndoList.push(u);
 	}
 
+	// @author A0105952H
 	public void redoDelete(int index) {
 		Task u = new Task();
 		u.setIndex(index);
@@ -210,6 +216,7 @@ public class UndoOps {
 		RedoList.push(u);
 	}
 
+	// @author A0093906X
 	public void undoEditEndDate(int index, LocalDateTime endTime) {
 		Task u = new Task();
 		CommandList.push(new String("editEndDate"));
@@ -217,7 +224,8 @@ public class UndoOps {
 		u.setEndTime(endTime);
 		UndoList.push(u);
 	}
-	//@author A0093906X
+
+	// @author A0105952H
 	public void redoEditEndDate(int index, LocalDateTime endTime) {
 		Task u = new Task();
 		u.setIndex(index);
@@ -225,7 +233,8 @@ public class UndoOps {
 		u.setEndTime(endTime);
 		RedoList.add(u);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoEditStartDate(int index, LocalDateTime startTime) {
 		Task u = new Task();
 
@@ -235,6 +244,7 @@ public class UndoOps {
 		UndoList.push(u);
 	}
 
+	// @author A0105952H
 	public void redoEditStartDate(int index, LocalDateTime startTime) {
 		Task u = new Task();
 		u.setIndex(index);
@@ -242,7 +252,8 @@ public class UndoOps {
 		u.setEndTime(startTime);
 		RedoList.add(u);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoEditEndTime(int index, LocalDateTime endTime) {
 		Task u = new Task();
 		CommandList.push(new String("editEndTime"));
@@ -251,6 +262,7 @@ public class UndoOps {
 		UndoList.push(u);
 	}
 
+	// @author A0105952H
 	public void redoEditEndTime(int index, LocalDateTime endTime) {
 		Task u = new Task();
 		u.setIndex(index);
@@ -258,7 +270,8 @@ public class UndoOps {
 		u.setEndTime(endTime);
 		RedoList.add(u);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoEditStartTime(int index, LocalDateTime startTime) {
 		Task u = new Task();
 		CommandList.push(new String("editStartTime"));
@@ -266,7 +279,8 @@ public class UndoOps {
 		u.setStartTime(startTime);
 		UndoList.push(u);
 	}
-	
+
+	// @author A0105952H
 	public void redoEditStartTime(int index, LocalDateTime startTime) {
 		Task u = new Task();
 		RedoCommandList.add(new String("editStartTime"));
@@ -274,7 +288,8 @@ public class UndoOps {
 		u.setStartTime(startTime);
 		RedoList.add(u);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void undoEditTaskDesc(int index, String originalContent) {
 		Task u = new Task();
 		CommandList.push(new String("editTaskDesc"));
@@ -283,6 +298,7 @@ public class UndoOps {
 		UndoList.push(u);
 	}
 
+	// @author A0105952H
 	public void redoEditTaskDesc(int index, String ModifiedContent) {
 		Task u = new Task();
 		RedoCommandList.add(new String("editTaskDesc"));

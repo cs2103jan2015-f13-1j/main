@@ -15,8 +15,8 @@ public class Search {
 
 	private static final String MSG_SEARCH_COMMAND = "%s searched!\n";
 	private static final String MSG_COMMAND_FAILURE = "Search format incorrect!\n";
-	private static final String MSG_COMMAND_NULL = "command string cannot be null!";
-	private static final String MSG_INCORRECT_FORMAT = "search command with incorrect format!";
+	private static final String MSG_COMMAND_NULL = "Command string cannot be null!";
+	private static final String MSG_INCORRECT_FORMAT = "Search command with incorrect format!";
 
 	public Search(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
@@ -139,9 +139,7 @@ public class Search {
 				t = TaskList.get(index - 1);
 
 				if (t.getTaskType() == type) {
-
 					resultTaskList.add(TaskList.get(index - 1));
-
 				}
 			}
 			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task type "

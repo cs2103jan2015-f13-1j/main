@@ -5,13 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
-import java.util.Scanner;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import logic.Logic;
 import util.Output;
 import util.Task;
@@ -135,7 +133,6 @@ public class TaskBuilder {
 				Output.showToUser(MSG_DESC);
 			}
 		} catch (Exception e) {
-			// TODO
 			Output.showToUser(MSG_FORMAT);
 			log.info(MSG_FORMAT);
 		}
@@ -487,20 +484,17 @@ public class TaskBuilder {
 
 	public void run() {
 
-		//_input = "mar 3";
 		Task t = extractAddCommand();
-		// clear list
-		// Scanner sc = new Scanner(System.in);
-		// _input = sc.nextLine();
-		// while (!_input.contains(new String("exit"))) {
-		// Task t = extractAddCommand();
-		//displayTask(t);
-		// _input = sc.nextLine();
-		// }
-		// sc.close();
+		/* For Testing Purpose
+		 * clear list Scanner sc = new Scanner(System.in); _input =
+		 * sc.nextLine(); while (!_input.contains(new String("exit"))) { Task t
+		 * = extractAddCommand(); displayTask(t); _input = sc.nextLine(); }
+		 * sc.close();
+		 */
 
 	}
 
+	/** For Testing Purpose, display task parsed from String*/
 	private void displayTask(Task t) {
 		log.info(t.getTaskType().toString());
 		String text;

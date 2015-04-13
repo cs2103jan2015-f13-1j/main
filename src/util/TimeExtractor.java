@@ -175,9 +175,10 @@ public class TimeExtractor {
 		return date;
 	}
 
+	/** for testing purpose*/
 	public static void main(String[] args) {
-		String str = "03 03 2015";
-		Output.showToUser(DateFormatter3(str).toString());
+		//String str = "03 03 2015";
+		//Output.showToUser(DateFormatter3(str).toString());
 
 	}
 }
