@@ -30,7 +30,7 @@ public class EditTask {
 	 * @param cmd
 	 * @return
 	 */
-	boolean editTask(Command cmd) {
+	public boolean editTask(Command cmd) {
 
 		int index = cmd.getIndex();
 		String editType = cmd.getContent();
