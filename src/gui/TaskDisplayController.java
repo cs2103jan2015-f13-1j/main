@@ -262,7 +262,7 @@ public class TaskDisplayController {
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
 
 			return (String
-					.format("%-35s\t%1s",
+					.format("%-27s\t%1s",
 							"\nFrom: "
 									+ TimeExtractor.formatDateTime(t
 											.getStartTime()),
