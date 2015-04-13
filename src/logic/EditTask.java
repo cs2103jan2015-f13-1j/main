@@ -119,7 +119,8 @@ public class EditTask {
 				LocalDate t = TimeExtractor.extractDate(modifiedContent);
 				modifiedTime = LocalDateTime.of(t, endTime.toLocalTime());
 
-				if (modifiedTime.isAfter(editTask.getStartTime())) {
+				if (editTask.getStartTime() == null
+						|| modifiedTime.isAfter(editTask.getStartTime())) {
 					editTask.setEndTime(modifiedTime);
 
 					Sort s = new Sort(TaskList);
@@ -179,7 +180,8 @@ public class EditTask {
 				LocalTime t = TimeExtractor.extractTime(modifiedContent);
 
 				modifiedTime = LocalDateTime.of(endTime.toLocalDate(), t);
-				if (modifiedTime.isAfter(editTask.getStartTime())) {
+				if (editTask.getStartTime() == null
+						|| modifiedTime.isAfter(editTask.getStartTime())) {
 					editTask.setEndTime(modifiedTime);
 
 					Sort s = new Sort(TaskList);
