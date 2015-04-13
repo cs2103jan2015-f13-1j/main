@@ -1,0 +1,704 @@
+//@author: a0093906x
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+public class TaskDisplayController {
+
+	@FXML
+	private TextArea inputBox;
+
+	@FXML
+	private ListView<Task> listView = new ListView<Task>();
+
+	@FXML
+	private Label label = new Label();
+
+	@FXML
+	private Button slideButton = new Button();
+
+	@FXML
+	private ToggleButton showTimed = new ToggleButton();
+
+	@FXML
+	private ToggleButton showDeadline = new ToggleButton();
+
+	@FXML
+	private ToggleButton showFloating = new ToggleButton();
+
+	@FXML
+	private RadioButton dueToday = new RadioButton("Due Today");
+
+	@FXML
+	private RadioButton dueTomorrow = new RadioButton("Due in One Day");
+
+	@FXML
+	private RadioButton dueThisWeek = new RadioButton("Due This Week");
+
+	@FXML
+	private RadioButton dueThisMonth = new RadioButton("Due This Month");
+
+	@FXML
+	private RadioButton dueAllTime = new RadioButton("All Time");
+
+	@FXML
+	private VBox sideBar = new VBox();
+
+	@FXML
+	private ToolBar toolBar = new ToolBar();
+
+	@FXML
+	private Button minimize = new Button();
+
+	@FXML
+	private Button closeApp = new Button();
+
+	private Timeline timelineOut;
+	private Timeline timelineIn;
+	private static String previousKey;
+
+	private SimpleBooleanProperty isExpanded = new SimpleBooleanProperty();
+
+	private ObservableList<Task> list;
+
+	private Logic l = new Logic();
+
+	private ListViewGUI gui;
+
+	private Vector<Task> VectorTaskList;
+	private Vector<Task> DisplayTaskList = new Vector<Task>();
+
+	private Vector<String> commandHistory;
+	private int commandHistoryIndex;
+	private boolean autoCompleteState = true;
+
+	// Selection Criteria for togglebuttons
+	private boolean isTimedOn = true;
+	private boolean isDeadlineOn = true;
+	private boolean isFloatingOn = true;
+	private String checkDue = "dueAllTime";
+
+	final ToggleGroup timed = new ToggleGroup();
+	final ToggleGroup deadline = new ToggleGroup();
+	final ToggleGroup floating = new ToggleGroup();
+	final ToggleGroup due = new ToggleGroup();
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	class TaskCell extends ListCell<Task> {
+		HBox hbox = new HBox();
+		CheckBox done = new CheckBox();
+		Text desc = new Text("(empty)");
+		Text details = new Text("(empty)");
+		int index = -1;
+		Pane pane = new Pane();
+		VBox buttonVBox = new VBox();
+		VBox taskVBox = new VBox();
+		Button flag = new Button();
+		Button delete = new Button();
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+		public TaskCell() {
+			super();
+			delete.getStyleClass().add("delete");
+			// flag.getStyleClass().add("flag");
+			done.getStyleClass().add("done");
+
+			taskVBox.getChildren().addAll(desc, details);
+			buttonVBox.getChildren().addAll(flag, delete);
+			delete.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					processUserInput(("delete " + index));
+				}
+			});
+
+			flag.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					processUserInput(("toggleflag " + index));
+				}
+			});
+			done.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					processUserInput(("togglemark " + index));
+				}
+			});
+
+			hbox.getChildren().addAll(done, taskVBox, pane, buttonVBox);
+			HBox.setHgrow(pane, Priority.ALWAYS);
+
+		}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+		@Override
+		protected void updateItem(Task t, boolean b) {
+			super.updateItem(t, b);
+
+			if (t != null) {
+				getStyleClass().add("full");
+				if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)) {
+					desc.getStyleClass().add("floating");
+				}
+				setGraphic(hbox);
+
+				if (t.getDone()) {
+					done.setSelected(true);
+				}
+
+				else {
+					done.setSelected(false);
+				}
+
+				if (t.getDone()) {
+					done.setSelected(true);
+					desc.getStyleClass().add("strikethrough");
+					desc.setFill(Color.GREY);
+					details.getStyleClass().add("strikethrough");
+					details.setFill(Color.GREY);
+				}
+
+				else if (t.isDue()) {
+					done.setSelected(false);
+					desc.getStyleClass().remove("strikethrough");
+					desc.setFill(Color.FIREBRICK);
+					details.getStyleClass().remove("strikethrough");
+					details.setFill(Color.FIREBRICK);
+				}
+
+				else {
+					done.setSelected(false);
+					desc.getStyleClass().remove("strikethrough");
+					desc.setFill(Color.WHITE);
+					details.getStyleClass().remove("strikethrough");
+					details.setFill(Color.WHITE);
+				}
+
+				hbox.setPrefWidth(350);
+				if (t.isDue()) {
+					desc.setText(formatTask1(t) + " (Overdue!)");
+				} else {
+					desc.setText(formatTask1(t));
+				}
+				desc.getStyleClass().add("desc");
+
+				desc.setWrappingWidth(listView.getPrefWidth());
+				details.setText(formatTask2(t));
+				details.getStyleClass().add("details");
+
+				flag.getStyleClass().remove("flag-selected");
+				flag.getStyleClass().remove("flag");
+
+				if (t.getFlag()) {
+					flag.getStyleClass().add("flag-selected");
+				} else {
+					flag.getStyleClass().add("flag");
+				}
+				details.setWrappingWidth(listView.getPrefWidth());
+				index = t.getIndex();
+			}
+
+			else {
+				setGraphic(null);
+			}
+
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	private static String formatTask1(Task t) {
+		return (t.getIndex() + ": " + t.getTaskDesc());
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	private static String formatTask2(Task t) {
+
+		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+
+			return (String
+					.format("%-27s\t%1s",
+							"\nFrom: "
+									+ TimeExtractor.formatDateTime(t
+											.getStartTime()),
+							"To: "
+									+ TimeExtractor.formatDateTime(t
+											.getEndTime()))).replace(' ', ' ');
+		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+
+			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
+		}
+
+		else {
+			return ("\n");
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	@FXML
+	private void initialize() {
+		moveUndercoratedBorder();
+		exitWindow();
+		minimizeWindow();
+
+		VectorTaskList = l.initializeList();
+		setTaskList(VectorTaskList);
+
+		commandHistory = new Vector<String>();
+		commandHistoryIndex = 0;
+
+		inputBox.setPromptText("Enter Command:");
+		inputBox.setWrapText(true);
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				inputBox.requestFocus();
+			}
+		});
+
+		slideButton.getStyleClass().add("sld");
+		minimize.getStyleClass().add("min");
+		closeApp.getStyleClass().add("cls");
+
+		showTimed.setToggleGroup(timed);
+		showTimed.setSelected(true);
+		showTimed.getStyleClass().add("selected");
+		showDeadline.setToggleGroup(deadline);
+		showDeadline.setSelected(true);
+		showDeadline.getStyleClass().add("selected");
+		showFloating.setToggleGroup(floating);
+		showFloating.setSelected(true);
+		showFloating.getStyleClass().add("selected");
+
+		dueToday.setToggleGroup(due);
+		dueToday.setUserData("dueToday");
+		dueToday.getStyleClass().add("radio");
+		dueTomorrow.setToggleGroup(due);
+		dueTomorrow.setUserData("dueTomorrow");
+		dueTomorrow.getStyleClass().add("radio");
+		dueThisWeek.setToggleGroup(due);
+		dueThisWeek.setUserData("dueThisWeek");
+		dueThisWeek.getStyleClass().add("radio");
+		dueThisMonth.setToggleGroup(due);
+		dueThisMonth.setUserData("dueThisMonth");
+		dueThisMonth.getStyleClass().add("radio");
+		dueAllTime.setToggleGroup(due);
+		dueAllTime.setUserData("dueAllTime");
+		dueAllTime.getStyleClass().add("radio");
+		dueAllTime.setSelected(true);
+
+		sideBar.toBack();
+		sideBar.getStyleClass().add("sidebar");
+		
+		timed.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					@Override
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isTimedOn = false;
+							showTimed.getStyleClass().removeAll();
+							// showTimed.getStyleClass().add("deselected");
+						} else {
+							isTimedOn = true;
+							showTimed.getStyleClass().removeAll();
+							// showTimed.getStyleClass().add("selected");
+						}
+						createDisplayTaskList();
+
+						setTaskList(DisplayTaskList);
+					}
+				});
+
+		deadline.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					@Override
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isDeadlineOn = false;
+							showDeadline.getStyleClass().removeAll();
+							// showDeadline.getStyleClass().add("deselected");
+						} else {
+							isDeadlineOn = true;
+							showDeadline.getStyleClass().removeAll();
+							// showDeadline.getStyleClass().add("selected");
+						}
+						createDisplayTaskList();
+						setTaskList(DisplayTaskList);
+					}
+				});
+
+		floating.selectedToggleProperty().addListener(
+				new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle toggle, Toggle new_toggle) {
+						if (new_toggle == null) {
+							isFloatingOn = false;
+							showFloating.getStyleClass().removeAll();
+							// showFloating.getStyleClass().add("deselected");
+						} else {
+							isFloatingOn = true;
+							showFloating.getStyleClass().removeAll();
+							// showFloating.getStyleClass().add("selected");
+						}
+						createDisplayTaskList();
+						setTaskList(DisplayTaskList);
+					}
+				});
+
+		due.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov,
+					Toggle toggle, Toggle new_toggle) {
+				if (new_toggle == null) {
+					checkDue = "dueAllTime";
+				} else {
+					checkDue = new_toggle.getUserData().toString();
+				}
+				createDisplayTaskList();
+				setTaskList(DisplayTaskList);
+			}
+		});
+
+		GUIMsg feedback = new GUIMsg(System.out, label);
+		System.setOut(feedback);
+		System.setErr(feedback);
+		label.setText("");
+		setAnimation();
+
+		slideButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent paramT) {
+				togglePaneVisibility();
+			}
+		});
+
+		isExpanded.addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends Boolean> paramObservableValue,
+					Boolean paramT1, Boolean paramT2) {
+				if (paramT2) {
+					// To expand sidebar
+					timelineIn.play();
+					gui.resetWindowWidth();
+				} else {
+					// To close sidebar
+					timelineOut.play();
+					gui.setWindowWidth();
+				}
+			}
+		});
+
+		sideBar.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(
+					ObservableValue<? extends Boolean> paramObservableValue,
+					Boolean paramT1, Boolean paramT2) {
+				if (paramT2) {
+					timelineIn.play();
+				}
+			}
+
+		});
+
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	public void processUserInput(String str) {
+
+		assert str != null : "String is null!";
+
+		VectorTaskList = l.run(str);
+		createDisplayTaskList();
+		setTaskList(DisplayTaskList);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	public void createDisplayTaskList() {
+		DisplayTaskList.clear();
+		for (Task t : VectorTaskList) {
+			if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK) && isTimedOn) {
+				if (isDisplayedByDueDate(t)) {
+					DisplayTaskList.add(t);
+				}
+			} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)
+					&& isDeadlineOn) {
+				if (isDisplayedByDueDate(t)) {
+					DisplayTaskList.add(t);
+				}
+			} else if (t.getTaskType().equals(TASK_TYPE.FLOATING_TASK)
+					&& isFloatingOn) {
+				if (isDisplayedByDueDate(t)) {
+					DisplayTaskList.add(t);
+				}
+			}
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	public boolean isDisplayedByDueDate(Task t) {
+		LocalDateTime end = t.getEndTime();
+		if (end == null) {
+			return true;
+		}
+
+		else {
+			LocalDate taskDate = LocalDate.of(end.getYear(),
+					end.getMonthValue(), end.getDayOfMonth());
+			LocalDate nowDate = LocalDate.now();
+
+			if (checkDue == "dueAllTime") {
+				return true;
+			}
+
+			else if (checkDue == "dueThisMonth") {
+				if (taskDate.isBefore(nowDate.plusDays(30))) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			else if (checkDue == "dueThisWeek") {
+				if (taskDate.isBefore(nowDate.plusDays(7))) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			else if (checkDue == "dueTomorrow") {
+				if (taskDate.isBefore(nowDate.plusDays(2))) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			else if (checkDue == "dueToday") {
+				if (taskDate.isBefore(nowDate.plusDays(1))) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoAdd(int index) {
+		Task u = new Task();
+		u.setIndex(index);
+		CommandList.push(new String("delete"));
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoDelete(Task u) {
+		CommandList.push(new String("add"));
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoEditEndDate(int index, LocalDateTime endTime) {
+		Task u = new Task();
+		CommandList.push(new String("editEndDate"));
+		u.setIndex(index);
+		u.setEndTime(endTime);
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoEditStartDate(int index, LocalDateTime startTime) {
+		Task u = new Task();
+
+		CommandList.push(new String("editStartDate"));
+		u.setIndex(index);
+		u.setStartTime(startTime);
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoEditEndTime(int index, LocalDateTime endTime) {
+		Task u = new Task();
+		CommandList.push(new String("editEndTime"));
+		u.setIndex(index);
+		u.setEndTime(endTime);
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoEditStartTime(int index, LocalDateTime startTime) {
+		Task u = new Task();
+		CommandList.push(new String("editStartTime"));
+		u.setIndex(index);
+		u.setStartTime(startTime);
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void undoEditTaskDesc(int index, String originalContent) {
+		Task u = new Task();
+		CommandList.push(new String("editTaskDesc"));
+		u.setIndex(index);
+		u.setTaskDesc(originalContent);
+		UndoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+

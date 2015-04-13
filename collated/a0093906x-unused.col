@@ -1,0 +1,136 @@
+//@author: a0093906x-unused
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	// The code written is unused largely because it was written at an early
+	// stage of product development, and after the redo function was combined
+	// into this class, the code was modified greatly
+	public boolean undoOperation(Vector<Task> TaskList) {
+		if (!UndoList.isEmpty()) {
+			Task u = UndoList.peek();
+			String cmd = CommandList.peek();
+			executeCmd(TaskList, u, cmd);
+			Output.showToUser(MSG_UNDO);
+
+			RedoListAfterUndo.add(RedoList.pop());
+			UndoListAfterUndo.add(UndoList.pop());
+			RedoCommandListAfterUndo.add(RedoCommandList.pop());
+			CommandListAfterUndo.add(CommandList.pop());
+
+			return true;
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "undo"));
+			return false;
+		}
+	}
+
+	public boolean redoOperation(Vector<Task> TaskList) {
+		if (!RedoListAfterUndo.isEmpty()) {
+			Task u = RedoListAfterUndo.peek();
+			String cmd = RedoCommandListAfterUndo.peek();
+
+			executeCmd(TaskList, u, cmd);
+			Output.showToUser(MSG_REDO);
+
+			RedoList.add(RedoListAfterUndo.pop());
+			UndoList.add(UndoListAfterUndo.pop());
+			RedoCommandList.add(RedoCommandListAfterUndo.pop());
+			CommandList.add(CommandListAfterUndo.pop());
+			return true;
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "redo"));
+			return false;
+		}
+	}
+
+	private void executeCmd(Vector<Task> TaskList, Task u, String cmd) {
+		switch (cmd) {
+		case "add":
+			TaskList.add(u);
+			break;
+		case "delete":
+			Output.showToUser(TaskList.size() + "");
+			TaskList.remove(u.getIndex() - 1);
+			break;
+		case "editTaskDesc":
+			Task editTaskDesc = TaskList.get(u.getIndex() - 1);
+			editTaskDesc.setTaskDesc(u.getTaskDesc());
+			break;
+		case "editStartTime":
+			Task editTaskStartTime = TaskList.get(u.getIndex() - 1);
+			editTaskStartTime.setStartTime(u.getStartTime());
+			break;
+		case "editEndTime":
+			Task editTaskEndTime = TaskList.get(u.getIndex() - 1);
+			editTaskEndTime.setEndTime(u.getEndTime());
+			break;
+		case "editStartDate":
+			Task editTaskStartDate = TaskList.get(u.getIndex() - 1);
+			editTaskStartDate.setStartTime(u.getStartTime());
+			break;
+		case "editEndDate":
+			Task editTaskEndDate = TaskList.get(u.getIndex() - 1);
+			editTaskEndDate.setEndTime(u.getEndTime());
+			break;
+		case "mark":
+			Task markTask = TaskList.get(u.getIndex() - 1);
+			markTask.markTaskAsDone();
+			break;
+		case "unmark":
+			Task unmarkTask = TaskList.get(u.getIndex() - 1);
+			unmarkTask.markTaskAsUndone();
+			break;
+		case "flag":
+			Task flagTask = TaskList.get(u.getIndex() - 1);
+			flagTask.markFlag();
+			break;
+		case "unflag":
+			Task unflagTask = TaskList.get(u.getIndex() - 1);
+			unflagTask.unmarkFlag();
+			break;
+		case "changedir":
+			String pathName = u.getTaskDesc();
+			FileStream.changeDirWithString(pathName);
+			break;
+		case "recover":
+			recoverList(TaskList);
+			break;
+		case "clear":
+			clearList(TaskList);
+			break;
+		}
+	}
+
+	private void clearList(Vector<Task> TaskList) {
+		Vector<Task> copyOfTaskList = new Vector<Task>();
+		for (Task t : TaskList) {
+			copyOfTaskList.add(t);
+		}
+		TaskList.clear();
+		backUpList.push(copyOfTaskList);
+	}
+
+	private void recoverList(Vector<Task> TaskList) {
+		Vector<Task> copyOfTaskList = backUpList.pop();
+		for (Task t : copyOfTaskList) {
+			TaskList.add(t);
+		}
+	}
+
+	public void clearHistoryList() {
+		RedoListAfterUndo.clear();
+		UndoListAfterUndo.clear();
+		RedoCommandListAfterUndo.clear();
+		CommandListAfterUndo.clear();
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+

@@ -68,7 +68,7 @@
             </SplitPane>
          </items>
       </SplitPane>
-      <VBox fx:id="sideBar" layoutX="451.0" prefHeight="600.0" prefWidth="250.0" style="-fx-background-image: url('images/bg-sb.jpg');" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="sideBar" layoutX="451.0" prefHeight="600.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" style="-fx-text-fill: white;" text="DISPLAY TASKS">
                <VBox.margin>

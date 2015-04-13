@@ -1,0 +1,2659 @@
+//@author: a0105952h
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+	 */
+
+	public void resetWindowWidth() {
+		primaryStage.setResizable(true);
+		primaryStage.setWidth(700);
+		primaryStage.setResizable(false);
+	}
+
+	public void setWindowWidth() {
+		primaryStage.setResizable(true);
+		primaryStage.setWidth(450);
+		primaryStage.setResizable(false);
+	}
+
+	public Stage getWindow() {
+		return primaryStage;
+	}
+	
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	private void setAnimation() {
+
+		sideBar.translateXProperty().set(-250);
+
+		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent t) {
+			}
+		};
+		timelineIn = new Timeline();
+		timelineOut = new Timeline();
+
+		/* Animation for sidebar to scroll right. */
+		timelineIn.setCycleCount(1);
+		timelineIn.setAutoReverse(true);
+
+		final KeyValue kvDwn1 = new KeyValue(sideBar.translateXProperty(), 0);
+		final KeyFrame kfDwn = new KeyFrame(Duration.millis(1), onFinished,
+				kvDwn1);
+		timelineIn.getKeyFrames().add(kfDwn);
+
+		/* Animation for sidebar to scroll left. */
+		timelineOut.setCycleCount(1);
+		timelineOut.setAutoReverse(true);
+		final KeyValue kvUp1 = new KeyValue(sideBar.translateXProperty(), -250);
+		final KeyFrame kfUp = new KeyFrame(Duration.millis(100), kvUp1);
+		timelineOut.getKeyFrames().add(kfUp);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	private void togglePaneVisibility() {
+		if (isExpanded.get()) {
+			isExpanded.set(false);
+		} else {
+			isExpanded.set(true);
+		}
+	}
+
+	@FXML
+	private void handleInput() {
+
+		final KeyCombination keyComb1 = new KeyCodeCombination(KeyCode.Z,
+				KeyCombination.CONTROL_DOWN);
+		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.Y,
+				KeyCombination.CONTROL_DOWN);
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
+				new EventHandler<KeyEvent>() {
+					String autoCompleteList[] = { "add ", "clear", "changedir",
+							"create ", "delete ", "edit ", "exit", "flag ",
+							"help", "mark ", "man", "search ", "undo", "redo",
+							"prioritise ", "quit", "search task ",
+							"search before ", "search date ", "search desc ",
+							"search type ", "edit desc ", "edit task ",
+							"edit start", "edit end", "edit starttime ",
+							"edit startdate ", "edit endtime ", "edit enddate " };
+
+					public void handle(KeyEvent key) {
+
+						if (!autoCompleteState) {
+							return;
+						}
+						boolean isPartOfWord = false;
+						String input = inputBox.getText();
+
+						for (String s : autoCompleteList) {
+							input = input.replaceAll("\\s+", " ");
+							if (!input.isEmpty()
+									&& s.toLowerCase().startsWith(
+											input.toLowerCase())) {
+								Output.showToUser("Enter space to autocomplete");
+								previousKey = s;
+								isPartOfWord = true;
+								break;
+							}
+						}
+						if (key.getCode().equals(KeyCode.SPACE)) {
+							if (previousKey != null) {
+								inputBox.setText(previousKey);
+								inputBox.end();
+								previousKey = null;
+								Output.showToUser(" ");
+							}
+						}
+						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						} else if (previousKey != null && !isPartOfWord
+								&& !key.getCode().equals(KeyCode.ENTER)
+								&& !key.getCode().equals(KeyCode.ALT)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						} else if (key.getCode().equals(KeyCode.ENTER)) {
+							previousKey = null;
+						}
+
+					}
+				});
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	public class GUIMsg extends PrintStream {
+		private Label label;
+
+		public GUIMsg(OutputStream out, Label label) {
+			super(out);
+			this.label = label;
+		}
+
+		@Override
+		public synchronized void write(byte[] buf, int off, int len) {
+			final String message = new String(buf, off, len);
+
+			label.setText(message);
+		}
+
+		@Override
+		public synchronized void write(int i) {
+			label.setText(String.valueOf((char) i));
+		}
+	}
+
+}
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\EditTask.java
+	 */
+
+	public EditTask(Vector<Task> TaskList) {
+		this.TaskList = TaskList;
+	}
+
+	/**
+	 * switch to different types of editing according to command
+	 * 
+	 * @param cmd
+	 * @return
+	 */
+	public boolean editTask(Command cmd) {
+
+		int index = cmd.getIndex();
+		String editType = cmd.getContent();
+		String modifiedContent = cmd.getModifiedString();
+
+		if (index > 0 && index <= TaskList.size()) {
+			switch (editType.toLowerCase()) {
+			case "task":
+				isSuccessful = editTaskDesc(index, modifiedContent);
+				break;
+			case "desc":
+				isSuccessful = editTaskDesc(index, modifiedContent);
+				break;
+			case "starttime":
+				isSuccessful = editTaskStartTime(index, modifiedContent);
+				break;
+			case "endtime":
+				isSuccessful = editTaskEndTime(index, modifiedContent);
+				break;
+			case "startdate":
+				isSuccessful = editTaskStartDate(index, modifiedContent);
+				break;
+			case "enddate":
+				isSuccessful = editTaskEndDate(index, modifiedContent);
+				break;
+			default:
+				Output.showToUser(String.format(MSG_EDIT_FAILURE, index,
+						editType));
+				break;
+			}
+			if (isSuccessful) {
+				Output.showToUser(MSG_EDIT);
+			} else {
+				Output.showToUser(String.format(MSG_EDIT_FAILURE, index,
+						editType));
+			}
+		} else {
+
+			Output.showToUser(String.format(MSG_TASK_FAILURE, index));
+		}
+		return isSuccessful;
+	}
+
+	/**
+	 * 
+	 Change start date of task if new start time is earlier than end time
+	 */
+	private boolean editTaskStartDate(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime startTime = editTask.getStartTime();
+			LocalDateTime modifiedTime;
+
+			if (startTime != null) {
+				LocalDate t = TimeExtractor.extractDate(modifiedContent);
+				modifiedTime = LocalDateTime.of(t, startTime.toLocalTime());
+
+				if (modifiedTime.isBefore(editTask.getEndTime())) {
+					editTask.setStartTime(modifiedTime);
+
+					Sort s = new Sort(TaskList);
+					s.sortList();
+					Logic.u.undoEditStartDate(editTask.getIndex(), startTime);
+					Logic.u.redoEditStartDate(index, modifiedTime);
+					return true;
+				}
+				Output.showToUser(MSG_TIME_FAILURE);
+			}
+			return false;
+
+		} catch (NullPointerException e) {
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "start date for "
+					+ index));
+			return false;
+		}
+	}
+
+	private boolean editTaskEndDate(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime endTime = editTask.getEndTime();
+			LocalDateTime modifiedTime;
+
+			if (endTime != null) {
+
+				LocalDate t = TimeExtractor.extractDate(modifiedContent);
+				modifiedTime = LocalDateTime.of(t, endTime.toLocalTime());
+
+				if (editTask.getStartTime() == null
+						|| modifiedTime.isAfter(editTask.getStartTime())) {
+					editTask.setEndTime(modifiedTime);
+
+					Sort s = new Sort(TaskList);
+					s.sortList();
+					Logic.u.undoEditEndDate(editTask.getIndex(), endTime);
+					Logic.u.redoEditEndDate(index, modifiedTime);
+
+					return true;
+				}
+				Output.showToUser(MSG_TIME_FAILURE);
+			}
+			return false;
+
+		} catch (NullPointerException e) {
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "end date for "
+					+ index));
+			return false;
+		}
+	}
+
+	private boolean editTaskStartTime(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime startTime = editTask.getStartTime();
+			LocalDateTime modifiedTime;
+
+			if (startTime != null) {
+				LocalTime t = TimeExtractor.extractTime(modifiedContent);
+
+				modifiedTime = LocalDateTime.of(startTime.toLocalDate(), t);
+				if (modifiedTime.isBefore(editTask.getEndTime())) {
+					editTask.setStartTime(modifiedTime);
+
+					Sort s = new Sort(TaskList);
+					s.sortList();
+					Logic.u.undoEditStartTime(editTask.getIndex(), startTime);
+					Logic.u.redoEditStartTime(index, modifiedTime);
+					return true;
+				}
+				Output.showToUser(MSG_TIME_FAILURE);
+			}
+			return false;
+		} catch (NullPointerException e) {
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "start time for "
+					+ index));
+			return false;
+		}
+	}
+
+	private boolean editTaskEndTime(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			LocalDateTime endTime = editTask.getEndTime();
+			LocalDateTime modifiedTime;
+
+			if (endTime != null) {
+				LocalTime t = TimeExtractor.extractTime(modifiedContent);
+
+				modifiedTime = LocalDateTime.of(endTime.toLocalDate(), t);
+				if (editTask.getStartTime() == null
+						|| modifiedTime.isAfter(editTask.getStartTime())) {
+					editTask.setEndTime(modifiedTime);
+
+					Sort s = new Sort(TaskList);
+					s.sortList();
+					Logic.u.undoEditEndTime(editTask.getIndex(), endTime);
+					Logic.u.redoEditEndDate(index, modifiedTime);
+					return true;
+				}
+				Output.showToUser(MSG_TIME_FAILURE);
+			}
+			return false;
+		} catch (NullPointerException e) {
+			Output.showToUser(String.format(MSG_TASK_FAILURE, "end time for "
+					+ index));
+			return false;
+		}
+	}
+
+	private boolean editTaskDesc(int index, String modifiedContent) {
+		try {
+			Task editTask = TaskList.get(index - 1);
+			String originalContent = editTask.getTaskDesc();
+
+			if (!modifiedContent.isEmpty()) {
+				editTask.setTaskDesc(modifiedContent);
+				Sort s = new Sort(TaskList);
+				s.sortList();
+				Logic.u.undoEditTaskDesc(editTask.getIndex(), originalContent);
+				Logic.u.redoEditTaskDesc(index, modifiedContent);
+				return true;
+			}
+			Output.showToUser(String.format(MSG_DESC_FAILURE, index));
+			return false;
+		} catch (IndexOutOfBoundsException e) {
+			Output.showToUser(String.format(MSG_TASK_FAILURE, index));
+			return false;
+		}
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\EditTask.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+	 */
+
+	private void addTask(Task t) {
+		if (t != null) {
+			isSuccessful = true;
+
+			TaskList.add(t);
+
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoAdd(t.getIndex());
+			u.redoAdd(t);
+
+			Output.showToUser(MSG_ADD);
+		} else {
+			Output.showToUser(MSG_CMD_INCORRECT);
+		}
+	}
+
+	private void deleteTask(int index) {
+		try {
+			if (index > 0 && index <= TaskList.size()) {
+				u.undoDelete(TaskList.get(index - 1));
+				u.redoDelete(index);
+				TaskList.remove(index - 1);
+				Output.showToUser(MSG_DELETE);
+				isSuccessful = true;
+			} else {
+				Output.showToUser(String.format(MSG_DELETE_FAILURE, index));
+			}
+		} catch (IndexOutOfBoundsException e) {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "delete"));
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+	 */
+
+	private void clearTask() {
+		u.undoClear(TaskList);
+		u.redoClear();
+		TaskList.clear();
+		isSuccessful = true;
+		Output.showToUser(String.format(MSG_CLEAR));
+	}
+
+	private void markTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.markTaskAsDone();
+			isSuccessful = true;
+
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoMark(t.getIndex());
+			u.redoMark(i);
+
+			Output.showToUser(String.format(MSG_MARK, i));
+		} else {
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Mark"));
+		}
+	}
+
+	private void unmarkTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.markTaskAsUndone();
+			isSuccessful = true;
+
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoMark(t.getIndex());
+			u.redoUnmark(i);
+
+			Output.showToUser(String.format(MSG_UNMARK, i));
+		} else {
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Unmark"));
+		}
+	}
+
+	private void toggleMarkTask(int index) {
+		if (index > 0 && index <= TaskList.size()) {
+			Task t = TaskList.get(index - 1);
+			if (t.getDone()) {
+				unmarkTask(index);
+			} else {
+				markTask(index);
+			}
+		}
+	}
+
+	private void flagTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.markFlag();
+			isSuccessful = true;
+
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoFlag(t.getIndex());
+			u.redoFlag(i);
+
+			Output.showToUser(String.format(MSG_FLAG, i));
+		} else {
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Flag"));
+		}
+	}
+
+	private void unflagTask(int i) {
+
+		if (i > 0 && i <= TaskList.size()) {
+			Task t = TaskList.get(i - 1);
+			t.unmarkFlag();
+			isSuccessful = true;
+
+			Sort s = new Sort(TaskList);
+			s.sortList();
+			u.undoUnflag(t.getIndex());
+			u.redoUnflag(i);
+
+			Output.showToUser(String.format(MSG_UNFLAG, i));
+		} else {
+			Output.showToUser(String.format(MSG_INDEX_NOT_EXIST, i, "Unflag"));
+		}
+	}
+
+	private void toggleFlagTask(int index) {
+		if (index > 0 && index <= TaskList.size()) {
+			Task t = TaskList.get(index - 1);
+			if (t.getFlag()) {
+				unflagTask(index);
+			} else {
+				flagTask(index);
+			}
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+	 */
+
+	private void undoTask() {
+		isSuccessful = u.undoOperation(TaskList);
+		inUndoState = true;
+	}
+
+	private void redoTask() {
+		inUndoState = true;
+		isSuccessful = u.redoOperation(TaskList);
+	}
+
+	private void backToMain() {
+		inSearchState = false;
+		Output.showToUser(String.format(MSG_BACK));
+	}
+
+	private void searchKey(Command cmd) {
+		Search s = new Search(TaskList);
+		keyword = cmd.getContent();
+		OutputList = s.searchTask(keyword);
+		inSearchState = true;
+	}
+
+	/** clean unnecessary undo history */
+	private void clearUndoHistory(COMMAND_TYPE commandType) {
+		if (inUndoState) {
+			if (commandType != COMMAND_TYPE.UNDO
+					&& commandType != COMMAND_TYPE.REDO) {
+				inUndoState = false;
+				u.clearHistoryList();
+			}
+		}
+	}
+
+	private void sortOutput() {
+		Sort s = new Sort(TaskList);
+		s.sortList();
+		if (inSearchState) {
+			Search st = new Search(TaskList);
+			assert !keyword.equals("");
+			OutputList = st.searchTask(keyword);
+		} else {
+			OutputList = TaskList;
+		}
+	}
+
+	private void executeCommand(Command cmd) {
+
+		if (cmd == null) {
+			Output.showToUser(MSG_CMD_INCORRECT);
+
+		} else {
+			String cmdDesc = cmd.getCommandType();
+			COMMAND_TYPE commandType = OperationType
+					.determineCommandType(cmdDesc);
+			isSuccessful = false;
+
+			switch (commandType) {
+			case ADD_TASK:
+				addTask(cmd.getTask());
+				break;
+			case BACK:
+				backToMain();
+				break;
+			case CHANGEDIR:
+				changeDir();
+				break;
+			case CLEAR:
+				clearTask();
+				break;
+			case DELETE_TASK:
+				deleteTask(cmd.getIndex());
+				break;
+			case DONE:
+				markTask(cmd.getIndex());
+				break;
+			case UNDONE:
+				unmarkTask(cmd.getIndex());
+				break;
+			case EDIT_TASK:
+				EditTask edit = new EditTask(TaskList);
+				isSuccessful = edit.editTask(cmd);
+				break;
+			case FLAG:
+				flagTask(cmd.getIndex());
+				break;
+			case UNFLAG:
+				unflagTask(cmd.getIndex());
+				break;
+			case MAN:
+				man();
+				break;
+			case SEARCH_TASK:
+				searchKey(cmd);
+				return;
+			case UNDO:
+				undoTask();
+				break;
+			case REDO:
+				redoTask();
+				break;
+			case TOGGLEFLAG:
+				toggleFlagTask(cmd.getIndex());
+				break;
+			case TOGGLEDONE:
+				toggleMarkTask(cmd.getIndex());
+				break;
+			default:
+				Output.showToUser(MSG_CMD_INCORRECT);
+			}
+			clearUndoHistory(commandType);
+		}
+		sortOutput();
+	}
+
+	public Vector<Task> run(String input) {
+
+		isFirstTime++;
+		if (isFirstTime == 1) {
+			TaskList = initializeList();
+		}
+
+		Parser pr = new Parser();
+		Command cmd = pr.parseInputString(input);
+		executeCommand(cmd);
+
+		if (isSuccessful) {
+			FileStream.writeTasksToXML(TaskList);
+		}
+
+		return OutputList;
+	}
+
+	public static void main(String[] args) {
+		Logic lgc = new Logic();
+
+		Scanner sc = new Scanner(System.in);
+		String str;
+		str = sc.nextLine();
+		while (!str.contains(new String("exit"))) {
+			lgc.run(str);
+			str = sc.nextLine();
+		}
+		sc.close();
+	}
+
+	public Vector<Task> initializeList() {
+		FileStream.initializeDir();
+		Vector<Task> list = FileStream.loadTasksFromXML();
+		Sort s = new Sort(list);
+		s.sortList();
+		return list;
+	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Search.java
+	 */
+
+	public Vector<Task> searchTask(String str) {
+		try {
+			LocalDate dt;
+			String searchtype = str.substring(0, str.indexOf(" "));
+			switch (searchtype.toLowerCase()) {
+			case "desc":
+				return searchDesc(str.substring(str.indexOf(" ")));
+			case "task":
+				return searchDesc(str.substring(str.indexOf(" ")));
+			case "before":
+				dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+				return searchBeforeDate(dt);
+			case "date":
+				dt = extractDate(str.substring(str.indexOf(" ") + 1).trim());
+				return searchOnDate(dt);
+			case "type":
+				Task.TASK_TYPE t = determineTaskType(str.substring(
+						str.indexOf(" ") + 1).trim());
+				return searchTaskType(t);
+			default:
+				Output.showToUser(MSG_COMMAND_FAILURE);
+				return TaskList;
+			}
+		} catch (Exception e) {
+			Output.showToUser(MSG_COMMAND_FAILURE);
+			return TaskList;
+		}
+
+	}
+
+	private Task.TASK_TYPE determineTaskType(String taskTypeString) {
+		if (taskTypeString == null) {
+			Output.showToUser(MSG_COMMAND_NULL);
+			return null;
+		}
+
+		if (taskTypeString.equalsIgnoreCase("floating")) {
+			return TASK_TYPE.FLOATING_TASK;
+		} else if (taskTypeString.equalsIgnoreCase("deadline")
+				|| taskTypeString.equalsIgnoreCase("due")) {
+			return TASK_TYPE.DEADLINE;
+		} else if (taskTypeString.equalsIgnoreCase("timedtask")
+				|| taskTypeString.equalsIgnoreCase("event")) {
+			return TASK_TYPE.TIMED_TASK;
+		} else {
+			Output.showToUser(MSG_INCORRECT_FORMAT);
+			return null;
+		}
+	}
+
+	private LocalDate extractDate(String str) {
+		LocalDate date;
+		try {
+			date = TimeExtractor.extractDate(str);
+		} catch (Exception e) {
+			date = null;
+		}
+		return date;
+	}
+
+	private Vector<Task> searchBeforeDate(LocalDate date) {
+
+		Vector<Task> resultTaskList = new Vector<Task>();
+		Task t = null;
+		LocalDateTime dl = LocalDateTime.of(date, LocalTime.of(23, 59));
+
+		if (date != null) {
+			for (int index = 1; index <= TaskList.size(); index++) {
+				t = TaskList.get(index - 1);
+				if (t.getTaskType() != Task.TASK_TYPE.FLOATING_TASK
+						&& t.getEndTime().isBefore(dl)) {
+					resultTaskList.add(TaskList.get(index - 1));
+				}
+			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task before "
+					+ TimeExtractor.formatDate(date)));
+			return resultTaskList;
+		} else {
+			Output.showToUser(MSG_COMMAND_FAILURE);
+			return TaskList;
+		}
+	}
+
+	private Vector<Task> searchOnDate(LocalDate date) {
+		Vector<Task> resultTaskList = new Vector<Task>();
+		Task t = null;
+		LocalDate dl;
+
+		if (date != null) {
+			for (int index = 1; index <= TaskList.size(); index++) {
+				t = TaskList.get(index - 1);
+
+				if (t.getTaskType() != Task.TASK_TYPE.FLOATING_TASK) {
+					dl = t.getEndTime().toLocalDate();
+					if (date.isEqual(dl)) {
+						resultTaskList.add(TaskList.get(index - 1));
+					}
+				}
+			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task on "
+					+ TimeExtractor.formatDate(date)));
+			return resultTaskList;
+		} else {
+			Output.showToUser(MSG_COMMAND_FAILURE);
+			return TaskList;
+		}
+	}
+
+	private Vector<Task> searchTaskType(Task.TASK_TYPE type) {
+		Vector<Task> resultTaskList = new Vector<Task>();
+		Task t = null;
+		if (type != null) {
+			for (int index = 1; index <= TaskList.size(); index++) {
+				t = TaskList.get(index - 1);
+
+				if (t.getTaskType() == type) {
+					resultTaskList.add(TaskList.get(index - 1));
+				}
+			}
+			Output.showToUser(String.format(MSG_SEARCH_COMMAND, "Task type "
+					+ type));
+			return resultTaskList;
+		} else {
+			Output.showToUser(MSG_COMMAND_FAILURE);
+			return TaskList;
+		}
+	}
+
+	private Vector<Task> searchDesc(String str) {
+		Vector<Task> resultTaskList = new Vector<Task>();
+		String textContent = null;
+
+		for (int index = 1; index <= TaskList.size(); index++) {
+			textContent = TaskList.get(index - 1).getTaskDesc();
+			if (containsText(textContent, str)) {
+				resultTaskList.add(TaskList.get(index - 1));
+			}
+		}
+		Output.showToUser(String.format(MSG_SEARCH_COMMAND, "keyword " + str));
+		return resultTaskList;
+	}
+
+	private boolean containsText(String taskcontent, String keyword) {
+		String[] keywords = keyword.split(" ");
+		for (String s : keywords) {
+			// search key case insensitive
+			if (!taskcontent.toLowerCase().contains(s.toLowerCase())) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Search.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Sort.java
+	 */
+
+	public void sortList() {
+		if (!TaskList.isEmpty()) {
+			checkDue();
+
+			listComparator ls = new listComparator();
+
+			Collections.sort(TaskList, ls);
+
+			for (int i = 0; i < TaskList.size(); i++) {
+				TaskList.get(i).setIndex(i + 1);
+			}
+		}
+	}
+
+	private void checkDue() {
+		for (Task t : TaskList) {
+			if (t.getEndTime() != null) {
+				if (t.getEndTime().isBefore(LocalDateTime.now())) {
+					t.markTaskAsDue();
+				} else {
+					t.markTaskAsUndue();
+				}
+			}
+		}
+
+	}
+
+	class listComparator implements Comparator<Task> {
+
+		/** Sort task according to flag, marked property and task type */
+		@Override
+		public int compare(Task a, Task b) {
+			if (a.getFlag() && b.getFlag()) {
+				return compareDone(a, b);
+			} else if (a.getFlag()) {
+				return -1;
+			} else if (b.getFlag()) {
+				return 1;
+			} else {
+				return compareDone(a, b);
+			}
+		}
+
+		/** Sort task according to whether it is marked as done */
+		private int compareDone(Task a, Task b) {
+			if (a.getDone() && b.getDone()) {
+				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
+			} else if (a.getDone()) {
+				return 1;
+			} else if (b.getDone()) {
+				return -1;
+			} else {
+				return compareType(a, b);
+			}
+		}
+
+		/**
+		 * Sort task according to task type, end time if non-floating and
+		 * alphabetical order if floating
+		 */
+		private int compareType(Task a, Task b) {
+
+			Task.TASK_TYPE typeA = a.getTaskType();
+			Task.TASK_TYPE typeB = b.getTaskType();
+			if (typeA.equals(Task.TASK_TYPE.FLOATING_TASK)
+					&& typeB.equals(Task.TASK_TYPE.FLOATING_TASK)) {
+				return a.getTaskDesc().compareToIgnoreCase(b.getTaskDesc());
+			} else if (typeA.equals(Task.TASK_TYPE.FLOATING_TASK)) {
+				return 1;
+			} else if (typeB.equals(Task.TASK_TYPE.FLOATING_TASK)) {
+				return -1;
+			} else {
+				if (a.getEndTime().isBefore(b.getEndTime())) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		}
+
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Sort.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoAdd(Task t) {
+
+		RedoCommandList.add(new String("add"));
+		RedoList.add(t);
+	}
+
+	public void undoClear(Vector<Task> TaskList) {
+
+		Vector<Task> copyOfTaskList = new Vector<Task>();
+		for (Task t : TaskList) {
+			copyOfTaskList.add(t);
+		}
+
+		backUpList.push(copyOfTaskList);
+		CommandList.push("recover");
+		UndoList.push(new Task());
+	}
+
+	public void redoClear() {
+
+		RedoCommandList.push("clear");
+		RedoList.push(new Task());
+	}
+
+	public void undoChgdir() {
+		Task u = new Task();
+		String desc = FileStream.getOldPath();
+		CommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		UndoList.push(u);
+	}
+
+	public void redoChgdir() {
+		Task u = new Task();
+		String desc = FileStream.getNewPath();
+		RedoCommandList.push(new String("changedir"));
+		u.setTaskDesc(desc);
+		RedoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoDelete(int index) {
+		Task u = new Task();
+		u.setIndex(index);
+		RedoCommandList.push(new String("delete"));
+		RedoList.push(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoEditEndDate(int index, LocalDateTime endTime) {
+		Task u = new Task();
+		u.setIndex(index);
+		RedoCommandList.add(new String("editEndDate"));
+		u.setEndTime(endTime);
+		RedoList.add(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoEditStartDate(int index, LocalDateTime startTime) {
+		Task u = new Task();
+		u.setIndex(index);
+		RedoCommandList.add(new String("editStartDate"));
+		u.setEndTime(startTime);
+		RedoList.add(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoEditEndTime(int index, LocalDateTime endTime) {
+		Task u = new Task();
+		u.setIndex(index);
+		RedoCommandList.add(new String("editStartDate"));
+		u.setEndTime(endTime);
+		RedoList.add(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoEditStartTime(int index, LocalDateTime startTime) {
+		Task u = new Task();
+		RedoCommandList.add(new String("editStartTime"));
+		u.setIndex(index);
+		u.setStartTime(startTime);
+		RedoList.add(u);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+	 */
+
+	public void redoEditTaskDesc(int index, String ModifiedContent) {
+		Task u = new Task();
+		RedoCommandList.add(new String("editTaskDesc"));
+		u.setIndex(index);
+		u.setTaskDesc(ModifiedContent);
+		RedoList.add(u);
+	}
+
+	public void undoFlag(int index) {
+		Task u = new Task();
+		CommandList.push(new String("unflag"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+
+	public void redoFlag(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("flag"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+
+	public void undoMark(int index) {
+		Task u = new Task();
+		CommandList.push(new String("unmark"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+
+	public void redoMark(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("mark"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+
+	public void undoUnmark(int index) {
+		Task u = new Task();
+		CommandList.push(new String("mark"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+
+	public void redoUnmark(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("unmark"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+
+	public void undoUnflag(int index) {
+		Task u = new Task();
+		CommandList.push(new String("flag"));
+		u.setIndex(index);
+		UndoList.push(u);
+	}
+
+	public void redoUnflag(int index) {
+		Task u = new Task();
+		RedoCommandList.push(new String("unflag"));
+		u.setIndex(index);
+		RedoList.push(u);
+	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\UndoOps.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\Command.java
+	 */
+
+	public Command(String s) {
+		_commmandtype = s;
+	}
+
+	public String getCommandType() {
+		return _commmandtype;
+	}
+
+	public Task getTask() {
+		return _task;
+	}
+
+	public int getIndex() {
+		return _index;
+	}
+
+	public String getContent() {
+		return _content;
+	}
+
+	public String getModifiedString() {
+		return _modifiedString;
+	}
+
+	public void setCommandType(String str) {
+		this._commmandtype = str;
+	}
+
+	public void setTask(Task t) {
+		this._task = t;
+	}
+
+	public void setIndex(int i) {
+		this._index = i;
+	}
+
+	public void setContent(String str) {
+		this._content = str;
+	}
+
+	public void setModifiedString(String str) {
+		this._modifiedString = str;
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\Command.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\CreateCmd.java
+	 */
+
+	public Command createNewCommand(String str) {
+		assert str.equals(new String("clear")) || str.equals(new String(""))
+				|| str.equals(new String("undo"))
+				|| str.equals(new String("redo"))
+				|| str.equals(new String("man"));
+		Command command = new Command(str);
+		return command;
+	}
+
+	public Command createAddCommand(Task t) {
+		Command addCommand = new Command("add");
+		addCommand.setTask(t);
+		return addCommand;
+	}
+
+	public Command createDeleteCommand(int i) {
+		Command deleteCommand = new Command("delete");
+		deleteCommand.setIndex(i);
+
+		return deleteCommand;
+	}
+
+	public Command createEditCommand(String f, String t, int i) {
+		Command editCommand = new Command("edit");
+		editCommand.setIndex(i);
+		editCommand.setContent(f);
+		editCommand.setModifiedString(t);
+
+		return editCommand;
+	}
+
+	public Command createDirCommand(String str) {
+		Command dirCommand = new Command("changedir");
+		dirCommand.setContent(str);
+		return dirCommand;
+	}
+
+	public Command createFlagCommand(int i) {
+		Command flagCommand = new Command("flag");
+		flagCommand.setIndex(i);
+		return flagCommand;
+	}
+
+	public Command createUnflagCommand(int i) {
+		Command unflagCommand = new Command("unflag");
+		unflagCommand.setIndex(i);
+		return unflagCommand;
+	}
+
+	public Command createToggleFlagCommand(int i) {
+		Command flagCommand = new Command("toggleflag");
+		flagCommand.setIndex(i);
+		return flagCommand;
+	}
+
+	public Command createMarkCommand(int i) {
+		Command markCommand = new Command("mark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
+
+	public Command createUnmarkCommand(int i) {
+		Command markCommand = new Command("unmark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
+
+	public Command createToggleMarkCommand(int i) {
+		Command markCommand = new Command("togglemark");
+		markCommand.setIndex(i);
+		return markCommand;
+	}
+
+	public Command createSearchCommand(String s) {
+		Command searchCommand = new Command("search");
+		searchCommand.setContent(s);
+
+		return searchCommand;
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\CreateCmd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\Parser.java
+	 */
+
+	public Command parseInputString(String input) {
+		String commandTypeString = input.trim().split("\\s+")[0];
+		COMMAND_TYPE commandType = OperationType
+				.determineCommandType(commandTypeString);
+
+		switch (commandType) {
+		case ADD_TASK:
+			return addTask(input);
+		case BACK:
+			return createBackCommand();
+		case CHANGEDIR:
+			return changeDir(input);
+		case CLEAR:
+			return clearTask(input);
+		case DONE:
+			return markTask(input);
+		case UNDONE:
+			return unmarkTask(input);
+		case TOGGLEDONE:
+			return toggledone(input);
+		case DELETE_TASK:
+			return deleteTask(input);
+		case EDIT_TASK:
+			return editTask(input);
+		case FLAG:
+			return flag(input);
+		case UNFLAG:
+			return unflag(input);
+		case TOGGLEFLAG:
+			return toggleflag(input);
+		case MAN:
+			return man(input);
+		case UNDO:
+			return undo(input);
+		case SEARCH_TASK:
+			return searchTask(input);
+		case REDO:
+			return redo(input);
+		default:
+			return null;
+		}
+	}
+
+	private Command addTask(String input) {
+		if (input.contains(" ")) {
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			TaskBuilder extractor = new TaskBuilder(input);
+			Task t = extractor.extractAddCommand();
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createAddCommand(t);
+		} else {
+			return null;
+		}
+	}
+
+	private Command changeDir(String input) {
+		if (input.trim().toLowerCase().equals("changedir")) {
+			CreateCmd clearcmd = new CreateCmd();
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			return clearcmd.createDirCommand(input);
+		} else {
+			return null;
+		}
+	}
+
+	private Command clearTask(String input) {
+		if (input.trim().toLowerCase().equals("clear")) {
+			CreateCmd clearcmd = new CreateCmd();
+			return clearcmd.createNewCommand("clear");
+		} else {
+			return null;
+		}
+	}
+
+	private Command createBackCommand() {
+		CreateCmd backcmd = new CreateCmd();
+		return backcmd.createNewCommand("");
+	}
+
+	private Command deleteTask(String input) {
+		try {
+			if (input.contains(" ")) {
+				input = input.substring(input.indexOf(" ") + 1).trim();
+				int index = Integer.parseInt(input);
+				CreateCmd createCmd = new CreateCmd();
+				return createCmd.createDeleteCommand(index);
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command editTask(String input) {
+		if (!input.contains(" ")) {
+			return null;
+		}
+
+		input = input.substring(input.indexOf(" ") + 1).trim();
+		String editType, modifiedContent = "";
+
+		CreateCmd createCmd = new CreateCmd();
+
+		try {
+			StringTokenizer st = new StringTokenizer(input);
+			editType = st.nextToken();
+			int index = Integer.parseInt(st.nextToken());
+			while (st.hasMoreTokens()) {
+				modifiedContent = modifiedContent.concat(" " + st.nextToken());
+			}
+			return createCmd.createEditCommand(editType,
+					modifiedContent.trim(), index);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command flag(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createFlagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command unflag(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createUnflagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command toggleflag(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd flagcmd = new CreateCmd();
+			return flagcmd.createToggleFlagCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command markTask(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createMarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	private Command unmarkTask(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createUnmarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command toggledone(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			int i = Integer.parseInt(input);
+
+			CreateCmd markcmd = new CreateCmd();
+			return markcmd.createToggleMarkCommand(i);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command man(String input) {
+		if (input.trim().toLowerCase().equals("man")
+				|| input.trim().toLowerCase().equals("help")
+				|| input.trim().toLowerCase().equals("?")) {
+			CreateCmd mancmd = new CreateCmd();
+			return mancmd.createNewCommand("man");
+		} else {
+			return null;
+		}
+	}
+
+	private Command searchTask(String input) {
+		try {
+			if (!input.contains(" ")) {
+				return null;
+			}
+			input = input.substring(input.indexOf(" ") + 1).trim();
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createSearchCommand(input);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Command undo(String input) {
+		if (input.trim().toLowerCase().equals("undo")) {
+			CreateCmd createCmd = new CreateCmd();
+			return createCmd.createNewCommand("undo");
+		} else {
+			return null;
+		}
+	}
+
+	private Command redo(String input) {
+		if (input.trim().toLowerCase().equals("redo")) {
+			CreateCmd redocmd = new CreateCmd();
+			return redocmd.createNewCommand("redo");
+		} else {
+			return null;
+		}
+	}
+
+	public static void main(String[] args) {
+		Parser pr = new Parser();
+		Scanner sc = new Scanner(System.in);
+		String str;
+		str = sc.next();
+		while (!str.contains(new String("exit"))) {
+
+			pr.parseInputString(str);
+			str = sc.next();
+		}
+		sc.close();
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\Parser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\TaskBuilder.java
+	 */
+
+	public TaskBuilder(String s) {
+		_input = s;
+		startOfTimeString = s.length();
+	}
+
+	public Task extractAddCommand() {
+		if (!_input.isEmpty()) {
+			Task.TASK_TYPE type = checkTaskType();
+			extractTaskInfo(type);
+			return t;
+		} else {
+			return null;
+		}
+	}
+
+	/** switch to respective task building methods */
+	private void extractTaskInfo(Task.TASK_TYPE type) {
+		switch (type) {
+		case TIMED_TASK:
+			buildTimedTask();
+			return;
+		case DEADLINE:
+			buildDeadline();
+			return;
+		case FLOATING_TASK:
+			buildFloatingTask();
+			return;
+		default:
+			break;
+		}
+	}
+
+	private void buildFloatingTask() {
+		_input = _input.replaceAll("\"", "").trim();
+		if (!_input.isEmpty()) {
+			t = new Task(_input);
+		} else {
+			Output.showToUser(MSG_DESC);
+		}
+		log.setLevel(Level.OFF);
+	}
+
+	private void buildDeadline() {
+
+		if (inferredType == Task.TASK_TYPE.TIMED_TASK) {
+			Output.showToUser(MSG_FORMAT);
+			return;
+		} else {
+			LocalDateTime EndTime;
+
+			if (dateList.size() == 0) {
+				EndTime = LocalDateTime.of(LocalDate.now(), timeList.get(0));
+			} else if (dateList.size() == 1 && timeList.size() == 1) {
+				EndTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
+			} else if (dateList.size() == 1 && timeList.size() == 0) {
+				EndTime = LocalDateTime.of(dateList.get(0),
+						LocalTime.of(23, 59));
+			} else {
+				Output.showToUser(MSG_FORMAT);
+				return;
+			}
+			if (!desc.isEmpty()) {
+				t = new Task(desc, EndTime);
+			} else {
+				Output.showToUser(MSG_DESC);
+			}
+		}
+
+	}
+
+	private void buildTimedTask() {
+		LocalDateTime StartTime, EndTime;
+
+		int tm = timeList.size();
+		int d = dateList.size();
+		if (d == 2 && tm == 0) {
+			log.info(dateList.get(0).toString());
+			StartTime = LocalDateTime.of(dateList.get(0), LocalTime.of(0, 0));
+			EndTime = LocalDateTime.of(dateList.get(1), LocalTime.of(23, 59));
+		} else if (d == 1 && tm == 2) {
+			StartTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
+			EndTime = LocalDateTime.of(dateList.get(0), timeList.get(1));
+		} else if (d == 1 && tm == 0) {
+			StartTime = LocalDateTime.of(dateList.get(0), LocalTime.of(0, 0));
+			EndTime = LocalDateTime.of(dateList.get(0), LocalTime.of(23, 59));
+		} else if (d == 0 && tm == 2) {
+			StartTime = LocalDateTime.of(LocalDate.now(), timeList.get(0));
+			EndTime = LocalDateTime.of(LocalDate.now(), timeList.get(1));
+		} else if (d == 2 && tm == 2) {
+			StartTime = LocalDateTime.of(dateList.get(0), timeList.get(0));
+			EndTime = LocalDateTime.of(dateList.get(1), timeList.get(1));
+		} else {
+			Output.showToUser(MSG_FORMAT);
+			return;
+		}
+
+		try {
+			if (!desc.isEmpty()) {
+				t = new Task(desc, StartTime, EndTime);
+			} else {
+				Output.showToUser(MSG_DESC);
+			}
+		} catch (Exception e) {
+			Output.showToUser(MSG_FORMAT);
+			log.info(MSG_FORMAT);
+		}
+	}
+
+	private Task.TASK_TYPE checkTaskType() {
+
+		int startIndexOfDate = -1, startIndexOfTime = -1;
+		checkTimePattern();
+		checkDatePattern();
+		if (dateIndex.size() != 0) {
+			startIndexOfDate = dateIndex.get(0);
+		}
+		if (timeIndex.size() != 0) {
+			startIndexOfTime = timeIndex.get(0);
+		}
+
+		extractDesc(startIndexOfDate, startIndexOfTime);
+		log.info(startIndexOfDate + " " + startIndexOfTime);
+
+		int tm = timeList.size();
+		int d = dateList.size();
+		log.info(d + " " + tm);
+
+		if (tm == 0 && d == 0) {
+			return Task.TASK_TYPE.FLOATING_TASK;
+		} else if (tm != 1 && inferredType != Task.TASK_TYPE.DEADLINE) {
+			return Task.TASK_TYPE.TIMED_TASK;
+		} else {
+			return Task.TASK_TYPE.DEADLINE;
+		}
+
+	}
+
+	/** extract description of task from input string */
+	private void extractDesc(int startIndexOfDate, int startIndexOfTime) {
+
+		int startIndex;
+
+		if (startIndexOfDate < 0 && startIndexOfTime < 0) {
+			desc = _input;
+		} else if (startIndexOfDate < 0) {
+			startIndex = Math.min(startOfTimeString, startIndexOfTime);
+			desc = _input.substring(0, startIndex).trim();
+		} else if (startIndexOfTime < 0) {
+			startIndex = Math.min(startOfTimeString, startIndexOfDate);
+			desc = _input.substring(0, startIndex).trim();
+		} else {
+			startIndex = Math.min(startOfTimeString,
+					Math.min(startIndexOfDate, startIndexOfTime));
+			desc = _input.substring(0, startIndex).trim();
+		}
+
+		desc = desc.replaceAll("\"", "");
+	}
+
+	private void checkDatePattern() {
+
+		dateFormat1();
+		dateFormat2();
+		dateFormat3();
+		dateFormat4();
+		dateFormat5();
+
+	}
+
+	/** check whether string starting from index i has been parsed */
+	private boolean checkDateIndex(int i) {
+		if (dateIndex.size() != 0)
+			for (int index : dateIndex) {
+				if (i == index) {
+					return false;
+				}
+			}
+		return true;
+	}
+
+	private void extractDate(Matcher m) {
+		boolean isNew;
+		LocalDate date;
+		int i = 0, index = -1, k = 0;
+		try {
+			while (m.find(k)) {
+
+				if (dateIndex.size() != 0) {
+					index = dateIndex.get(0);
+				}
+
+				String dt = m.group();
+				dt = dt.trim().replaceAll("[\\s/\\-\\.]", " ");
+				log.info(dt);
+				i = m.start();
+				isNew = checkDateIndex(i);
+
+				if (isNew) {
+					if (i == 0 || _input.charAt(i - 1) == ' ') {
+						date = TimeExtractor.extractDate(dt);
+					} else {
+						date = null;
+					}
+
+					if (date != null) {
+						if (index < 0 || i < index) {
+							dateList.add(0, date);
+							dateIndex.add(0, i);
+						} else {
+							dateList.add(date);
+							dateIndex.add(i);
+						}
+						if (i > 0) {
+							checkTimeIndicationWord(i, false);
+						}
+						i = m.end() - 1;
+						log.info(date.toString());
+					}
+				}
+				k = _input.indexOf(" ", i + 1);
+			}
+		} catch (Exception e) {
+			return;
+		}
+	}
+
+	/** extract the date format 13 mar 2015, 13-mar-2015, 3/mar/2015, 3 march */
+	private void dateFormat1() {
+
+		Matcher m = Pattern.compile(
+				"\\b\\d{1,2}[\\s/\\-]\\w+(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("1:");
+		extractDate(m);
+
+	}
+
+	/** extract the date format mar 13 2015, mar-13-2015, mar/3/2015, March.2 */
+	private void dateFormat2() {
+
+		Matcher m = Pattern.compile(
+				"\\b\\w+[\\s/\\-\\.]\\d{1,2}(?![:\\.])([\\s/\\-]\\d{4})?\\b",
+				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("2:");
+		extractDate(m);
+	}
+
+	/** extract date format 3-3-2015,3 3 2015,3/3/2015, 3.3.2015 */
+	private void dateFormat3() {
+
+		Matcher m;
+		m = Pattern
+				.compile(
+						"\\b\\d{1,2}+[\\s/\\-.]\\d{1,2}(?![:\\.])([\\s/\\-.]\\d{4})?\\b",
+						Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("3:");
+		extractDate(m);
+	}
+
+	/** extract date format Monday/Mon */
+	private void dateFormat4() {
+
+		String[] dayOfWeek = DateFormatSymbols.getInstance(Locale.ENGLISH)
+				.getWeekdays();
+		String[] dayOfWeekShort = DateFormatSymbols.getInstance(Locale.ENGLISH)
+				.getShortWeekdays();
+
+		extractDayOfWeek(dayOfWeek);
+		extractDayOfWeek(dayOfWeekShort);
+
+	}
+
+	/** extract date format tmr, tomorrow, today, tdy */
+	private void dateFormat5() {
+		int i = -1, index = -1;
+
+		String s;
+		LocalDate date = null;
+		String[] spcdt = { "tomorrow", "tmr", "today", "tdy" };
+
+		String[] info = _input.split("\\s+");
+
+		for (int j = 0; j < info.length; j++) {
+			s = info[j];
+			if (s.equalsIgnoreCase(spcdt[2]) || s.equalsIgnoreCase(spcdt[3])) {
+				i = _input.indexOf(s);
+				date = LocalDate.now();
+			} else if (s.equalsIgnoreCase(spcdt[1])
+					|| s.equalsIgnoreCase(spcdt[0])) {
+				i = _input.indexOf(" " + s);
+				if (i == -1) {
+					i = 0;
+				}
+				date = LocalDate.now().plusDays(1);
+			} else {
+				i = -1;
+			}
+			if (dateIndex.size() != 0) {
+				index = dateIndex.get(0);
+			}
+
+			if (i != -1) {
+				if (index < 0 || i < index) {
+					dateList.add(0, date);
+					dateIndex.add(0, i);
+				} else {
+					dateList.add(date);
+					dateIndex.add(i);
+				}
+				log.info(date.toString());
+				if (i > 0) {
+					checkTimeIndicationWord(i, false);
+				}
+			}
+		}
+	}
+
+	private void extractDayOfWeek(String[] dayOfWeek) {
+		String s;
+		String[] info = _input.split("\\s+");
+		int i, index = -1;
+		for (String d : dayOfWeek) {
+
+			for (int j = 0; j < info.length; j++) {
+				s = info[j];
+				if (s.equalsIgnoreCase(d)) {
+					if (j > 1 && info[j - 1].equalsIgnoreCase("next")) {
+						i = _input.indexOf(info[j - 1]);
+					} else {
+						i = _input.indexOf(" " + s);
+					}
+					if (dateIndex.size() != 0) {
+						index = dateIndex.get(0);
+					}
+
+					LocalDate date = TimeExtractor.extractDate(s);
+					if (i < 0) {
+						i = 0;
+					}
+
+					if (index < 0 || i < index) {
+						dateList.add(0, date);
+						dateIndex.add(0, i);
+					} else {
+						dateList.add(date);
+						dateIndex.add(i);
+					}
+					if (i > 0) {
+						checkTimeIndicationWord(i, false);
+					}
+					log.info(s + " " + date.toString());
+				}
+			}
+		}
+	}
+
+	private void checkTimePattern() {
+
+		timePattern1();
+		timePattern2();
+
+	}
+
+	/** extract time format hh:mm, eg.12:00 */
+	private void timePattern1() {
+
+		Matcher m = Pattern.compile("\\b\\d{1,2}:\\d{2}\\b").matcher(_input);
+		log.info("tm 1:");
+		extractTime(m);
+	}
+
+	/** extract time pattern h.m 3pm/2.15pm/3 pm */
+	private void timePattern2() {
+
+		Matcher m;
+		m = Pattern.compile("\\b\\d{1,2}([.:]\\d{1,2})?\\s*[ap]m\\s*",
+				Pattern.CASE_INSENSITIVE).matcher(_input);
+		log.info("tm 2:");
+		extractTime(m);
+	}
+
+	private void extractTime(Matcher m) {
+		try {
+			int i, index = -1;
+			LocalTime time;
+			while (m.find()) {
+				i = m.start();
+				if (i == 0 || _input.charAt(i - 1) == ' ') {
+					time = TimeExtractor
+							.extractTime(m.group().replace(" ", ""));
+				} else {
+					time = null;
+				}
+				log.info(m.group());
+
+				if (time != null) {
+					if (timeIndex.size() != 0) {
+						index = timeIndex.get(0);
+					}
+					if (index < 0 || i < index) {
+						timeList.add(0, time);
+						timeIndex.add(0, i);
+					} else {
+						timeList.add(time);
+						timeIndex.add(i);
+					}
+					log.info(time.toString());
+					if (i > 0) {
+						checkTimeIndicationWord(i, true);
+					}
+				}
+
+			}
+		} catch (Exception e) {
+			Output.showToUser(MSG_DESC);
+		}
+	}
+
+	/** check for existence of time indication word */
+	private void checkTimeIndicationWord(int i, boolean isTime) {
+		int startIndex = _input.length();
+
+		if (isTime && _input.substring(0, i).trim().endsWith(" at")) {
+			startIndex = _input.substring(0, i).lastIndexOf("at");
+		} else if (!isTime && _input.substring(0, i).trim().endsWith(" on")) {
+			startIndex = _input.substring(0, i).lastIndexOf("on");
+		} else if (_input.substring(0, i).trim().endsWith(" until")) {
+			startIndex = _input.substring(0, i).lastIndexOf("until");
+		} else if (_input.substring(0, i).trim().endsWith(" till")) {
+			startIndex = _input.substring(0, i).lastIndexOf("till");
+		} else if (_input.substring(0, i).trim().endsWith(" from")) {
+			startIndex = _input.substring(0, i).lastIndexOf("from");
+			inferredType = Task.TASK_TYPE.TIMED_TASK;
+		} else if (_input.substring(0, i).trim().endsWith(" to")) {
+			startIndex = _input.substring(0, i).lastIndexOf("to");
+			inferredType = Task.TASK_TYPE.TIMED_TASK;
+		} else if (_input.substring(0, i).trim().endsWith(" by")) {
+			startIndex = _input.substring(0, i).lastIndexOf("by");
+			inferredType = Task.TASK_TYPE.DEADLINE;
+		}
+
+		if (startIndex < startOfTimeString) {
+			startOfTimeString = startIndex;
+		}
+	}
+
+	public static void main(String[] args) {
+		TaskBuilder tb = new TaskBuilder(args.toString());
+		tb.run();
+
+	}
+
+	public void run() {
+
+		//Task t = extractAddCommand();
+		/* For Testing Purpose
+		 * clear list Scanner sc = new Scanner(System.in); _input =
+		 * sc.nextLine(); while (!_input.contains(new String("exit"))) { Task t
+		 * = extractAddCommand(); displayTask(t); _input = sc.nextLine(); }
+		 * sc.close();
+		 */
+
+	}
+
+//	/** For Testing Purpose, display task parsed from String*/
+//	private void displayTask(Task t) {
+//		log.info(t.getTaskType().toString());
+//		String text;
+//		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+//			text = new String(t.getTaskDesc() + "\nFrom: "
+//					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
+//					+ TimeExtractor.formatDateTime(t.getEndTime()));
+//
+//		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+//			text = new String(t.getTaskDesc() + "\nBy: "
+//					+ TimeExtractor.formatDateTime(t.getEndTime()));
+//		} else {
+//			text = new String(t.getTaskDesc() + "\n");
+//		}
+//		log.info(text);
+//	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\TaskBuilder.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\TaskBuilderTest.java
+	 */
+
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
+	@Before
+	public void setUpStreams() {
+		System.setOut(new PrintStream(outContent));
+	}
+
+	@After
+	public void cleanUpStreams() {
+		System.setOut(null);
+	}
+
+	@Test
+	public void test() {
+
+		// case 1 format M/dd
+		TaskBuilder tb = new TaskBuilder("Bank holiday 8/14");
+		LocalDateTime tm = LocalDateTime.of(LocalDate.of(2015, 8, 14),
+				LocalTime.of(23, 59));
+		tb.run();
+		assertEquals("Bank holiday", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 2 format 3pm/11.14pm
+		tb = new TaskBuilder("Volleyball at 11.14pm");
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 14));
+		tb.run();
+		assertEquals("Volleyball", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 3 format with quotes
+		tb = new TaskBuilder(
+				"lunch with John at \"Taco Tuesdays\" Friday 12 pm");
+		tm = LocalDateTime.of(
+				LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.FRIDAY)),
+				LocalTime.of(12, 00));
+		tb.run();
+		assertEquals("lunch with John at Taco Tuesdays", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 4 format tomorrow, hh:mm, ha
+		tb = new TaskBuilder("Running w/ Pat 14:15 - 3 pm tomorrow");
+		tm = LocalDateTime
+				.of(LocalDate.now().plusDays(1), LocalTime.of(14, 15));
+
+		tb.run();
+		assertEquals("Running w/ Pat", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime
+				.of(LocalDate.now().plusDays(1), LocalTime.of(15, 00));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 5 dd/MM/uuuu
+		tb = new TaskBuilder(
+				"National Conference in Atlanta 23/9/2015 - 26/9/2015");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 9, 23),
+				LocalTime.of(0, 0));
+		tb.run();
+		assertEquals("National Conference in Atlanta", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 9, 26),
+				LocalTime.of(23, 59));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 6 dd/MM/uuuu hhmm
+		tb = new TaskBuilder("CS2013 from 12/12/2015 12:30 to 12/12/2015 14:00");
+		tm = LocalDateTime.of(LocalDate.of(2015, 12, 12), LocalTime.of(12, 30));
+		tb.run();
+		assertEquals("CS2013", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.of(2015, 12, 12), LocalTime.of(14, 00));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 7 MMMM d hh:mm
+		tb = new TaskBuilder("Conference jan 1 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+			System.out.println("hh");
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 8 d MMM hh:mm
+		tb = new TaskBuilder("Conference 1 jan 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 9 MMMM.d hh:mm
+		tb = new TaskBuilder("Conference January.1 13:00");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 1, 1),
+				LocalTime.of(13, 00));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("Conference", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 10 dd MM
+		tb = new TaskBuilder("t3 3 mar");
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 3, 3),
+				LocalTime.of(0, 0));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		tb.run();
+		assertEquals("t3", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.of(LocalDate.now().getYear(), 3, 3),
+				LocalTime.of(23, 59));
+		if (tm.isBefore(LocalDateTime.now())) {
+			tm = tm.plusYears(1);
+		}
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 11 no date, 2 times, assume today
+		tb = new TaskBuilder("Meet professor 3pm 5.25pm");
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 0));
+		tb.run();
+		assertEquals("Meet professor", tb.t.getTaskDesc());
+		assertEquals(tm.toString(), tb.t.getStartTime().toString());
+		tm = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 25));
+		assertEquals(tm.toString(), tb.t.getEndTime().toString());
+
+		// case 12 failed case: from without to
+		tb = new TaskBuilder("add P-P from jan 9 2015 23:20");
+		tb.run();
+		assertEquals(tb.t, null);
+
+	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\parser\TaskBuilderTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\OperationType.java
+	 */
+
+	public static COMMAND_TYPE determineCommandType(String commandTypeString) {
+		if (commandTypeString == null)
+			throw new Error("command type string cannot be null!");
+
+		if (commandTypeString.equalsIgnoreCase("add")
+				|| commandTypeString.equalsIgnoreCase("create")) {
+			return COMMAND_TYPE.ADD_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("delete")) {
+			return COMMAND_TYPE.DELETE_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("edit")
+				|| commandTypeString.equalsIgnoreCase("update")) {
+			return COMMAND_TYPE.EDIT_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("search")) {
+			return COMMAND_TYPE.SEARCH_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("undo")) {
+			return COMMAND_TYPE.UNDO;
+		} else if (commandTypeString.equalsIgnoreCase("clear")) {
+			return COMMAND_TYPE.CLEAR;
+		} else if (commandTypeString.equalsIgnoreCase("changedir")) {
+			return COMMAND_TYPE.CHANGEDIR;
+		} else if (commandTypeString.equalsIgnoreCase("done")
+				|| commandTypeString.equalsIgnoreCase("mark")) {
+			return COMMAND_TYPE.DONE;
+		} else if (commandTypeString.equalsIgnoreCase("undone")
+				|| commandTypeString.equalsIgnoreCase("unmark")) {
+			return COMMAND_TYPE.UNDONE;
+		} else if (commandTypeString.equalsIgnoreCase("redo")) {
+			return COMMAND_TYPE.REDO;
+		} else if (commandTypeString.equalsIgnoreCase("flag")
+				|| commandTypeString.equalsIgnoreCase("prioritise")) {
+			return COMMAND_TYPE.FLAG;
+		} else if (commandTypeString.equalsIgnoreCase("unflag")) {
+			return COMMAND_TYPE.UNFLAG;
+		} else if (commandTypeString.equalsIgnoreCase("togglemark")
+				|| commandTypeString.equalsIgnoreCase("toggledone")) {
+			return COMMAND_TYPE.TOGGLEDONE;
+		} else if (commandTypeString.equalsIgnoreCase("toggleflag")) {
+			return COMMAND_TYPE.TOGGLEFLAG;
+		} else if (commandTypeString.equalsIgnoreCase("help")
+				|| commandTypeString.equalsIgnoreCase("?")
+				|| commandTypeString.equalsIgnoreCase("man")) {
+			return COMMAND_TYPE.MAN;
+		} else if (commandTypeString.isEmpty()) {
+			return COMMAND_TYPE.BACK;
+		} else {
+			return COMMAND_TYPE.INVALID;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\OperationType.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Output.java
+	 */
+
+	public static void showToUser(String text) {
+
+		if (count == 0) {
+			log = Logger.getLogger("");
+			StreamHandler handler;
+			try {
+				handler = new ConsoleHandler();
+				handler.setFormatter(new outputFormatter());
+				log.addHandler(handler);
+				log.setUseParentHandlers(false);
+				log.setLevel(Level.INFO);
+				log.removeHandler(log.getHandlers()[0]);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+
+		log.log(Level.INFO, text);
+
+		count++;
+	}
+
+	private static class outputFormatter extends Formatter {
+
+		@Override
+		public String format(LogRecord record) {
+			return record.getMessage();
+		}
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Output.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+	 */
+
+	public Task() {
+		this.type = TASK_TYPE.NULL;
+	}
+	
+	public Task(String desc) {
+		this.taskDesc = desc;
+		this.type = TASK_TYPE.FLOATING_TASK;
+		this.done = false;
+		this.flag = false;
+	}
+
+	public Task(String desc, LocalDateTime et) {
+		this.taskDesc = desc;
+		this.endTime = et;
+		this.type = TASK_TYPE.DEADLINE;
+		this.done = false;
+		this.flag = false;
+	}
+
+	public Task(String desc, LocalDateTime st, LocalDateTime et)
+			throws Exception {
+		this.taskDesc = desc;
+		this.startTime = st;
+		this.endTime = et;
+		this.type = TASK_TYPE.TIMED_TASK;
+		if (st.isAfter(et)) {
+			throw new Exception("End time cannot be earlier than Start time");
+		}
+		this.done = false;
+		this.flag = false;
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+	 */
+
+	public void setFinish(){
+		done = true;
+	}
+	
+	public boolean isDue() {
+		return isDue;
+	}
+	
+	public void markTaskAsDue() {
+		isDue = true;
+	}
+	
+	public void markTaskAsUndue() {
+		isDue = false;
+	}
+	
+	public void markTaskAsDone() {
+		done = true;
+	}
+	
+	public void markTaskAsUndone() {
+		done = false;
+	}
+	
+	public void markFlag() {
+		flag = true;
+	}
+	
+	public void unmarkFlag() {
+		flag = false;
+	}
+
+	public void setTaskDesc(String desc) {
+		taskDesc = desc;
+	}
+
+	public void setStartTime(LocalDateTime st) {
+		startTime = st;
+	}
+
+	public void setEndTime(LocalDateTime et) {
+		endTime = et;
+	}
+
+	public String getTaskDesc() {
+		return taskDesc;
+	}
+
+	public TASK_TYPE getTaskType() {
+		return type;
+	}
+	
+	public void setTaskType(TASK_TYPE t) {
+		type = t;
+	}
+	
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\TimeExtractor.java
+	 */
+
+	public static String formatDate(LocalDate t) {
+		DateTimeFormatter formatter;
+
+		formatter = DateTimeFormatter.ofPattern("d MMM uuuu").withLocale(
+				Locale.ENGLISH);
+		return t.format(formatter);
+	}
+
+	public static String formatDateTime(LocalDateTime t) {
+		DateTimeFormatter formatter;
+
+		if (t.getMinute() == 0) {
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu ha")
+					.withLocale(Locale.ENGLISH);
+		} else {
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu h.ma")
+					.withLocale(Locale.ENGLISH);
+		}
+		return t.format(formatter);
+	}
+
+	public static LocalTime extractTime(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.appendOptional(DateTimeFormatter.ofPattern("Hmm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HHmm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("H mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HH mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("H:mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("HH:mm"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("ha"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("h.ma"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalTime time = LocalTime.parse(str, dtf);
+			return time;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static LocalDate extractDate(String str) {
+		LocalDate date = null;
+		date = DateFormatter1(str);
+		if (date == null) {
+			date = DateFormatter2(str);
+		}
+		if (date == null) {
+			date = DateFormatter3(str);
+		}
+		if (date == null) {
+			date = DateFormatter4(str);
+		}
+		if (date == null) {
+			date = DateFormatter5(str);
+		}
+		return date;
+	}
+
+	private static LocalDate DateFormatter1(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMMM"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d M"));
+
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
+			LocalDate date = LocalDate.parse(str, dtf);
+			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
+				date = date.plusYears(1);
+			}
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter2(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+
+			builder.appendOptional(DateTimeFormatter.ofPattern("M d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMMM d"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
+			LocalDate date = LocalDate.parse(str, dtf);
+			if (date.getDayOfYear() < LocalDate.now().getDayOfYear()) {
+				date = date.plusYears(1);
+			}
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter3(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.appendOptional(DateTimeFormatter.ofPattern("d M uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("dd MM uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("d MMM uuuu"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("MMM d uuuu"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			str = str.replaceAll("[\\s/\\-\\.]", " ");
+			LocalDate date = LocalDate.parse(str, dtf);
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter4(String str) {
+		try {
+			DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+			builder.parseCaseInsensitive();
+			builder.parseDefaulting(ChronoField.YEAR, LocalDate.now().getYear());
+			builder.parseDefaulting(ChronoField.MONTH_OF_YEAR, LocalDate.now()
+					.getMonthValue());
+			builder.parseDefaulting(ChronoField.ALIGNED_WEEK_OF_MONTH, 1);
+			builder.appendOptional(DateTimeFormatter.ofPattern("eeee"));
+			builder.appendOptional(DateTimeFormatter.ofPattern("EEE"));
+			DateTimeFormatter dtf = builder.toFormatter().withLocale(
+					Locale.ENGLISH);
+			LocalDate date = LocalDate.parse(str, dtf);
+			DayOfWeek day = date.getDayOfWeek();
+			date = LocalDate.now().with(TemporalAdjusters.nextOrSame(day));
+			return date;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static LocalDate DateFormatter5(String str) {
+
+		LocalDate date = null;
+		String[] spcdt = { "tomorrow", "tmr", "today", "tdy" };
+		str = str.trim().toLowerCase();
+
+		if (str.equalsIgnoreCase(spcdt[2]) || str.equalsIgnoreCase(spcdt[3])) {
+			date = LocalDate.now();
+		} else if (str.equalsIgnoreCase(spcdt[1])
+				|| str.equalsIgnoreCase(spcdt[0])) {
+			date = LocalDate.now().plusDays(1);
+		} else {
+			date = null;
+		}
+		return date;
+	}
+
+	/** for testing purpose */
+	public static void main(String[] args) {
+		// String str = "03 03 2015";
+		// Output.showToUser(DateFormatter3(str).toString());
+
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\TimeExtractor.java
+
+
+
+
+

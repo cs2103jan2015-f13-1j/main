@@ -1,0 +1,815 @@
+//@author: a0111855j
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\fileIO\FileStream.java
+	 */
+
+package fileIO;
+
+import java.io.File;
+import java.util.Vector;
+import java.util.prefs.Preferences;
+
+import util.Task;
+import javafx.stage.DirectoryChooser;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.Marshaller;
+
+public class FileStream {
+
+	private static File file;
+	private static String oldPath;
+	private static String newPath;
+
+	/**
+	 * Retrieves XML from Ontask.xml, converts and returns a Vector<Task>
+	 * @return
+	 */
+	public static Vector<Task> loadTasksFromXML() {
+		Vector<Task> tasks = new Vector<Task>();
+
+		try {
+			JAXBContext context = JAXBContext.newInstance(TaskListWrapper.class);
+			Unmarshaller um = context.createUnmarshaller();
+
+			//Read XML from file and unmarshal.
+			TaskListWrapper wrapper = (TaskListWrapper) um.unmarshal(file);	
+			if(wrapper.getTasks() != null) {
+				tasks.addAll(wrapper.getTasks());
+			}
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+
+		return tasks;
+	}
+
+	/**
+	 * Save specified Vector<Task> to Ontask.xml 
+	 * @param tasks
+	 */
+	public static void writeTasksToXML(Vector<Task> tasks) {
+		
+		try {
+			JAXBContext context = JAXBContext.newInstance(TaskListWrapper.class);
+			Marshaller m = context.createMarshaller();
+
+			//Formatted with lines and indentation
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			//Wrap vector of tasks
+			TaskListWrapper wrapper = new TaskListWrapper();
+			wrapper.setTasks(tasks);
+
+			//Marshals and saves XML to the file
+			m.marshal(wrapper, file);
+
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void initializeDir() {
+
+		/*
+		 * If else statement to catch two cases: 
+		 * 1) If preference has already been initialized but cannot locate Ontask.xml, treat as first-time user. file = null
+		 * 2) If preference is not initialized (real first-time users), file = null
+		 */
+		if(getFilePath().exists() && getFilePath() != null) {	
+			file = getFilePath();
+		} else {
+			file = null;
+		}
+
+		if(file == null) {
+			//Ask user for directory to save Ontask.xml
+			DirectoryChooser dirChooser = new DirectoryChooser();
+			File selectedDirectory = dirChooser.showDialog(null);
+
+			while(selectedDirectory == null) {
+				dirChooser.setTitle("Please Select a Folder");
+				selectedDirectory = dirChooser.showDialog(null);
+			} 
+
+			newPath = selectedDirectory.getAbsolutePath();
+			file = new File(newPath + "/Ontask.xml");
+			setFilePath(file);
+			writeTasksToXML(new Vector<Task>());
+			//System.out.println(newPath + "/Ontask.xml");
+			//System.out.println("end of initializeDir()");
+		}
+	}
+
+	/*
+	 * Copy the old Ontask.xml to new directory. Delete old directory Ontask.xml
+	 */
+	public static void changeDir() {
+		oldPath = getFilePath().getParentFile().getAbsolutePath();
+
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		File selectedDirectory = dirChooser.showDialog(null);
+
+		//If user did not select a directory, this method will not make any changes.
+		if(selectedDirectory == null) {
+			return;
+		} else {
+			newPath = selectedDirectory.getAbsolutePath();
+
+			//Copy old Ontask.xml to new
+			file.renameTo(new File(newPath + "/Ontask.xml"));
+
+			//Update file references
+			file = new File(newPath + "/Ontask.xml");
+			setFilePath(file);
+
+		}
+
+	}
+
+	public static void changeDirWithString(String s) {
+		
+		assert s != null : "String is null!";
+
+		//Copy old Ontask.xml to new
+		file.renameTo(new File(s + "/Ontask.xml"));
+
+		//Update file references
+		file = new File(s + "/Ontask.xml");
+		setFilePath(file);
+	}
+
+	public static String getOldPath() {
+		return oldPath;
+	}
+
+	public static String getNewPath() {
+		return newPath;
+	}
+
+	/*
+	 * Preference API stores the value of File using a string key filePath
+	 */
+	public static File getFilePath() {
+		Preferences prefs = Preferences.userNodeForPackage(FileStream.class);
+		String filePath = prefs.get("filePath", null);
+		if(filePath != null) {
+			return new File(filePath);
+		} else {
+			return null;
+		}
+	}
+
+	/*
+	 * Updates preference to store new value for File with the same string key filePath
+	 */
+	private static void setFilePath(File file) {
+
+		assert file != null : "File is null!";
+		
+		Preferences prefs = Preferences.userNodeForPackage(FileStream.class);
+		if(file != null) {
+			prefs.put("filePath", file.getPath());
+		} else {
+			prefs.remove("filePath");
+		}
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\fileIO\FileStream.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\fileIO\TaskListWrapper.java
+	 */
+
+package fileIO;
+
+import java.util.Vector;
+
+import util.Task;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/*
+ * This class wraps a Vector of tasks to save to XML
+ */
+@XmlRootElement(name = "Tasks")
+public class TaskListWrapper {
+	
+	private Vector<Task> tasks;
+
+	@XmlElement(name = "Task")
+	public Vector<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Vector<Task> tasks) {
+		this.tasks = tasks;
+	}
+	
+	public boolean isEmpty() {
+		boolean b = false;
+		if(tasks.isEmpty()) {
+			b = true;
+		}
+		
+		return b;
+	}
+	
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\fileIO\TaskListWrapper.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+	 */
+
+public class ListViewGUI extends Application {
+	private Stage primaryStage;
+	private BorderPane root;
+	private TaskDisplayController controller;
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws IOException {
+		this.primaryStage = primaryStage;
+		this.primaryStage.initStyle(StageStyle.UNDECORATED);	//removes default windows border
+		this.primaryStage.getIcons().add(new Image(ImageLoader.load("icon.png")));
+
+		initRootLayout();
+		showTaskOverview();	
+	}
+	
+	private void initRootLayout() {
+
+		root = new BorderPane();
+
+		Scene scene = new Scene(root, 450, 700);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		primaryStage.setResizable(false);
+		
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+	 */
+
+	public void minimizeWindow() {
+		primaryStage.setIconified(true);
+	}
+
+	private void showTaskOverview() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(ListViewGUI.class
+				.getResource("TaskDisplayPage.fxml"));
+		AnchorPane TaskDisplayPage = (AnchorPane) loader.load();
+		root.setCenter(TaskDisplayPage);
+
+		controller = loader.getController();
+
+		controller.setGUI(this);
+
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\ListViewGUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	public void setTaskList(Vector<Task> TaskList) {
+
+		list = FXCollections.observableList(TaskList);
+		listView.setItems(list);
+		listView.setCellFactory(new Callback<ListView<Task>, ListCell<Task>>() {
+
+			@Override
+			public ListCell<Task> call(ListView<Task> param) {
+				return new TaskCell();
+			}
+
+		});
+
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	// This class records x,y co-ordinates as an object
+	private class Delta {
+		double x;
+		double y;
+	}
+
+	public void moveUndercoratedBorder() {
+
+		// customize toolBar to enable moving an undecorated application
+		final Delta dragDelta = new Delta();
+		toolBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				// record a delta distance for the drag and drop operation.
+				dragDelta.x = gui.getWindow().getX() - mouseEvent.getScreenX();
+				dragDelta.y = gui.getWindow().getY() - mouseEvent.getScreenY();
+			}
+		});
+		toolBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				gui.getWindow().setX(mouseEvent.getScreenX() + dragDelta.x);
+				gui.getWindow().setY(mouseEvent.getScreenY() + dragDelta.y);
+			}
+		});
+	}
+
+	/** exit buttons for customized window border */
+	public void exitWindow() {
+		closeApp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.exit();
+			}
+		});
+	}
+
+	// close buttons for customized window border
+	public void minimizeWindow() {
+		minimize.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				gui.minimizeWindow();
+			}
+		});
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode().equals(KeyCode.ENTER)) {
+					key.consume();
+
+					String text = inputBox.getText();
+					commandHistory.add(text);
+					commandHistoryIndex = commandHistory.size();
+
+					// Terminates program if exit, else refresh list
+					if (!text.trim().toLowerCase().equals("exit")
+							&& !text.trim().toLowerCase().equals("quit")) {
+						processUserInput(text);
+
+						// clear text area after each input
+						inputBox.setText("");
+					} else {
+						System.exit(0);
+					}
+
+				}
+
+				if (key.getCode().equals(KeyCode.F1)) {
+					processUserInput("help");
+				}
+
+				if (key.getCode().equals(KeyCode.F5)) {
+					FileStream.changeDir();
+				}
+
+				if (key.getCode().equals(KeyCode.UP)) {
+					showPrevCommandUp();
+				}
+
+				if (key.getCode().equals(KeyCode.DOWN)) {
+					showPrevCommandDown();
+				}
+
+				if (key.getCode().equals(KeyCode.ALT) && autoCompleteState) {
+					turnOffAutoComplete();
+				}
+
+				else if (key.getCode().equals(KeyCode.ALT)
+						&& !autoCompleteState) {
+					turnOnAutoComplete();
+				}
+
+				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+					commandHistoryIndex = commandHistory.size();
+				}
+
+				if (keyComb1.match(key)) {
+					processUserInput("undo");
+				}
+
+				if (keyComb2.match(key)) {
+					processUserInput("redo");
+				}
+
+			}
+
+		});
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+	 */
+
+	private void showPrevCommandUp() {
+		if (commandHistory.size() == 0) {
+			return;
+		}
+
+		if (commandHistoryIndex == 0) {
+			commandHistoryIndex = commandHistory.size();
+		}
+
+		if (commandHistoryIndex > 0) {
+			commandHistoryIndex--;
+		}
+
+		String text = commandHistory.get(commandHistoryIndex);
+		inputBox.setText(text);
+		inputBox.positionCaret(text.length());
+
+	}
+
+	private void showPrevCommandDown() {
+		if (commandHistoryIndex == commandHistory.size()) {
+			return;
+		}
+
+		if (commandHistoryIndex == commandHistory.size() - 1) {
+			commandHistoryIndex = -1;
+		}
+
+		if (commandHistoryIndex < commandHistory.size()) {
+			commandHistoryIndex++;
+		}
+
+		String text = commandHistory.get(commandHistoryIndex);
+		inputBox.setText(text);
+		inputBox.positionCaret(text.length());
+
+	}
+
+	private void turnOnAutoComplete() {
+		autoCompleteState = true;
+		Output.showToUser("Auto-Complete On");
+	}
+
+	private void turnOffAutoComplete() {
+		autoCompleteState = false;
+		Output.showToUser("Auto-Complete Off");
+	}
+
+	public void setGUI(ListViewGUI listViewGUI) {
+		this.gui = listViewGUI;
+
+	}
+
+	public void updateLabel(String s) {
+		label.setText(s);
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\gui\TaskDisplayController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+	 */
+
+	private void changeDir() {
+		FileStream.changeDir();
+		if (!FileStream.getOldPath().equals(FileStream.getNewPath())) {
+			u.undoChgdir();
+			u.redoChgdir();
+			Output.showToUser(String.format(MSG_CHGDIR));
+		} else {
+			Output.showToUser(String.format(MSG_COMMAND_FAILURE, "changedir"));
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+	 */
+
+	private void man() {
+		File helpFile = new File("HelpCommands.html");
+		try {
+			Desktop.getDesktop().browse(helpFile.toURI());
+			Output.showToUser(MSG_MAN);
+		} catch (IOException e) {
+			Output.showToUser(MSG_WRONG_FILE);
+		}
+	}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\ImageLoader.java
+	 */
+
+package util;
+
+import java.io.InputStream;
+
+final public class ImageLoader {
+	
+	public static InputStream load(String path) {
+		InputStream input = ImageLoader.class.getResourceAsStream(path);
+		if(input == null) {
+			input = ImageLoader.class.getResourceAsStream("/"+path);
+		}
+		return input;
+		
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\ImageLoader.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\LocalDateTimeAdapter.java
+	 */
+
+package util;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+//This adapter class allows the convertion of LocalDateTime object into a readable XML element
+public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime>{
+	
+	@Override
+	public LocalDateTime unmarshal(String s) throws Exception {
+		return LocalDateTime.parse(s,DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+	}
+	@Override
+	public String marshal(LocalDateTime s) throws Exception {
+		return s.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\LocalDateTimeAdapter.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\SystemTest.java
+	 */
+
+package util;
+
+import gui.TaskDisplayController;
+import junitx.framework.*;
+import java.io.File;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class SystemTest {
+
+	int i=0;
+
+	public static class ListViewGUI extends Application {
+
+		@Override
+		public void start(Stage primaryStage) throws Exception {
+			// TODO Auto-generated method stub
+		}
+	}
+
+	@BeforeClass
+	public static void initJFX() throws InterruptedException {
+		Thread t = new Thread() {
+			public void run() {
+				Application.launch(ListViewGUI.class, new String[0]);
+			}
+		};
+		t.setDaemon(true);
+		t.start();
+		Thread.sleep(500);
+	}
+
+
+	@Test
+	public void test() throws Exception {
+		TaskDisplayController tdc = new TaskDisplayController();
+		//Testing command: clear, at the same time, initializes a new clean task for the following test
+		tdc.processUserInput("add Start test");
+		tdc.processUserInput("clear");
+		checkCurrentAgainstExpectedXML("Ontask.xml", "Empty.xml");
+		
+		//Testing time formats: TT:TT (24 hour clock)
+		tdc.processUserInput("add timed task 30 APR 3:25 1 MAY 17:25");
+		
+		//Testing time formats: T.TT(with suffix, 12 hour clock)
+		tdc.processUserInput("add timed task from 30 apr 9pm to 1 may 4.13pm");
+		
+		//Testing date formatings DD MMM T(with suffix)
+		tdc.processUserInput("add timed task from 30 may 3pm to 1 jun 5pm");
+
+		//Testing date formatings MM DD with both time formats, represents June 15 3pm to June 16 5pm
+		tdc.processUserInput("add timed task from 6 15 15:00 to 6 16 5pm");
+		
+		//Testing a past date, should reflect 2016 automatically
+		tdc.processUserInput("add timed task from 1 Jan 15:00 to 2 Feb 5pm");
+
+		//Testing format for due task with keyword 'by'
+		tdc.processUserInput("add due TASK by Friday 14:00");
+		
+		//Testing format for due task without keyword 'by'
+		tdc.processUserInput("add due task Fri 5pm");
+		
+		//Edit enddate for due tasks
+		tdc.processUserInput("edit enddate 1 30 apr");
+		tdc.processUserInput("edit enddate 1 29/04");
+		
+		//Testing special words: today, tomorrow
+		tdc.processUserInput("add timed task today 3.25pm tomorrow 5.00pm");
+		
+		//Testing special words: tdy , tmr 
+		tdc.processUserInput("add timed task tdy 3.25pm tmr 5.00pm");
+		
+		//Check command: delete, should delete 1, update indexes, and delete task 1 again
+		tdc.processUserInput("delete 1");
+		tdc.processUserInput("delete 1");
+		
+		//Testing a date input in task description with " ", upper and lower case form
+		tdc.processUserInput("add FloAtinG task by \"3 aPr\"");
+		
+		//Testing a date input in task description for due task
+		tdc.processUserInput("add WATCH-movie, 'Day after \"tmr\"' by 20 MAY");
+		
+		//Testing edit for task description
+		tdc.processUserInput("edit task 1 new task description");
+		
+		//Testing edit for endtime for timed task
+		tdc.processUserInput("edit endtime 3 5.00pm");
+		
+		//Testing edit for enddate for timed task
+		tdc.processUserInput("edit enddate 3 25 may");
+		
+		//Test edit starttime and startdate
+		tdc.processUserInput("edit starttime 3 1.25am");
+		tdc.processUserInput("edit startdate 3 apr 25");
+		
+		//Test marking task as done
+		tdc.processUserInput("mark 2");
+		
+		//Test flagging task to prioritize
+		tdc.processUserInput("flag 3");
+		
+		//Test undo function
+		tdc.processUserInput("add task to be undo-ed, should not appear");
+		tdc.processUserInput("undo");
+		
+		//Test final command exit
+		tdc.processUserInput("exit");
+		
+		checkCurrentAgainstExpectedXML("Ontask.xml", "Expected.xml");
+	}
+
+	public void checkCurrentAgainstExpectedXML(String currentS, String expectedS) {
+		File current = new File(currentS);
+		File expected = new File(expectedS);
+		
+		//Import JUnit-addons version 1.4 in order to use FileAssert under junitx.framework.*;
+		FileAssert.assertEquals(expected, current);
+	}
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\SystemTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+	 */
+
+	@XmlSchemaType(name = "flag")
+	public boolean getFlag() {
+		return flag;
+	}
+	
+	public void setFlag(boolean b) {
+		flag = b;
+	}
+
+	@XmlSchemaType(name = "done")
+	public boolean getDone() {
+		return done;
+	}
+	
+	public void setDone(boolean b) {
+		done = b;
+	}
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+	 */
+
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	@XmlSchemaType(name = "startTime")
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+
+	@XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+	@XmlSchemaType(name = "endTime")
+	public LocalDateTime getEndTime() {
+		return endTime;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;		
+	}
+
+}
+
+	// End of segment: C:\Users\User\Desktop\Eclipse Workspace\Ontask\src\util\Task.java
+
+
+
+
+

@@ -128,7 +128,6 @@ public class TaskDisplayController {
 		// @author A0093906X
 		public TaskCell() {
 			super();
-
 			delete.getStyleClass().add("delete");
 			// flag.getStyleClass().add("flag");
 			done.getStyleClass().add("done");
@@ -382,7 +381,8 @@ public class TaskDisplayController {
 		dueAllTime.setSelected(true);
 
 		sideBar.toBack();
-
+		sideBar.getStyleClass().add("sidebar");
+		
 		timed.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					@Override

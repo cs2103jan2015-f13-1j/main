@@ -1,4 +1,6 @@
-
+.sidebar {
+	-fx-background-image: url("bg-sb.jpg");
+}
 
 .label {
 	-fx-text-fill: white;
