@@ -651,7 +651,7 @@ public class TaskDisplayController {
 						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
 							Output.showToUser(" ");
 							previousKey = null;
-						} else if (!isPartOfWord
+						} else if (previousKey != null && !isPartOfWord
 								&& !key.getCode().equals(KeyCode.ENTER)
 								&& !key.getCode().equals(KeyCode.ALT)) {
 							Output.showToUser(" ");
