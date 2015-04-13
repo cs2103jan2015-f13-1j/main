@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Tasks>
+    <Task>
+        <done>false</done>
+        <endTime>2015-05-20T23:59:00</endTime>
+        <flag>true</flag>
+        <index>1</index>
+        <taskDesc>WATCH-movie, 'Day after tmr'</taskDesc>
+        <taskType>DEADLINE</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-04-29T17:00:00</endTime>
+        <flag>false</flag>
+        <index>2</index>
+        <taskDesc>new task description</taskDesc>
+        <taskType>DEADLINE</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-05-01T17:25:00</endTime>
+        <flag>false</flag>
+        <index>3</index>
+        <startTime>2015-04-25T01:25:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-05-25T17:00:00</endTime>
+        <flag>false</flag>
+        <index>4</index>
+        <startTime>2015-04-30T21:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-06-01T17:00:00</endTime>
+        <flag>false</flag>
+        <index>5</index>
+        <startTime>2015-05-30T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2015-06-16T17:00:00</endTime>
+        <flag>false</flag>
+        <index>6</index>
+        <startTime>2015-06-15T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <endTime>2016-02-02T17:00:00</endTime>
+        <flag>false</flag>
+        <index>7</index>
+        <startTime>2016-01-01T15:00:00</startTime>
+        <taskDesc>timed task</taskDesc>
+        <taskType>TIMED_TASK</taskType>
+    </Task>
+    <Task>
+        <done>false</done>
+        <flag>false</flag>
+        <index>8</index>
+        <taskDesc>FloAtinG task by 3 aPr</taskDesc>
+        <taskType>FLOATING_TASK</taskType>
+    </Task>
+    <Task>
+        <done>true</done>
+        <endTime>2015-04-30T14:00:00</endTime>
+        <flag>false</flag>
+        <index>9</index>
+        <taskDesc>due TASK</taskDesc>
+        <taskType>DEADLINE</taskType>
+    </Task>
+</Tasks>

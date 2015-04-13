@@ -23,7 +23,7 @@ public class SystemTest {
 
 	@BeforeClass
 	public static void initJFX() throws InterruptedException {
-		Thread t = new Thread("JavaFX Init Thread") {
+		Thread t = new Thread() {
 			public void run() {
 				Application.launch(ListViewGUI.class, new String[0]);
 			}
@@ -63,6 +63,10 @@ public class SystemTest {
 		//Testing format for due task without keyword 'by'
 		tdc.processUserInput("add due task Fri 5pm");
 		
+		//Edit enddate for due tasks
+		tdc.processUserInput("edit enddate 1 30 apr");
+		tdc.processUserInput("edit enddate 1 29/04");
+		
 		//Testing special words: today, tomorrow
 		tdc.processUserInput("add timed task today 3.25pm tomorrow 5.00pm");
 		
@@ -82,14 +86,11 @@ public class SystemTest {
 		//Testing edit for task description
 		tdc.processUserInput("edit task 1 new task description");
 		
-		//Testing edit for endtime
-		tdc.processUserInput("edit endtime 1 5.00pm");
+		//Testing edit for endtime for timed task
+		tdc.processUserInput("edit endtime 3 5.00pm");
 		
-		//Testing edit for enddate 
-		tdc.processUserInput("edit enddate 1 9 apr");
-		
-		//Testing edit for starttime, should not display error because due task do not have a start time
-		tdc.processUserInput("edit starttime 1");
+		//Testing edit for enddate for timed task
+		tdc.processUserInput("edit enddate 3 25 may");
 		
 		//Test edit starttime and startdate
 		tdc.processUserInput("edit starttime 3 1.25am");
@@ -107,12 +108,6 @@ public class SystemTest {
 		
 		//Test final command exit
 		tdc.processUserInput("exit");
-		
-		//Weird cases which fail: 
-		//add friday, add 3pm
-		//add i want to do this TODAY!
-		//add
-		//auto complete for edit bugs
 		
 		checkCurrentAgainstExpectedXML("Ontask.xml", "Expected.xml");
 	}
