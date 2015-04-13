@@ -15,3 +15,7 @@ Week 9.Add assertions, exceptions, logging. Add showToUser in GUI. Refine CRUD c
 Week 10: Add specify folder, logging to file, re-adjust Logic to Fascade pattern. Implement google integration. Bug Fix (Edit doesnt update the second time).
 
 Week 11: Stabilize GUI, Auto-complete Textarea, Up-Arrow Command History, System Test. Date Parsing. Overall debugging. Freeze Features by end of Week 11.
+
+Week 12: De-bugging, fixed GUI designs, test corner cases, fixed status feedback.
+
+Week 13: De-bug and Deployment!
