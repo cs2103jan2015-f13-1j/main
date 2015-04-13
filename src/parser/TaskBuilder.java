@@ -71,7 +71,6 @@ public class TaskBuilder {
 		} else {
 			Output.showToUser(MSG_DESC);
 		}
-		// TODO
 		log.setLevel(Level.OFF);
 	}
 
@@ -232,7 +231,7 @@ public class TaskBuilder {
 				isNew = checkDateIndex(i);
 
 				if (isNew) {
-					if (i == 0 || _input.charAt(i - 1) != '\"') {
+					if (i == 0 || _input.charAt(i - 1) == ' ') {
 						date = TimeExtractor.extractDate(dt);
 					} else {
 						date = null;
@@ -370,7 +369,6 @@ public class TaskBuilder {
 					}
 
 					LocalDate date = TimeExtractor.extractDate(s);
-					// TODO
 					if (i < 0) {
 						i = 0;
 					}
@@ -422,7 +420,7 @@ public class TaskBuilder {
 			LocalTime time;
 			while (m.find()) {
 				i = m.start();
-				if (i == 0 || _input.charAt(i - 1) != '\"') {
+				if (i == 0 || _input.charAt(i - 1) == ' ') {
 					time = TimeExtractor
 							.extractTime(m.group().replace(" ", ""));
 				} else {

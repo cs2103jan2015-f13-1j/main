@@ -75,7 +75,7 @@ public class Task {
 	public void setDone(boolean b) {
 		done = b;
 	}
-	
+	//@author A0105952H
 	public void setFinish(){
 		done = true;
 	}

@@ -262,13 +262,13 @@ public class TaskDisplayController {
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
 
 			return (String
-					.format("%-35s%s",
+					.format("%-35s\t%1s",
 							"\nFrom: "
 									+ TimeExtractor.formatDateTime(t
 											.getStartTime()),
 							"To: "
 									+ TimeExtractor.formatDateTime(t
-											.getEndTime())));
+											.getEndTime()))).replace(' ', ' ');
 		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
 
 			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));

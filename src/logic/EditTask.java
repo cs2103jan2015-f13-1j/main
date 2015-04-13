@@ -19,7 +19,7 @@ public class EditTask {
 	private static final String MSG_TIME_FAILURE = "End time cannot be earlier than start time!\n";
 	private static final String MSG_DESC_FAILURE = "Task Description cannot be empty!\n";
 
-	// @author A0105952H
+	//@author A0105952H
 	public EditTask(Vector<Task> TaskList) {
 		this.TaskList = TaskList;
 	}
