@@ -14,7 +14,7 @@ import logic.Logic;
 import util.Output;
 import util.Task;
 import util.TimeExtractor;
-import util.Task.TASK_TYPE;
+//import util.Task.TASK_TYPE;
 
 public class TaskBuilder {
 	private String _input, desc;
@@ -484,7 +484,7 @@ public class TaskBuilder {
 
 	public void run() {
 
-		Task t = extractAddCommand();
+		//Task t = extractAddCommand();
 		/* For Testing Purpose
 		 * clear list Scanner sc = new Scanner(System.in); _input =
 		 * sc.nextLine(); while (!_input.contains(new String("exit"))) { Task t
@@ -494,22 +494,22 @@ public class TaskBuilder {
 
 	}
 
-	/** For Testing Purpose, display task parsed from String*/
-	private void displayTask(Task t) {
-		log.info(t.getTaskType().toString());
-		String text;
-		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			text = new String(t.getTaskDesc() + "\nFrom: "
-					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
-					+ TimeExtractor.formatDateTime(t.getEndTime()));
-
-		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
-			text = new String(t.getTaskDesc() + "\nBy: "
-					+ TimeExtractor.formatDateTime(t.getEndTime()));
-		} else {
-			text = new String(t.getTaskDesc() + "\n");
-		}
-		log.info(text);
-	}
+//	/** For Testing Purpose, display task parsed from String*/
+//	private void displayTask(Task t) {
+//		log.info(t.getTaskType().toString());
+//		String text;
+//		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
+//			text = new String(t.getTaskDesc() + "\nFrom: "
+//					+ TimeExtractor.formatDateTime(t.getStartTime()) + " To: "
+//					+ TimeExtractor.formatDateTime(t.getEndTime()));
+//
+//		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+//			text = new String(t.getTaskDesc() + "\nBy: "
+//					+ TimeExtractor.formatDateTime(t.getEndTime()));
+//		} else {
+//			text = new String(t.getTaskDesc() + "\n");
+//		}
+//		log.info(text);
+//	}
 
 }

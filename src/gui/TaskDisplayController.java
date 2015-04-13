@@ -665,7 +665,7 @@ public class TaskDisplayController {
 				});
 	}
 
-	// @author A0111855J
+	//@author A0111855J
 	private void showPrevCommandUp() {
 		if (commandHistory.size() == 0) {
 			return;

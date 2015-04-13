@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 
+import util.ImageLoader;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,7 +26,7 @@ public class ListViewGUI extends Application {
 	public void start(Stage primaryStage) throws IOException {
 		this.primaryStage = primaryStage;
 		this.primaryStage.initStyle(StageStyle.UNDECORATED);	//removes default windows border
-        this.primaryStage.getIcons().add(new Image("file:images/icon.png"));
+		this.primaryStage.getIcons().add(new Image(ImageLoader.load("icon.png")));
 
 		initRootLayout();
 		showTaskOverview();	

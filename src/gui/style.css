@@ -101,7 +101,7 @@
 
 .list-view {
 	/*-fx-background-color: #061825;*/
-  	-fx-background-image: url("file:images/bg-sml.jpg");
+  	-fx-background-image: url("bg-sml.jpg");
     -fx-padding: 7.5;
 }
 
@@ -129,42 +129,42 @@
 
 .delete {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/delete-sml.png');
+	-fx-graphic: url('delete-sml.png');
 	-fx-opacity: 0.3;
 }
 
 .delete:hover {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/delete-sml-hover.png');
+	-fx-graphic: url('delete-sml-hover.png');
 	-fx-opacity: 1.0;
 }
 
 .flag {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/flag-sml.png');
+	-fx-graphic: url('flag-sml.png');
 	-fx-opacity: 0.3;
 }
 
 .flag:hover {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/flag-sml-hover.png');
+	-fx-graphic: url('flag-sml-hover.png');
 	-fx-opacity: 1.0;
 }
 
 .flag-selected {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/flag-sml-flagged.png');
+	-fx-graphic: url('flag-sml-flagged.png');
 	-fx-opacity: 1.0;
 }
 
 .selected:selected {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/selected-sml.png');
+	-fx-graphic: url('selected-sml.png');
 }
 
 .selected {
 	-fx-background-color: transparent;
-	-fx-graphic: url('file:images/deselected-sml.png');
+	-fx-graphic: url('deselected-sml.png');
 }
 
 .done {
@@ -178,27 +178,27 @@
 }
 
 .min {
-	-fx-background-image: url('file:images/min.png');
+	-fx-background-image: url('min.png');
 }
 
 .min:hover {
-	-fx-background-image: url('file:images/min-hover.png');
+	-fx-background-image: url('min-hover.png');
 }
 
 .cls {
-	-fx-background-image: url('file:images/cls.png');
+	-fx-background-image: url('cls.png');
 }
 
 .cls:hover {
-	-fx-background-image: url('file:images/cls-hover.png');
+	-fx-background-image: url('cls-hover.png');
 }
 
 .sld {
-	-fx-background-image: url('file:images/sld.png');
+	-fx-background-image: url('sld.png');
 }
 
 .sld:hover {
-	-fx-background-image: url('file:images/sld-hover.png');
+	-fx-background-image: url('sld-hover.png');
 }
 
 .radio-button .radio { 
@@ -207,7 +207,7 @@
 }
 
 .radio-button:selected .radio { 
-    -fx-background-image: url('file:images/selected-sml.png');
+    -fx-background-image: url('selected-sml.png');
     -fx-background-color: transparent;
     -fx-opacity: 1;
 	-fx-background-position: 0 0;
@@ -229,17 +229,17 @@
 
 .check-box>.box {
   -fx-background-color: transparent;
-  -fx-background-image: url('file:images/done.png');
+  -fx-background-image: url('done.png');
 }
 
 .check-box:hover>.box {
   -fx-background-color: transparent;
-  -fx-background-image: url('file:images/done-hover.png');
+  -fx-background-image: url('done-hover.png');
 }
 
 .check-box:selected>.box {
   -fx-background-color: transparent;
-  -fx-background-image: url('file:images/done-selected.png');
+  -fx-background-image: url('done-selected.png');
 }
 
 .check-box>.box>.mark {
