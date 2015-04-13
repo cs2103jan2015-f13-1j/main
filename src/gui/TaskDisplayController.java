@@ -111,8 +111,8 @@ public class TaskDisplayController {
 	final ToggleGroup deadline = new ToggleGroup();
 	final ToggleGroup floating = new ToggleGroup();
 	final ToggleGroup due = new ToggleGroup();
-	
-	//@author A0093906X
+
+	// @author A0093906X
 	class TaskCell extends ListCell<Task> {
 		HBox hbox = new HBox();
 		CheckBox done = new CheckBox();
@@ -124,8 +124,8 @@ public class TaskDisplayController {
 		VBox taskVBox = new VBox();
 		Button flag = new Button();
 		Button delete = new Button();
-		
-		//@author A0093906X
+
+		// @author A0093906X
 		public TaskCell() {
 			super();
 
@@ -159,7 +159,8 @@ public class TaskDisplayController {
 			HBox.setHgrow(pane, Priority.ALWAYS);
 
 		}
-		//@author A0093906X
+
+		// @author A0093906X
 		@Override
 		protected void updateItem(Task t, boolean b) {
 			super.updateItem(t, b);
@@ -234,7 +235,7 @@ public class TaskDisplayController {
 		}
 	}
 
-	//@author A0111855J
+	// @author A0111855J
 	public void setTaskList(Vector<Task> TaskList) {
 
 		list = FXCollections.observableList(TaskList);
@@ -250,68 +251,41 @@ public class TaskDisplayController {
 
 	}
 
-	//@author A0093906X
+	// @author A0093906X
 	private static String formatTask1(Task t) {
 		return (t.getIndex() + ": " + t.getTaskDesc());
 	}
 
-	//@author A0093906X
+	// @author A0093906X
 	private static String formatTask2(Task t) {
 
 		if (t.getTaskType().equals(TASK_TYPE.TIMED_TASK)) {
-			if(t.getStartTime().getMinute() == 0) {
-				if((t.getStartTime().getHour() > 9 && t.getStartTime().getHour() < 13) || (t.getStartTime().getHour() == 0)) {
-					return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-							+ "\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));					
-				}
-				
-				else if((t.getStartTime().getHour() > 21)) {
-					return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-							+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));					
-				}
-				
-				else {
+			return (String
+					.format("%-35s%s",
+							"\nFrom: "
+									+ TimeExtractor.formatDateTime(t
+											.getStartTime()),
+							"To: "
+									+ TimeExtractor.formatDateTime(t
+											.getEndTime())));
 
-					return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-							+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));	
-				}
-			}
-			
-			else {
-				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-						+ "\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));
-			}
-		}
-//				if ((t.getStartTime().getHour() > 9 && t.getStartTime().getHour() < 13) ||
-//							(t.getStartTime().getHour() > 21)) {
-//					return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-//						+ "\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));
-//					}
-//			} 
-//			
-//			else {
-//				return ("\nFrom: " + TimeExtractor.formatDateTime(t.getStartTime())
-//						+ "\t\t To: " + TimeExtractor.formatDateTime(t.getEndTime()));	
-//			}
-//
-//		} 
-//		
-		else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
+		} else if (t.getTaskType().equals(TASK_TYPE.DEADLINE)) {
 			return ("\nBy: " + TimeExtractor.formatDateTime(t.getEndTime()));
-		} 
-		
+		}
+
 		else {
 			return ("\n");
 		}
 	}
 
-	//@author A0111855J
+	// @author A0111855J
 	// This class records x,y co-ordinates as an object
 	private class Delta {
 		double x;
 		double y;
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	@FXML
 	private void initialize() {
 		// customize toolBar to enable moving an undecorated application
@@ -555,7 +529,7 @@ public class TaskDisplayController {
 		final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.Y,
 				KeyCombination.CONTROL_DOWN);
 
-		//@author A0111855J
+		// @author A0111855J
 		inputBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent key) {
@@ -622,59 +596,59 @@ public class TaskDisplayController {
 
 		inputBox.addEventHandler(KeyEvent.KEY_RELEASED,
 				new EventHandler<KeyEvent>() {
-			String autoCompleteList[] = { "add ", "clear", "changedir",
-					"create ", "delete ", "edit ", "exit", "flag ",
-					"help", "mark ", "man", "search ", "undo", "redo",
-					"prioritise ", "quit", "search task ",
-					"search before ", "search date ", "search desc ",
-					"search type ", "edit desc ", "edit task ",
-					"edit start", "edit end", "edit starttime ",
-					"edit startdate ", "edit endtime ", "edit enddate " };
+					String autoCompleteList[] = { "add ", "clear", "changedir",
+							"create ", "delete ", "edit ", "exit", "flag ",
+							"help", "mark ", "man", "search ", "undo", "redo",
+							"prioritise ", "quit", "search task ",
+							"search before ", "search date ", "search desc ",
+							"search type ", "edit desc ", "edit task ",
+							"edit start", "edit end", "edit starttime ",
+							"edit startdate ", "edit endtime ", "edit enddate " };
 
-			public void handle(KeyEvent key) {
+					public void handle(KeyEvent key) {
 
-				if (!autoCompleteState) {
-					return;
-				}
-				boolean isPartOfWord = false;
-				String input = inputBox.getText();
+						if (!autoCompleteState) {
+							return;
+						}
+						boolean isPartOfWord = false;
+						String input = inputBox.getText();
 
-				for (String s : autoCompleteList) {
-					input = input.replaceAll("\\s+", " ");
-					if (!input.isEmpty()
-							&& s.toLowerCase().startsWith(
-									input.toLowerCase())) {
-						Output.showToUser("Enter space to autocomplete");
-						previousKey = s;
-						isPartOfWord = true;
-						break;
+						for (String s : autoCompleteList) {
+							input = input.replaceAll("\\s+", " ");
+							if (!input.isEmpty()
+									&& s.toLowerCase().startsWith(
+											input.toLowerCase())) {
+								Output.showToUser("Enter space to autocomplete");
+								previousKey = s;
+								isPartOfWord = true;
+								break;
+							}
+						}
+						if (key.getCode().equals(KeyCode.SPACE)) {
+							if (previousKey != null) {
+								inputBox.setText(previousKey);
+								inputBox.end();
+								previousKey = null;
+								Output.showToUser(" ");
+							}
+						}
+						if (key.getCode().equals(KeyCode.BACK_SPACE)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						} else if (!isPartOfWord
+								&& !key.getCode().equals(KeyCode.ENTER)
+								&& !key.getCode().equals(KeyCode.ALT)) {
+							Output.showToUser(" ");
+							previousKey = null;
+						} else if (key.getCode().equals(KeyCode.ENTER)) {
+							previousKey = null;
+						}
+
 					}
-				}
-				if (key.getCode().equals(KeyCode.SPACE)) {
-					if (previousKey != null) {
-						inputBox.setText(previousKey);
-						inputBox.end();
-						previousKey = null;
-						Output.showToUser(" ");
-					}
-				}
-				if (key.getCode().equals(KeyCode.BACK_SPACE)) {
-					Output.showToUser(" ");
-					previousKey = null;
-				} else if (!isPartOfWord
-						&& !key.getCode().equals(KeyCode.ENTER)
-						&& !key.getCode().equals(KeyCode.ALT)) {
-					Output.showToUser(" ");
-					previousKey = null;
-				} else if (key.getCode().equals(KeyCode.ENTER)) {
-					previousKey = null;
-				}
-
-			}
-		});
+				});
 	}
 
-	//@author A0111855J
+	// @author A0111855J
 	private void showPrevCommandUp() {
 		if (commandHistory.size() == 0) {
 			return;
@@ -712,7 +686,7 @@ public class TaskDisplayController {
 		inputBox.positionCaret(text.length());
 
 	}
-	
+
 	private void turnOnAutoComplete() {
 		autoCompleteState = true;
 		Output.showToUser("Auto-Complete On");
@@ -731,7 +705,8 @@ public class TaskDisplayController {
 	public void updateLabel(String s) {
 		label.setText(s);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void processUserInput(String str) {
 
 		assert str != null : "String is null!";
@@ -740,7 +715,8 @@ public class TaskDisplayController {
 		createDisplayTaskList();
 		setTaskList(DisplayTaskList);
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public void createDisplayTaskList() {
 		DisplayTaskList.clear();
 		for (Task t : VectorTaskList) {
@@ -761,7 +737,8 @@ public class TaskDisplayController {
 			}
 		}
 	}
-	//@author A0093906X
+
+	// @author A0093906X
 	public boolean isDisplayedByDueDate(Task t) {
 		LocalDateTime end = t.getEndTime();
 		if (end == null) {

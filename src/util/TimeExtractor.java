@@ -19,15 +19,10 @@ public class TimeExtractor {
 		DateTimeFormatter formatter;
 
 		if (t.getMinute() == 0) {
-			if (t.getHour() <= 12 && t.getHour() >= 10) {
-				formatter = DateTimeFormatter.ofPattern("d MMM uuuu ha\t")
-						.withLocale(Locale.ENGLISH);
-			} else {
-				formatter = DateTimeFormatter.ofPattern("d MMM uuuu ha\t\t")
-						.withLocale(Locale.ENGLISH);
-			}
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu ha")
+					.withLocale(Locale.ENGLISH);
 		} else {
-			formatter = DateTimeFormatter.ofPattern("d MMM uuuu h.ma\t")
+			formatter = DateTimeFormatter.ofPattern("d MMM uuuu h.ma")
 					.withLocale(Locale.ENGLISH);
 		}
 		return t.format(formatter);
